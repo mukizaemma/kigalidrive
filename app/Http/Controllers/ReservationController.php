@@ -11,7 +11,9 @@ use App\Models\Unit;
 use App\Services\BookingReferenceService;
 use App\Services\ReservationNotificationService;
 use App\Services\SubmissionChannelService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ReservationController extends Controller
 {
@@ -30,14 +32,29 @@ class ReservationController extends Controller
             'phone' => 'required|string|max:50',
             'booking_type' => 'required|in:rent,buy,view_car',
             'full_address' => 'nullable|string|max:500',
-            'time_needed' => 'required|string|max:255',
+            'time_needed' => 'nullable|string|max:255',
             'rental_duration' => 'nullable|string|max:100',
-            'with_driver' => 'nullable|boolean',
-            'pickup_date' => 'nullable|date',
-            'dropoff_date' => 'nullable|date|after_or_equal:pickup_date',
+            'with_driver' => 'required|in:0,1',
+            'pickup_date' => 'nullable|date|required_if:booking_type,rent',
+            'dropoff_date' => 'nullable|date|after_or_equal:pickup_date|required_if:booking_type,rent',
+            'preferred_date' => 'nullable|date|required_if:booking_type,view_car',
+            'preferred_time' => 'nullable|string|max:20',
+            'pickup_location' => 'nullable|string|max:255',
+            'dropoff_location' => 'nullable|string|max:255',
             'additional_request' => 'nullable|string|max:2000',
             'channel' => 'required|in:email,whatsapp,form',
         ]);
+
+        $validated['time_needed'] = $this->resolveCarTimeNeeded($validated);
+        if (blank($validated['time_needed'])) {
+            throw ValidationException::withMessages([
+                'time_needed' => match ($validated['booking_type']) {
+                    'buy' => 'Please tell us when you need the vehicle.',
+                    'view_car' => 'Please select a preferred viewing date.',
+                    default => 'Please select pickup and drop-off dates.',
+                },
+            ]);
+        }
 
         $setting = Setting::firstOrFail();
         $this->channels->assertAnyChannelActive($setting, 'booking');
@@ -57,9 +74,13 @@ class ReservationController extends Controller
             'full_address' => $validated['full_address'] ?? null,
             'time_needed' => $validated['time_needed'],
             'rental_duration' => $validated['rental_duration'] ?? null,
-            'with_driver' => $request->boolean('with_driver'),
+            'with_driver' => (int) $validated['with_driver'] === 1,
+            'pickup_location' => $validated['pickup_location'] ?? null,
+            'dropoff_location' => $validated['dropoff_location'] ?? null,
             'pickup_date' => $validated['pickup_date'] ?? null,
             'dropoff_date' => $validated['dropoff_date'] ?? null,
+            'preferred_date' => $validated['preferred_date'] ?? null,
+            'preferred_time' => $validated['preferred_time'] ?? null,
             'additional_request' => $validated['additional_request'] ?? null,
             'message' => $validated['additional_request'] ?? null,
             'submission_channel' => $validated['channel'],
@@ -67,11 +88,24 @@ class ReservationController extends Controller
             'payment_status' => 'pending',
         ]);
 
-        $payload = $this->payload($rental->only([
-            'booking_number', 'name', 'phone', 'email', 'booking_type', 'full_address', 'time_needed', 'additional_request',
-        ]), 'Car: ' . $car->name);
+        $payload = $this->payload([
+            'booking_number' => $rental->booking_number,
+            'name' => $rental->name,
+            'phone' => $rental->phone,
+            'email' => $rental->email,
+            'booking_type' => $rental->booking_type,
+            'full_address' => $rental->full_address,
+            'time_needed' => $rental->time_needed,
+            'rental_duration' => $rental->rental_duration,
+            'with_driver' => $rental->with_driver,
+            'pickup_date' => $rental->pickup_date,
+            'dropoff_date' => $rental->dropoff_date,
+            'preferred_date' => $validated['preferred_date'] ?? null,
+            'preferred_time' => $validated['preferred_time'] ?? null,
+            'additional_request' => $rental->additional_request,
+        ], 'Car: ' . $car->name);
 
-        return $this->finish($setting, $validated['channel'], $payload, $car->slug, 'car');
+        return $this->finish($request, $setting, $validated['channel'], $payload, $car->slug, 'car');
     }
 
     public function storeApartment(Request $request)
@@ -132,7 +166,7 @@ class ReservationController extends Controller
 
         $slug = $property->slug;
 
-        return $this->finish($setting, $validated['channel'], $payload, $slug, 'apartment');
+        return $this->finish($request, $setting, $validated['channel'], $payload, $slug, 'apartment');
     }
 
     protected function payload(array $data, string $productLabel): array
@@ -142,11 +176,67 @@ class ReservationController extends Controller
         return $data;
     }
 
-    protected function finish(Setting $setting, string $channel, array $payload, string $slug, string $type)
+    protected function resolveCarTimeNeeded(array $validated): string
+    {
+        if ($validated['booking_type'] === 'rent' && ! empty($validated['pickup_date']) && ! empty($validated['dropoff_date'])) {
+            return $this->formatRentalPeriod($validated['pickup_date'], $validated['dropoff_date']);
+        }
+
+        if ($validated['booking_type'] === 'view_car') {
+            $parts = [];
+            if (! empty($validated['preferred_date'])) {
+                $parts[] = 'Viewing on ' . Carbon::parse($validated['preferred_date'])->format('j M Y');
+            }
+            if (! empty($validated['preferred_time'])) {
+                $parts[] = 'at ' . $validated['preferred_time'];
+            }
+
+            return trim(implode(' ', $parts));
+        }
+
+        return trim((string) ($validated['time_needed'] ?? ''));
+    }
+
+    protected function formatRentalPeriod(string $pickupDate, string $dropoffDate): string
+    {
+        $pickup = Carbon::parse($pickupDate)->startOfDay();
+        $dropoff = Carbon::parse($dropoffDate)->startOfDay();
+        $days = max(1, $pickup->diffInDays($dropoff));
+        $dayLabel = $days === 1 ? '1 day' : $days . ' days';
+
+        return $dayLabel . ' (' . $pickup->format('j M Y') . ' – ' . $dropoff->format('j M Y') . ')';
+    }
+
+    protected function finish(Request $request, Setting $setting, string $channel, array $payload, string $slug, string $type)
     {
         $message = $this->notifier->buildMessage($payload);
+        $redirectUrl = $type === 'car' ? route('carDetails', $slug) : route('hotel', $slug);
+        $successMessage = 'Reservation submitted! Your booking number is #' . $payload['booking_number'] . '. Keep it for your review.';
+        $flash = [
+            'booking_number' => $payload['booking_number'],
+            'reservation_message' => $message,
+        ];
 
-        if ($channel === 'email' || $channel === 'form') {
+        if ($channel === 'whatsapp') {
+            $externalUrl = $this->channels->whatsappUrl($setting, $message);
+            if ($externalUrl) {
+                return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl, $flash);
+            }
+        }
+
+        if ($channel === 'email') {
+            $adminEmail = $this->channels->adminEmail($setting, 'booking');
+            if ($adminEmail) {
+                $subject = 'Reservation #' . $payload['booking_number'] . ' — Kigali Drive Rentals';
+                $externalUrl = 'mailto:' . $adminEmail
+                    . '?subject=' . rawurlencode($subject)
+                    . '&body=' . rawurlencode($message);
+
+                return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl, $flash);
+            }
+        }
+
+        if ($channel === 'form') {
             try {
                 $this->notifier->notifyAdmin($payload, $setting);
             } catch (\Throwable $e) {
@@ -154,17 +244,6 @@ class ReservationController extends Controller
             }
         }
 
-        if ($channel === 'whatsapp') {
-            $url = $this->channels->whatsappUrl($setting, $message);
-            session()->flash('booking_number', $payload['booking_number']);
-            session()->flash('reservation_message', $message);
-
-            return redirect()->away($url);
-        }
-
-        $route = $type === 'car' ? route('carDetails', $slug) : route('hotel', $slug);
-
-        return redirect($route)->with('success', 'Reservation submitted! Your booking number is #' . $payload['booking_number'] . '. Keep it for your review.')
-            ->with('booking_number', $payload['booking_number']);
+        return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, null, $flash);
     }
 }

@@ -85,6 +85,20 @@
         </script>
     @endif
 
+    @if (session('kdr_open_url'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var externalUrl = @json(session('kdr_open_url'));
+                if (externalUrl) {
+                    var opened = window.open(externalUrl, '_blank', 'noopener,noreferrer');
+                    if (!opened) {
+                        window.location.href = externalUrl;
+                    }
+                }
+            });
+        </script>
+    @endif
+
     @if (session('error'))
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -512,6 +526,7 @@ modal Area
         });
     })();
     </script>
+    <script src="{{ asset('assets/js/kdr-channel-submit.js') }}" defer></script>
     @stack('scripts')
 
 </body>

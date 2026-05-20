@@ -62,7 +62,7 @@
                 @endif
 
                 @if($hasChannels)
-                <form action="{{ route('enquiries.store') }}" method="POST" class="contact-form2 bg-white rounded-3 p-4 shadow-sm kdr-enquiry-form">
+                <form action="{{ route('enquiries.store') }}" method="POST" class="contact-form2 bg-white rounded-3 p-4 shadow-sm kdr-enquiry-form kdr-channel-form">
                     @csrf
                     <input type="hidden" name="form_type" value="contact">
                     <div class="hp-field" aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden;">
@@ -71,8 +71,6 @@
                     </div>
 
                     <h5 class="sec-title mb-3">Send a message</h5>
-
-                    @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'contact'])
 
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -100,6 +98,9 @@
                         <div class="col-12">
                             <label class="form-label">Message *</label>
                             <textarea name="message" class="form-control" rows="5" required>{{ old('message') }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'contact'])
                         </div>
                         <div class="col-12">
                             <button type="submit" class="th-btn btn-kdr-primary">Submit</button>

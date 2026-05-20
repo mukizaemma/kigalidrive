@@ -11,11 +11,12 @@
     $overviewTagline = optional($about)->subTitle ?? 'Your trusted partner for mobility and housing in Rwanda';
     $overviewBodyRaw = optional($about)->welcomeMessage;
     $overviewBody = $overviewBodyRaw
-        ? \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($overviewBodyRaw))), 420)
+        ? \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($overviewBodyRaw))), 520)
         : 'At Kigali Drive Rentals, we connect you with quality vehicles and premium apartments in Kigali — with transparent pricing and professional service.';
     $overviewImage = ($about && $about->image1)
         ? asset('storage/images/about/' . ltrim($about->image1, '/'))
-        : null;
+        : asset('assets/img/bg/about_bg_1.jpg');
+    $overviewUsesFallbackImage = !($about && $about->image1);
     $journeyTitle = optional($about)->mission
         ? \Illuminate\Support\Str::limit(trim(strip_tags($about->mission)), 80)
         : 'Your Journey Starts With the Right Partner';
@@ -28,7 +29,21 @@
     $ctaBook = optional($about)->cta_book_url ?? route('apartments');
     $overviewImage2 = ($about && $about->image2)
         ? asset('storage/images/about/' . ltrim($about->image2, '/'))
-        : null;
+        : ($overviewUsesFallbackImage ? asset('assets/img/bg/about_bg_2.jpg') : null);
+    $highlightIcons = ['fa-car', 'fa-building', 'fa-tags', 'fa-location-dot'];
+    $introStats = [
+        ['icon' => 'fa-location-dot', 'value' => 'Kigali', 'label' => 'Rwanda HQ'],
+        ['icon' => 'fa-layer-group', 'value' => '2-in-1', 'label' => 'Cars & apartments'],
+    ];
+    if (!empty($googleReviews['rating'])) {
+        $introStats[] = [
+            'icon' => 'fa-star',
+            'value' => number_format($googleReviews['rating'], 1) . '★',
+            'label' => 'Google rating',
+        ];
+    } else {
+        $introStats[] = ['icon' => 'fa-headset', 'value' => '24/7', 'label' => 'Client support'];
+    }
     $highlights = [];
     if ($about && $about->WhyChooseUs) {
         $raw = strip_tags($about->WhyChooseUs);
@@ -56,19 +71,27 @@
     <div class="kdr-company-intro__bg" aria-hidden="true"></div>
     <div class="container position-relative">
         <div class="row align-items-center g-4 g-lg-5">
-            @if($overviewImage)
             <div class="col-lg-5">
                 <div class="kdr-company-intro__visual">
+                    <div class="kdr-company-intro__frame" aria-hidden="true"></div>
                     <div class="kdr-company-intro__media" style="background-image:url('{{ $overviewImage }}');" role="img" aria-label="{{ $overviewTitle }}"></div>
                     @if($overviewImage2)
                     <div class="kdr-company-intro__media kdr-company-intro__media--accent" style="background-image:url('{{ $overviewImage2 }}');" aria-hidden="true"></div>
                     @endif
                     <span class="kdr-company-intro__badge"><i class="fas fa-location-dot" aria-hidden="true"></i> Kigali, Rwanda</span>
+                    <ul class="kdr-company-intro__stats" role="list">
+                        @foreach($introStats as $stat)
+                        <li class="kdr-company-intro__stat">
+                            <span class="kdr-company-intro__stat-icon" aria-hidden="true"><i class="fas {{ $stat['icon'] }}"></i></span>
+                            <span class="kdr-company-intro__stat-value">{{ $stat['value'] }}</span>
+                            <span class="kdr-company-intro__stat-label">{{ $stat['label'] }}</span>
+                        </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
-            @endif
-            <div class="{{ $overviewImage ? 'col-lg-7' : 'col-lg-10 mx-auto' }}">
-                <div class="kdr-company-intro__content{{ $overviewImage ? '' : ' text-center mx-auto' }}">
+            <div class="col-lg-7">
+                <div class="kdr-company-intro__content">
                     <p class="kdr-overview-eyebrow mb-2"><span class="kdr-overview-eyebrow__line" aria-hidden="true"></span>About us</p>
                     <h2 id="kdr-overview-heading" class="kdr-overview-title">{{ $overviewTitle }}</h2>
                     @if($overviewTagline)
@@ -76,8 +99,11 @@
                     @endif
                     <p class="kdr-overview-text">{{ $overviewBody }}</p>
                     <ul class="kdr-overview-highlights" role="list">
-                        @foreach($highlights as $highlight)
-                        <li><i class="fas fa-check" aria-hidden="true"></i>{{ $highlight }}</li>
+                        @foreach($highlights as $index => $highlight)
+                        <li class="kdr-overview-highlight">
+                            <span class="kdr-overview-highlight__icon" aria-hidden="true"><i class="fas {{ $highlightIcons[$index % count($highlightIcons)] }}"></i></span>
+                            <span class="kdr-overview-highlight__text">{{ $highlight }}</span>
+                        </li>
                         @endforeach
                     </ul>
                     <div class="kdr-overview-actions">

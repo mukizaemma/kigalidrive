@@ -869,13 +869,11 @@
                     @php
                         $bookingChannels = app(\App\Services\SubmissionChannelService::class)->availableChannels($setting ?? null, 'booking');
                     @endphp
-                    <form action="{{ route('bookings.store') }}" method="POST" id="bookingForm">
+                    <form action="{{ route('bookings.store') }}" method="POST" id="bookingForm" class="kdr-channel-form">
                         @csrf
                         <input type="hidden" name="property_id" value="{{ $hotel->id }}" id="bookingPropertyId">
                         <input type="hidden" name="unit_id" value="" id="bookingUnitId">
 
-                        @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'booking'])
-                        
                         <div class="reserve-form-group">
                             <label for="check_in">Check-in date</label>
                             <input type="date" name="check_in" id="check_in" class="form-control" required min="{{ date('Y-m-d') }}" onchange="calculateTotal()">
@@ -952,6 +950,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'booking'])
                         
                         <button type="submit" class="btn-reserve" id="btnReserve" disabled @if(count($bookingChannels) === 0) title="No active contact channels" @endif>
                             <i class="fas fa-calendar-check me-2"></i>Book Now

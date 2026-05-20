@@ -459,16 +459,13 @@ Why Choose Stay Nets
                             @php
                                 $ctaChannels = app(\App\Services\SubmissionChannelService::class)->availableChannels($setting ?? null, 'contact');
                             @endphp
-                            <form id="ctaForm" method="POST" action="{{ route('enquiries.store') }}">
+                            <form id="ctaForm" method="POST" action="{{ route('enquiries.store') }}" class="kdr-channel-form">
                                 @csrf
                                 <input type="hidden" name="form_type" value="contact">
                                 <input type="hidden" name="subject" value="General enquiry">
                                 <div class="hp-field" aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden;">
                                     <input type="text" name="website_url" tabindex="-1" autocomplete="off">
                                 </div>
-                                @if(count($ctaChannels) > 0)
-                                    @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'contact'])
-                                @endif
                                 <div class="mb-3">
                                     <label class="form-label mb-1" style="font-weight: 600;">Full Name</label>
                                     <input type="text" name="names" class="form-control" placeholder="Your Name" required>
@@ -485,6 +482,9 @@ Why Choose Stay Nets
                                     <label class="form-label mb-1" style="font-weight: 600;">What are you looking for?</label>
                                     <textarea name="message" class="form-control" rows="4" placeholder="Tell us about your accommodation or tour plans..." required></textarea>
                                 </div>
+                                @if(count($ctaChannels) > 0)
+                                    @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'contact'])
+                                @endif
                                 <button type="submit" class="th-btn style3 w-100 mt-1">
                                     <i class="fas fa-paper-plane me-2"></i>Request a Custom Plan
                                 </button>

@@ -153,9 +153,13 @@
 
                     {{-- ================= DESCRIPTION ================= --}}
                     <h4 class="box-title mb-2">Advert Description</h4>
-                    <p class="box-text mb-30">
-                        {!! nl2br(e($car->description ?? 'No description available.')) !!}
-                    </p>
+                    <div class="box-text mb-30 kdr-rich-text">
+                        @if(filled($car->description))
+                            {!! strip_tags($car->description, '<p><br><ul><ol><li><strong><em><b><i><a><h2><h3><h4><span>') !!}
+                        @else
+                            <p class="text-muted mb-0">No description available.</p>
+                        @endif
+                    </div>
 
                     {{-- ================= CAR SPECIFICATIONS ================= --}}
                     <div class="tour-snapshot mb-4">
@@ -335,7 +339,7 @@
                 <h5 class="modal-title" id="carBookingModalLabel">Book {{ $car->name }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('reservations.car') }}" method="POST" id="carBookingForm" class="d-flex flex-column flex-grow-1 overflow-hidden">
+            <form action="{{ route('reservations.car') }}" method="POST" id="carBookingForm" class="kdr-channel-form d-flex flex-column flex-grow-1 overflow-hidden">
                 @csrf
                 <input type="hidden" name="car_id" value="{{ $car->id }}">
             <div class="modal-body">
@@ -368,9 +372,6 @@
                                 <option value="buy">Book for Purchase</option>
                             @endif
                         </select>
-                    </div>
-                    <div class="col-12">
-                        @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'booking'])
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Full Name <span class="text-danger">*</span></label>
@@ -434,14 +435,17 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label class="form-label">Pickup Date</label>
+                                <label class="form-label">Pickup Date <span class="text-danger rent-date-required d-none">*</span></label>
                                 <input type="date" name="pickup_date" id="pickup_date" 
                                        class="form-control" min="{{ date('Y-m-d') }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Drop-off Date</label>
+                                <label class="form-label">Drop-off Date <span class="text-danger rent-date-required d-none">*</span></label>
                                 <input type="date" name="dropoff_date" id="dropoff_date" 
                                        class="form-control" min="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="col-12">
+                                <p id="rental_period_summary" class="small text-muted mb-0 d-none" aria-live="polite"></p>
                             </div>
                         </div>
                     </div>
@@ -451,9 +455,9 @@
                         <label class="form-label">Your address</label>
                         <input type="text" name="full_address" class="form-control" value="{{ old('full_address') }}" placeholder="Pickup or home address">
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Time needed <span class="text-danger">*</span></label>
-                        <input type="text" name="time_needed" class="form-control" required value="{{ old('time_needed') }}" placeholder="e.g. 3 days from 15 May, or 10:00 AM viewing">
+                    <div class="col-md-6" id="time_needed_wrap">
+                        <label class="form-label" id="time_needed_label">When do you need the vehicle? <span class="text-danger time-needed-required">*</span></label>
+                        <input type="text" name="time_needed" id="time_needed" class="form-control" value="{{ old('time_needed') }}" placeholder="e.g. Within 2 weeks, or by end of month">
                     </div>
                     </div>
                     <div class="row mb-3">
@@ -468,9 +472,10 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Driver</label>
-                            <select name="with_driver" class="form-select">
-                                <option value="1">With driver</option>
-                                <option value="0">Self-drive</option>
+                            <select name="with_driver" class="form-select" required>
+                                <option value="" @selected(old('with_driver') === null || old('with_driver') === '')>Select driver preference</option>
+                                <option value="1" @selected((string) old('with_driver') === '1')>With driver</option>
+                                <option value="0" @selected((string) old('with_driver') === '0')>Self-drive</option>
                             </select>
                         </div>
                     </div>
@@ -479,11 +484,14 @@
                         <textarea name="additional_request" class="form-control" rows="3" placeholder="Special requests…">{{ old('additional_request') }}</textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary th-btn btn-kdr-primary">
-                        <i class="fa fa-send me-2"></i>Submit reservation
-                    </button>
+                <div class="modal-footer kdr-modal-footer--stacked">
+                    @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'booking'])
+                    <div class="kdr-modal-footer__actions">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary th-btn btn-kdr-primary">
+                            <i class="fa fa-send me-2"></i>Submit reservation
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -503,7 +511,64 @@ document.addEventListener('DOMContentLoaded', function () {
     const bookingType = document.getElementById('booking_type');
     const viewCarFields = document.getElementById('view_car_fields');
     const rentBuyFields = document.getElementById('rent_buy_fields');
-    
+    const timeNeededWrap = document.getElementById('time_needed_wrap');
+    const timeNeededInput = document.getElementById('time_needed');
+    const timeNeededLabel = document.getElementById('time_needed_label');
+    const timeNeededRequired = document.querySelector('.time-needed-required');
+    const rentalPeriodSummary = document.getElementById('rental_period_summary');
+    const rentDateRequiredMarkers = document.querySelectorAll('.rent-date-required');
+
+    function formatDisplayDate(isoDate) {
+        if (!isoDate) return '';
+        const parts = isoDate.split('-');
+        if (parts.length !== 3) return isoDate;
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return parseInt(parts[2], 10) + ' ' + months[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+    }
+
+    function formatRentalPeriod(pickup, dropoff) {
+        const start = new Date(pickup + 'T12:00:00');
+        const end = new Date(dropoff + 'T12:00:00');
+        let days = Math.round((end - start) / 86400000);
+        if (days < 1) days = 1;
+        const dayLabel = days === 1 ? '1 day' : days + ' days';
+        return dayLabel + ' (' + formatDisplayDate(pickup) + ' – ' + formatDisplayDate(dropoff) + ')';
+    }
+
+    function updateRentalPeriodSummary() {
+        const pickupDate = document.getElementById('pickup_date');
+        const dropoffDate = document.getElementById('dropoff_date');
+        if (!rentalPeriodSummary || !pickupDate || !dropoffDate) return;
+
+        if (bookingType?.value !== 'rent') {
+            rentalPeriodSummary.classList.add('d-none');
+            rentalPeriodSummary.textContent = '';
+            return;
+        }
+
+        if (!pickupDate.value || !dropoffDate.value) {
+            rentalPeriodSummary.classList.remove('d-none');
+            rentalPeriodSummary.textContent = 'Rental period will be calculated from your pickup and drop-off dates.';
+            return;
+        }
+
+        rentalPeriodSummary.classList.remove('d-none');
+        rentalPeriodSummary.innerHTML = '<strong>Rental period:</strong> ' + formatRentalPeriod(pickupDate.value, dropoffDate.value);
+    }
+
+    function syncDropoffMinDate() {
+        const pickupDate = document.getElementById('pickup_date');
+        const dropoffDate = document.getElementById('dropoff_date');
+        if (!pickupDate || !dropoffDate) return;
+        if (pickupDate.value) {
+            dropoffDate.min = pickupDate.value;
+            if (dropoffDate.value && dropoffDate.value < pickupDate.value) {
+                dropoffDate.value = pickupDate.value;
+            }
+        }
+        updateRentalPeriodSummary();
+    }
+
     function toggleBookingFields() {
         if (!bookingType || !viewCarFields || !rentBuyFields) {
             console.error('Booking form elements not found');
@@ -554,11 +619,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 preferredTime.removeAttribute('required');
                 preferredTime.setAttribute('aria-required', 'false');
             }
+            rentDateRequiredMarkers.forEach(function (el) { el.classList.add('d-none'); });
+            if (rentalPeriodSummary) rentalPeriodSummary.classList.add('d-none');
+            if (timeNeededWrap) timeNeededWrap.classList.add('d-none');
+            if (timeNeededInput) {
+                timeNeededInput.required = false;
+                timeNeededInput.removeAttribute('required');
+                timeNeededInput.value = '';
+            }
         } else if (type === 'rent') {
             rentBuyFields.classList.remove('d-none');
             rentBuyFields.classList.add('show');
             rentBuyFields.style.display = 'block';
-            
+            rentDateRequiredMarkers.forEach(function (el) { el.classList.remove('d-none'); });
+
             if (pickupDate) {
                 pickupDate.required = true;
                 pickupDate.setAttribute('required', 'required');
@@ -569,12 +643,48 @@ document.addEventListener('DOMContentLoaded', function () {
                 dropoffDate.setAttribute('required', 'required');
                 dropoffDate.setAttribute('aria-required', 'true');
             }
+            if (timeNeededWrap) timeNeededWrap.classList.add('d-none');
+            if (timeNeededInput) {
+                timeNeededInput.required = false;
+                timeNeededInput.removeAttribute('required');
+                timeNeededInput.value = '';
+            }
+            syncDropoffMinDate();
         } else if (type === 'buy') {
             rentBuyFields.classList.remove('d-none');
             rentBuyFields.classList.add('show');
             rentBuyFields.style.display = 'block';
+            rentDateRequiredMarkers.forEach(function (el) { el.classList.add('d-none'); });
+            if (rentalPeriodSummary) rentalPeriodSummary.classList.add('d-none');
+            if (timeNeededWrap) timeNeededWrap.classList.remove('d-none');
+            if (timeNeededLabel) timeNeededLabel.innerHTML = 'When do you need the vehicle? <span class="text-danger time-needed-required">*</span>';
+            if (timeNeededInput) {
+                timeNeededInput.required = true;
+                timeNeededInput.setAttribute('required', 'required');
+                timeNeededInput.placeholder = 'e.g. Within 2 weeks, or by end of month';
+            }
+        } else {
+            rentDateRequiredMarkers.forEach(function (el) { el.classList.add('d-none'); });
+            if (rentalPeriodSummary) rentalPeriodSummary.classList.add('d-none');
+            if (timeNeededWrap) timeNeededWrap.classList.add('d-none');
+            if (timeNeededInput) {
+                timeNeededInput.required = false;
+                timeNeededInput.removeAttribute('required');
+                timeNeededInput.value = '';
+            }
+        }
+
+        if (type === 'view_car') {
+            if (timeNeededRequired) timeNeededRequired.classList.add('d-none');
+        } else if (type === 'buy') {
+            if (timeNeededRequired) timeNeededRequired.classList.remove('d-none');
         }
     }
+
+    const pickupDateEl = document.getElementById('pickup_date');
+    const dropoffDateEl = document.getElementById('dropoff_date');
+    if (pickupDateEl) pickupDateEl.addEventListener('change', syncDropoffMinDate);
+    if (dropoffDateEl) dropoffDateEl.addEventListener('change', updateRentalPeriodSummary);
     
     // Set up event listener
     if (bookingType) {
@@ -620,19 +730,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Form submission handling
+    // Reset form on modal close if successful
     const bookingForm = document.getElementById('carBookingForm');
     if (bookingForm) {
-        bookingForm.addEventListener('submit', function(e) {
-            // Don't prevent default - let form submit naturally
-            const submitButton = this.querySelector('button[type="submit"]');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>Submitting...';
-            }
-        });
-        
-        // Reset form on modal close if successful
         const bookingModal = document.getElementById('carBookingModal');
         if (bookingModal) {
             bookingModal.addEventListener('hidden.bs.modal', function () {

@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Mail\AdminNotification;
 use App\Models\Enquiry;
 use App\Models\Setting;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class EnquirySubmissionService
@@ -44,13 +46,14 @@ class EnquirySubmissionService
     }
 
     public function storeAndDispatch(
+        Request $request,
         Setting $setting,
         string $formType,
         string $channel,
         array $payload,
         string $redirectRoute,
         array $redirectParams = []
-    ): RedirectResponse {
+    ): JsonResponse|RedirectResponse {
         $context = $formType === Enquiry::FORM_CONTACT ? 'contact' : 'booking';
         $this->channels->assertAnyChannelActive($setting, $context);
         $this->channels->assertChannelActive($setting, $channel, $context);
@@ -73,19 +76,33 @@ class EnquirySubmissionService
             'status' => 'pending',
         ]);
 
-        if (in_array($channel, ['email', 'form'], true)) {
-            $this->notifyAdmin($setting, $payload, $messageText, $context);
-        }
+        $redirectUrl = route($redirectRoute, $redirectParams);
+        $successMessage = 'Thank you! Your message was received. Reference #' . $enquiry->id . ' — we will respond shortly.';
 
         if ($channel === 'whatsapp') {
-            $url = $this->channels->whatsappUrl($setting, $messageText);
-            if ($url) {
-                return redirect()->away($url);
+            $externalUrl = $this->channels->whatsappUrl($setting, $messageText);
+            if ($externalUrl) {
+                return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl);
             }
         }
 
-        return redirect()->route($redirectRoute, $redirectParams)
-            ->with('success', 'Thank you! Your message was received. Reference #' . $enquiry->id . ' — we will respond shortly.');
+        if ($channel === 'email') {
+            $adminEmail = $this->channels->adminEmail($setting, $context);
+            if ($adminEmail) {
+                $subject = ($payload['form_label'] ?? 'Enquiry') . ' — Kigali Drive Rentals';
+                $externalUrl = 'mailto:' . $adminEmail
+                    . '?subject=' . rawurlencode($subject)
+                    . '&body=' . rawurlencode($messageText);
+
+                return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl);
+            }
+        }
+
+        if ($channel === 'form') {
+            $this->notifyAdmin($setting, $payload, $messageText, $context);
+        }
+
+        return $this->channels->submissionResponse($request, $redirectUrl, $successMessage);
     }
 
     protected function notifyAdmin(Setting $setting, array $payload, string $body, string $context): void

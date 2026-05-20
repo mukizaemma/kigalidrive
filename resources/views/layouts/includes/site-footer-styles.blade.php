@@ -241,17 +241,21 @@
 
         .footer-book-cta__buttons {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
             gap: 0.5rem;
         }
 
         .footer-book-btn.th-btn {
-            width: 100%;
+            width: auto;
+            flex: 0 0 auto;
             justify-content: center;
-            border-radius: 10px;
-            padding: 0.7rem 1.15rem;
-            font-size: 0.92rem;
+            border-radius: 999px;
+            padding: 0.45rem 0.95rem;
+            font-size: 0.8rem;
             font-weight: 700;
+            white-space: nowrap;
             box-shadow: none;
         }
 

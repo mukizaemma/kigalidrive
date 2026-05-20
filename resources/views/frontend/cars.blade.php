@@ -129,7 +129,7 @@
                 <h5 class="modal-title" id="carRentalRequestModalLabel">Request a Car Rental</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('enquiries.store') }}" method="POST" class="d-flex flex-column flex-grow-1 overflow-hidden">
+            <form action="{{ route('enquiries.store') }}" method="POST" class="kdr-channel-form d-flex flex-column flex-grow-1 overflow-hidden">
                 @csrf
                 <input type="hidden" name="form_type" value="car_enquiry">
                 <input type="hidden" name="subject" value="Car rental enquiry">
@@ -137,7 +137,6 @@
                     <input type="text" name="website_url" tabindex="-1" autocomplete="off">
                 </div>
                 <div class="modal-body">
-                    @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'booking'])
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label class="form-label">Full Name <span class="text-danger">*</span></label>
@@ -175,9 +174,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-kdr-primary th-btn">Submit Request</button>
+                <div class="modal-footer kdr-modal-footer--stacked">
+                    @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'booking'])
+                    <div class="kdr-modal-footer__actions">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-kdr-primary th-btn">Submit Request</button>
+                    </div>
                 </div>
             </form>
         </div>

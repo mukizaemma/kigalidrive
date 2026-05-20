@@ -227,6 +227,24 @@ body.kigali-drive .modal-dialog.kdr-modal-landscape .modal-footer {
     gap: 0.5rem;
 }
 
+body.kigali-drive .modal-footer.kdr-modal-footer--stacked {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+body.kigali-drive .kdr-modal-footer--stacked .kdr-channel-picker {
+    margin-bottom: 0;
+    width: 100%;
+}
+
+body.kigali-drive .kdr-modal-footer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
 body.kigali-drive .modal-dialog.kdr-modal-landscape .form-label {
     font-size: 0.875rem;
     font-weight: 600;
@@ -365,6 +383,27 @@ body.kigali-drive .kdr-channel-option__label {
     font-weight: 600;
     font-size: 0.9rem;
     color: var(--kdr-navy);
+}
+
+body.kigali-drive .kdr-channel-picker.is-invalid .kdr-channel-picker__options {
+    outline: 2px solid #dc3545;
+    outline-offset: 4px;
+    border-radius: 10px;
+}
+
+body.kigali-drive .kdr-rich-text ul,
+body.kigali-drive .kdr-rich-text ol {
+    margin: 0.5rem 0 0.5rem 1.25rem;
+    padding: 0;
+}
+
+body.kigali-drive .kdr-rich-text li + li {
+    margin-top: 0.35rem;
+}
+
+body.kigali-drive .kdr-rich-text p:last-child,
+body.kigali-drive .kdr-rich-text ul:last-child {
+    margin-bottom: 0;
 }
 
 body.kigali-drive .kdr-enquiry-form .hp-field {
@@ -1068,7 +1107,7 @@ body.kigali-drive .kdr-hero-slide-copy {
 }
 
 body.kigali-drive .kdr-hero-slide-inner {
-    max-width: 640px;
+    max-width: min(52rem, 100%);
 }
 
 body.kigali-drive .kdr-hero-badge {
@@ -1091,9 +1130,10 @@ body.kigali-drive .kdr-hero-slide-title {
     font-size: clamp(2.1rem, 5.2vw, 3.6rem);
     font-weight: 800;
     color: #fff;
-    line-height: 1.1;
+    line-height: 1.15;
     margin: 0 0 1rem;
-    max-width: 14ch;
+    max-width: min(42rem, 100%);
+    text-wrap: balance;
 }
 
 body.kigali-drive .kdr-hero-slide-sub {
@@ -1212,8 +1252,8 @@ body.kigali-drive .kdr-hero-nav:hover {
 /* Company intro below hero */
 body.kigali-drive .kdr-company-intro {
     position: relative;
-    padding: clamp(3.5rem, 7vw, 5rem) 0;
-    background: var(--kdr-cream);
+    padding: clamp(3.5rem, 7vw, 5.5rem) 0;
+    background: linear-gradient(180deg, #fff 0%, var(--kdr-cream) 18%, var(--kdr-cream) 100%);
     overflow: hidden;
 }
 
@@ -1221,19 +1261,39 @@ body.kigali-drive .kdr-company-intro__bg {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 80% 60% at 0% 50%, rgba(197, 160, 89, 0.12) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 40% at 100% 0%, rgba(10, 29, 55, 0.06) 0%, transparent 50%);
+        radial-gradient(ellipse 70% 55% at 8% 40%, rgba(197, 160, 89, 0.16) 0%, transparent 58%),
+        radial-gradient(ellipse 45% 35% at 92% 12%, rgba(10, 29, 55, 0.07) 0%, transparent 52%),
+        repeating-linear-gradient(
+            -12deg,
+            transparent,
+            transparent 48px,
+            rgba(10, 29, 55, 0.018) 48px,
+            rgba(10, 29, 55, 0.018) 49px
+        );
     pointer-events: none;
 }
 
 body.kigali-drive .kdr-company-intro__visual {
     position: relative;
-    padding: 0 0 1.5rem 1.5rem;
+    padding: 0 0 2.5rem 1.25rem;
+}
+
+body.kigali-drive .kdr-company-intro__frame {
+    position: absolute;
+    top: 1.25rem;
+    left: 0;
+    right: 1.5rem;
+    bottom: 2.75rem;
+    border-radius: calc(var(--kdr-radius) + 4px);
+    border: 2px solid rgba(197, 160, 89, 0.45);
+    z-index: 0;
 }
 
 body.kigali-drive .kdr-company-intro__media {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    min-height: 320px;
+    min-height: 360px;
     border-radius: var(--kdr-radius);
     background-size: cover;
     background-position: center;
@@ -1244,40 +1304,93 @@ body.kigali-drive .kdr-company-intro__media {
 body.kigali-drive .kdr-company-intro__media--accent {
     position: absolute;
     right: 0;
-    bottom: 0;
-    width: 42%;
-    min-height: 140px;
+    bottom: 2.5rem;
+    width: 44%;
+    min-height: 150px;
     border-radius: 12px;
     border: 3px solid var(--kdr-gold);
-    box-shadow: 0 8px 28px rgba(10, 29, 55, 0.2);
+    box-shadow: 0 10px 32px rgba(10, 29, 55, 0.22);
+    z-index: 2;
 }
 
 body.kigali-drive .kdr-company-intro__badge {
     position: absolute;
-    top: 1rem;
-    left: 0;
+    top: 1.25rem;
+    left: -0.25rem;
+    z-index: 3;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.45rem 0.85rem;
+    padding: 0.5rem 0.95rem;
     background: var(--kdr-navy);
     color: #fff;
     font-size: 0.78rem;
     font-weight: 700;
     border-radius: 999px;
-    box-shadow: 0 4px 16px rgba(10, 29, 55, 0.25);
+    box-shadow: 0 6px 20px rgba(10, 29, 55, 0.28);
 }
 
 body.kigali-drive .kdr-company-intro__badge i {
     color: var(--kdr-gold-light);
 }
 
-body.kigali-drive .kdr-company-intro__content {
-    max-width: 640px;
+body.kigali-drive .kdr-company-intro__stats {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    list-style: none;
+    margin: 0;
+    padding: 0 0.5rem;
+    display: flex;
+    gap: 0.65rem;
 }
 
-body.kigali-drive .kdr-company-intro__content.text-center {
-    max-width: 720px;
+body.kigali-drive .kdr-company-intro__stat {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+    padding: 0.75rem 0.85rem;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid rgba(10, 29, 55, 0.08);
+    box-shadow: 0 8px 24px rgba(10, 29, 55, 0.1);
+}
+
+body.kigali-drive .kdr-company-intro__stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 8px;
+    background: rgba(197, 160, 89, 0.18);
+    color: var(--kdr-gold-dark);
+    font-size: 0.8rem;
+    margin-bottom: 0.15rem;
+}
+
+body.kigali-drive .kdr-company-intro__stat-value {
+    font-family: var(--kdr-display);
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1.1;
+    color: var(--kdr-navy);
+}
+
+body.kigali-drive .kdr-company-intro__stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--kdr-slate);
+    line-height: 1.2;
+}
+
+body.kigali-drive .kdr-company-intro__content {
+    max-width: 100%;
 }
 
 body.kigali-drive .kdr-overview-eyebrow {
@@ -1325,27 +1438,47 @@ body.kigali-drive .kdr-overview-text {
 body.kigali-drive .kdr-overview-highlights {
     list-style: none;
     padding: 0;
-    margin: 0 0 1.5rem;
+    margin: 0 0 1.75rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.65rem 1rem;
+    gap: 0.75rem;
 }
 
-body.kigali-drive .kdr-overview-highlights li {
+body.kigali-drive .kdr-overview-highlight {
     display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: var(--kdr-navy);
-    line-height: 1.35;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: #fff;
+    border: 1px solid rgba(10, 29, 55, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(10, 29, 55, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-body.kigali-drive .kdr-overview-highlights li i {
+body.kigali-drive .kdr-overview-highlight:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(10, 29, 55, 0.1);
+}
+
+body.kigali-drive .kdr-overview-highlight__icon {
     flex-shrink: 0;
-    margin-top: 0.15rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(197, 160, 89, 0.22) 0%, rgba(197, 160, 89, 0.08) 100%);
     color: var(--kdr-gold-dark);
-    font-size: 0.75rem;
+    font-size: 0.95rem;
+}
+
+body.kigali-drive .kdr-overview-highlight__text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--kdr-navy);
+    line-height: 1.3;
 }
 
 body.kigali-drive .kdr-overview-actions {
@@ -1474,27 +1607,36 @@ body.kigali-drive .kdr-home-reviews blockquote:last-of-type {
 }
 
 @media (max-width: 991px) {
-    body.kigali-drive .kdr-hero-slide-title {
-        max-width: none;
-    }
-
     body.kigali-drive .kdr-hero-nav-wrap {
         right: 1rem;
         bottom: 3.5rem;
     }
 
     body.kigali-drive .kdr-company-intro__visual {
-        padding: 0;
+        padding: 0 0 2rem;
         margin-bottom: 0.5rem;
     }
 
+    body.kigali-drive .kdr-company-intro__frame {
+        display: none;
+    }
+
     body.kigali-drive .kdr-company-intro__media {
-        min-height: 240px;
+        min-height: 260px;
     }
 
     body.kigali-drive .kdr-company-intro__media--accent {
-        width: 38%;
-        min-height: 110px;
+        width: 40%;
+        min-height: 120px;
+        bottom: 2rem;
+    }
+
+    body.kigali-drive .kdr-company-intro__stats {
+        flex-wrap: wrap;
+    }
+
+    body.kigali-drive .kdr-company-intro__stat {
+        flex: 1 1 calc(33.333% - 0.5rem);
     }
 
     body.kigali-drive .kdr-overview-highlights {

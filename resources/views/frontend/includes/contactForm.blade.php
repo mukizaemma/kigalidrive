@@ -15,7 +15,7 @@
             <div class="col-lg-6">
                 <div>
                     @if(count($contactChannels) > 0)
-                    <form class="contact-form2 ajax-contacts kdr-enquiry-form" action="{{ route('enquiries.store') }}" method="POST" novalidate>
+                    <form class="contact-form2 ajax-contacts kdr-enquiry-form kdr-channel-form" action="{{ route('enquiries.store') }}" method="POST" novalidate>
                         @csrf
                         <input type="hidden" name="form_type" value="contact">
                         <input type="hidden" name="subject" value="General enquiry">
@@ -33,8 +33,6 @@
                             Or call/WhatsApp us at <a href="tel:{{ $setting->phone }}">{{ $setting->phone }}</a>.
                             @endif
                         </p>
-
-                        @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'contact'])
 
                         <div class="row">
                             <div class="form-group col-12">
@@ -55,6 +53,10 @@
                             <div class="col-lg-6 col-sm-12 form-group">
                                 <input type="tel" class="form-control" name="phone" id="phone" placeholder="Phone (WhatsApp number preferred)" aria-label="Phone" value="{{ old('phone') }}" inputmode="tel" required>
                                 <img src="{{ asset('assets/img/icon/phone.svg') }}" alt="">
+                            </div>
+
+                            <div class="col-12">
+                                @include('frontend.partials.kdr-submission-channels', ['channelContext' => 'contact'])
                             </div>
 
                             <div class="form-btn col-12 mt-24">

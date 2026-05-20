@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Models\Setting;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class SubmissionChannelService
@@ -104,5 +107,36 @@ class SubmissionChannelService
         $digits = preg_replace('/\D+/', '', $phone);
 
         return $digits !== '' ? 'https://wa.me/' . $digits . '?text=' . rawurlencode($message) : null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $flash
+     */
+    public function submissionResponse(
+        Request $request,
+        string $redirectUrl,
+        string $successMessage,
+        ?string $externalUrl = null,
+        array $flash = []
+    ): JsonResponse|RedirectResponse {
+        foreach ($flash as $key => $value) {
+            session()->flash($key, $value);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $successMessage,
+                'open_url' => $externalUrl,
+                'redirect' => $redirectUrl,
+            ]);
+        }
+
+        $redirect = redirect()->to($redirectUrl)->with('success', $successMessage);
+        if ($externalUrl) {
+            session()->flash('kdr_open_url', $externalUrl);
+        }
+
+        return $redirect;
     }
 }

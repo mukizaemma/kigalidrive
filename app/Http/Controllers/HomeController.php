@@ -837,7 +837,43 @@ public function storeBooking(Request $request)
     // Load relationships for email
     $booking->load(['property', 'unit', 'property.owner', 'bookingExtras']);
 
-    if (in_array($request->channel, ['email', 'form'], true)) {
+    $waMessage = implode("\n", array_filter([
+        'Kigali Drive Rentals — Apartment booking request',
+        'Reference: ' . $referenceNumber,
+        'Property: ' . ($property->name ?? '—'),
+        'Unit: ' . ($unit->name ?? '—'),
+        'Check-in: ' . $request->check_in,
+        'Check-out: ' . $request->check_out,
+        'Guests: ' . $request->guests_count,
+        'Name: ' . $request->guest_name,
+        'Email: ' . $request->guest_email,
+        $request->guest_phone ? 'Phone: ' . $request->guest_phone : null,
+        $request->special_requests ? 'Requests: ' . $request->special_requests : null,
+    ]));
+
+    $redirectUrl = route('hotel', $property->slug);
+    $successMessage = 'Your availability request has been received. Reference: ' . $referenceNumber . '. We will check availability and contact you to confirm your booking.';
+
+    if ($request->channel === 'whatsapp') {
+        $externalUrl = $channels->whatsappUrl($setting, $waMessage);
+        if ($externalUrl) {
+            return $channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl);
+        }
+    }
+
+    if ($request->channel === 'email') {
+        $adminEmail = $channels->adminEmail($setting, 'booking');
+        if ($adminEmail) {
+            $subject = 'Apartment booking #' . $referenceNumber . ' — Kigali Drive Rentals';
+            $externalUrl = 'mailto:' . $adminEmail
+                . '?subject=' . rawurlencode($subject)
+                . '&body=' . rawurlencode($waMessage);
+
+            return $channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl);
+        }
+    }
+
+    if ($request->channel === 'form') {
         $notificationRecipients = array_filter([config('mail.admin_email')]);
         if ($booking->property && $booking->property->owner && $booking->property->owner->email) {
             $ownerEmail = $booking->property->owner->email;
@@ -863,30 +899,7 @@ public function storeBooking(Request $request)
         }
     }
 
-    if ($request->channel === 'whatsapp') {
-        $waMessage = implode("\n", array_filter([
-            'Kigali Drive Rentals — Apartment booking request',
-            'Reference: ' . $referenceNumber,
-            'Property: ' . ($property->name ?? '—'),
-            'Unit: ' . ($unit->name ?? '—'),
-            'Check-in: ' . $request->check_in,
-            'Check-out: ' . $request->check_out,
-            'Guests: ' . $request->guests_count,
-            'Name: ' . $request->guest_name,
-            'Email: ' . $request->guest_email,
-            $request->guest_phone ? 'Phone: ' . $request->guest_phone : null,
-            $request->special_requests ? 'Requests: ' . $request->special_requests : null,
-        ]));
-        $url = $channels->whatsappUrl($setting, $waMessage);
-        if ($url) {
-            return redirect()->away($url);
-        }
-    }
-
-    return redirect()->route('hotel', $property->slug)->with(
-        'success',
-        'Your availability request has been received. Reference: ' . $referenceNumber . '. We will check availability and contact you to confirm your booking.'
-    );
+    return $channels->submissionResponse($request, $redirectUrl, $successMessage);
 }
 
 /**
@@ -1717,7 +1730,7 @@ public function bookNow(Request $request)
         $request->merge([
             'form_type' => \App\Models\Enquiry::FORM_CONTACT,
             'phone' => $request->input('phone') ?: null,
-            'channel' => $request->input('channel', array_key_first($available)),
+            'channel' => $request->input('channel'),
         ]);
 
         return app(EnquiryController::class)->store($request);

@@ -69,6 +69,7 @@ class EnquiryController extends Controller
         };
 
         return $this->submitter->storeAndDispatch(
+            $request,
             $setting,
             $validated['form_type'],
             $validated['channel'],

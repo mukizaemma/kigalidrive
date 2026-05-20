@@ -25,7 +25,28 @@ class ReservationNotificationService
         if (!empty($data['product_label'])) {
             $lines[] = 'Product: ' . $data['product_label'];
         }
-        if (!empty($data['additional_request'])) {
+        if (! empty($data['rental_duration'])) {
+            $lines[] = 'Rental duration: ' . $data['rental_duration'];
+        }
+        if (array_key_exists('with_driver', $data) && $data['with_driver'] !== null && $data['with_driver'] !== '') {
+            $withDriver = filter_var($data['with_driver'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($withDriver !== null) {
+                $lines[] = 'Driver: ' . ($withDriver ? 'With driver' : 'Self-drive');
+            }
+        }
+        if (! empty($data['pickup_date'])) {
+            $lines[] = 'Pickup date: ' . $data['pickup_date'];
+        }
+        if (! empty($data['dropoff_date'])) {
+            $lines[] = 'Drop-off date: ' . $data['dropoff_date'];
+        }
+        if (! empty($data['preferred_date'])) {
+            $lines[] = 'Preferred viewing date: ' . $data['preferred_date'];
+        }
+        if (! empty($data['preferred_time'])) {
+            $lines[] = 'Preferred viewing time: ' . $data['preferred_time'];
+        }
+        if (! empty($data['additional_request'])) {
             $lines[] = 'Additional request: ' . $data['additional_request'];
         }
 
