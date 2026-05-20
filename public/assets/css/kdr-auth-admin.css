@@ -1,0 +1,442 @@
+/**
+ * Kigali Drive Rentals — auth pages & admin dashboard brand layer
+ */
+:root {
+    --kdr-navy: #0a1d37;
+    --kdr-navy-dark: #001f3f;
+    --kdr-navy-mid: #122a4d;
+    --kdr-gold: #c5a059;
+    --kdr-gold-dark: #b8860b;
+    --kdr-gold-light: #d4b87a;
+    --kdr-cream: #f8f6f2;
+    --kdr-slate: #5a6472;
+    --kdr-font: "DM Sans", "Heebo", system-ui, sans-serif;
+    --kdr-display: "Outfit", "Heebo", sans-serif;
+}
+
+/* ========== Auth pages ========== */
+body.kdr-auth {
+    font-family: var(--kdr-font);
+    background: var(--kdr-cream);
+    color: var(--kdr-navy);
+}
+
+body.kdr-auth .font-sans {
+    font-family: var(--kdr-font);
+}
+
+body.kdr-auth .kdr-auth-page {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 0 20px 48px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: stretch;
+}
+
+body.kdr-auth .kdr-auth-hero {
+    flex: 1 1 320px;
+    min-height: 420px;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    background: var(--kdr-navy-dark);
+}
+
+body.kdr-auth .kdr-auth-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.92;
+}
+
+body.kdr-auth .kdr-auth-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, rgba(0, 31, 63, 0.88) 0%, rgba(10, 29, 55, 0.55) 100%);
+}
+
+body.kdr-auth .kdr-auth-hero__content {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+    color: #fff;
+}
+
+body.kdr-auth .kdr-auth-hero__content h2 {
+    font-family: var(--kdr-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+}
+
+body.kdr-auth .kdr-auth-panel {
+    flex: 1 1 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.kdr-auth .kdr-auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.75rem;
+    box-shadow: 0 16px 48px rgba(10, 29, 55, 0.1);
+    border: 1px solid rgba(10, 29, 55, 0.06);
+}
+
+body.kdr-auth .kdr-auth-card__title {
+    font-family: var(--kdr-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--kdr-navy);
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+body.kdr-auth .kdr-auth-card__subtitle {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--kdr-slate);
+    margin-bottom: 1.25rem;
+}
+
+body.kdr-auth .kdr-auth-simple-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+}
+
+body.kdr-auth .kdr-auth-simple-card {
+    width: 100%;
+    max-width: 440px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 16px 48px rgba(10, 29, 55, 0.1);
+}
+
+body.kdr-auth label {
+    color: var(--kdr-navy);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+body.kdr-auth input[type="email"],
+body.kdr-auth input[type="password"],
+body.kdr-auth input[type="text"],
+body.kdr-auth input[type="tel"] {
+    border-radius: 10px !important;
+    border-color: rgba(10, 29, 55, 0.15) !important;
+}
+
+body.kdr-auth input:focus {
+    border-color: var(--kdr-gold) !important;
+    box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.22) !important;
+    outline: none !important;
+}
+
+body.kdr-auth .kdr-link {
+    color: var(--kdr-gold-dark);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+body.kdr-auth .kdr-link:hover {
+    color: var(--kdr-navy);
+    text-decoration: underline;
+}
+
+body.kdr-auth .kdr-btn:focus,
+body.kdr-auth button.kdr-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.35);
+}
+
+body.kdr-auth .kdr-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.7rem 1.25rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+body.kdr-auth .kdr-btn-primary {
+    background: linear-gradient(135deg, var(--kdr-gold) 0%, var(--kdr-gold-dark) 100%);
+    color: var(--kdr-navy-dark) !important;
+    box-shadow: 0 6px 20px rgba(197, 160, 89, 0.35);
+}
+
+body.kdr-auth .kdr-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(197, 160, 89, 0.45);
+    color: var(--kdr-navy-dark) !important;
+}
+
+body.kdr-auth .kdr-btn-outline {
+    background: transparent;
+    color: var(--kdr-navy) !important;
+    border: 2px solid var(--kdr-gold);
+}
+
+body.kdr-auth .kdr-btn-outline:hover {
+    background: rgba(197, 160, 89, 0.1);
+}
+
+body.kdr-auth .kdr-btn-muted {
+    background: #e8eaed;
+    color: var(--kdr-navy) !important;
+}
+
+body.kdr-auth .kdr-btn-muted:hover {
+    background: #dde1e6;
+}
+
+body.kdr-auth .kdr-btn.w-full,
+body.kdr-auth .kdr-btn-block {
+    width: 100%;
+}
+
+body.kdr-auth .kdr-register-banner {
+    background: linear-gradient(160deg, var(--kdr-navy-dark), var(--kdr-navy-mid));
+}
+
+body.kdr-auth .text-indigo-600,
+body.kdr-auth .text-indigo-500 {
+    color: var(--kdr-gold-dark) !important;
+}
+
+body.kdr-auth .hover\:text-indigo-800:hover,
+body.kdr-auth .hover\:text-indigo-500:hover {
+    color: var(--kdr-navy) !important;
+}
+
+body.kdr-auth .border-indigo-600 {
+    border-color: var(--kdr-gold) !important;
+}
+
+body.kdr-auth .hover\:bg-indigo-50:hover {
+    background: rgba(197, 160, 89, 0.1) !important;
+}
+
+body.kdr-auth .bg-indigo-600 {
+    background: var(--kdr-navy) !important;
+}
+
+body.kdr-auth .bg-indigo-100 {
+    background: rgba(197, 160, 89, 0.15) !important;
+}
+
+body.kdr-auth .focus\:ring-indigo-500:focus {
+    --tw-ring-color: rgba(197, 160, 89, 0.45) !important;
+}
+
+body.kdr-auth .focus\:border-indigo-500:focus {
+    border-color: var(--kdr-gold) !important;
+}
+
+body.kdr-auth button.inline-flex.bg-gray-800,
+body.kdr-auth .bg-dark {
+    background: linear-gradient(135deg, var(--kdr-gold), var(--kdr-gold-dark)) !important;
+    color: var(--kdr-navy-dark) !important;
+}
+
+body.kdr-auth button.inline-flex.hover\:bg-gray-700:hover,
+body.kdr-auth .hover\:bg-indigo-900:hover {
+    background: linear-gradient(135deg, var(--kdr-gold-light), var(--kdr-gold)) !important;
+}
+
+/* ========== Admin dashboard ========== */
+body.kdr-admin {
+    --primary: #c5a059;
+    --secondary: #0a1d37;
+    --light: #f3f6f9;
+    --dark: #0a1d37;
+    font-family: var(--kdr-font);
+}
+
+body.kdr-admin .text-primary {
+    color: var(--kdr-gold) !important;
+}
+
+body.kdr-admin .bg-primary {
+    background-color: var(--kdr-gold) !important;
+}
+
+body.kdr-admin .border-primary {
+    border-color: var(--kdr-gold) !important;
+}
+
+body.kdr-admin .btn-primary {
+    color: var(--kdr-navy-dark) !important;
+    background: linear-gradient(135deg, var(--kdr-gold), var(--kdr-gold-dark)) !important;
+    border: none !important;
+    font-weight: 600;
+}
+
+body.kdr-admin .btn-primary:hover,
+body.kdr-admin .btn-primary:focus {
+    color: #fff !important;
+    background: linear-gradient(135deg, var(--kdr-navy), var(--kdr-navy-mid)) !important;
+    box-shadow: 0 4px 14px rgba(10, 29, 55, 0.25);
+}
+
+body.kdr-admin .btn-outline-primary {
+    color: var(--kdr-navy) !important;
+    border-color: var(--kdr-gold) !important;
+}
+
+body.kdr-admin .btn-outline-primary:hover {
+    background: var(--kdr-gold) !important;
+    color: var(--kdr-navy-dark) !important;
+}
+
+body.kdr-admin .spinner-border.text-primary {
+    color: var(--kdr-gold) !important;
+}
+
+body.kdr-admin .sidebar {
+    background: linear-gradient(180deg, var(--kdr-navy-dark) 0%, var(--kdr-navy) 100%);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+}
+
+body.kdr-admin .sidebar .navbar {
+    background: transparent !important;
+}
+
+body.kdr-admin .sidebar .navbar h6 {
+    color: #fff;
+    font-family: var(--kdr-display);
+    font-weight: 700;
+}
+
+body.kdr-admin .sidebar .navbar .text-muted {
+    color: rgba(255, 255, 255, 0.45) !important;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+}
+
+body.kdr-admin .sidebar .navbar-nav hr {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.kdr-admin .sidebar .navbar .nav-link {
+    color: rgba(255, 255, 255, 0.82);
+    border-left-color: transparent;
+}
+
+body.kdr-admin .sidebar .navbar .nav-link i {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--kdr-gold-light);
+}
+
+body.kdr-admin .sidebar .navbar .nav-link:hover,
+body.kdr-admin .sidebar .navbar .nav-link.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+    border-left-color: var(--kdr-gold);
+}
+
+body.kdr-admin .sidebar .navbar .nav-link:hover i,
+body.kdr-admin .sidebar .navbar .nav-link.active i {
+    background: rgba(197, 160, 89, 0.2);
+    color: var(--kdr-gold-light);
+}
+
+body.kdr-admin .content > .navbar,
+body.kdr-admin .content .navbar.bg-light {
+    background: #fff !important;
+    border-bottom: 1px solid rgba(10, 29, 55, 0.08);
+    box-shadow: 0 2px 12px rgba(10, 29, 55, 0.04);
+}
+
+body.kdr-admin .content .navbar .nav-link {
+    color: var(--kdr-navy);
+}
+
+body.kdr-admin .content .navbar .nav-link:hover {
+    color: var(--kdr-gold-dark);
+}
+
+body.kdr-admin .content .navbar .sidebar-toggler i {
+    color: var(--kdr-navy);
+}
+
+body.kdr-admin .card-header.bg-primary,
+body.kdr-admin .bg-primary.rounded {
+    background: linear-gradient(135deg, var(--kdr-navy), var(--kdr-navy-mid)) !important;
+}
+
+body.kdr-admin .card .btn-primary,
+body.kdr-admin a.btn-primary {
+    border-radius: 8px;
+}
+
+body.kdr-admin .hover-shadow:hover {
+    box-shadow: 0 8px 24px rgba(10, 29, 55, 0.1);
+    border: 1px solid rgba(197, 160, 89, 0.25);
+}
+
+body.kdr-admin .copyright-wrap,
+body.kdr-admin .bg-secondary {
+    background: var(--kdr-navy-dark) !important;
+}
+
+body.kdr-admin .form-control:focus,
+body.kdr-admin .form-select:focus {
+    border-color: var(--kdr-gold);
+    box-shadow: 0 0 0 0.2rem rgba(197, 160, 89, 0.2);
+}
+
+body.kdr-admin .page-item.active .page-link {
+    background-color: var(--kdr-navy);
+    border-color: var(--kdr-navy);
+}
+
+body.kdr-admin .page-link {
+    color: var(--kdr-navy);
+}
+
+body.kdr-admin .page-link:hover {
+    color: var(--kdr-gold-dark);
+}
+
+body.kdr-admin .badge.bg-primary {
+    background: var(--kdr-gold) !important;
+    color: var(--kdr-navy-dark) !important;
+}
+
+body.kdr-admin .progress-bar {
+    background-color: var(--kdr-gold);
+}
+
+body.kdr-admin .nav-tabs .nav-link.active {
+    color: var(--kdr-navy);
+    border-bottom-color: var(--kdr-gold);
+}
+
+body.kdr-admin .table-primary {
+    --bs-table-bg: rgba(197, 160, 89, 0.12);
+}
+
+@media (max-width: 767px) {
+    body.kdr-auth .kdr-auth-page {
+        margin-top: 24px;
+    }
+
+    body.kdr-auth .kdr-auth-hero {
+        min-height: 240px;
+    }
+}
