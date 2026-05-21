@@ -71,6 +71,8 @@
     'defaultHeroSubtitle' => $defaultHeroSubtitle,
 ])
 
+@include('frontend.partials.kdr-home-car-search', ['carBrands' => $carBrands ?? collect()])
+
 <section class="kdr-company-intro" aria-labelledby="kdr-overview-heading">
     <div class="kdr-company-intro__bg" aria-hidden="true"></div>
     <div class="container position-relative">

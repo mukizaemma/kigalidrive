@@ -27,7 +27,7 @@ class SettingsController extends Controller
         if ($data === null) {
             $data = Setting::create([
                 'company' => 'Kigali Drive Rentals',
-                'tagline' => 'Drive Better. Stay Smarter. Invest Confidently.',
+                'tagline' => 'Drive Better. Buy Smarter. Rent with Confidence.',
                 'address' => 'Kisimenti, Kigali, Rwanda',
                 'business_hours' => 'Open Daily',
                 'user_id' => Auth::id(),

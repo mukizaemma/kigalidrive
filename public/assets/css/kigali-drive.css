@@ -1106,8 +1106,16 @@ body.kigali-drive .kdr-hero-slide-copy {
     padding: clamp(6rem, 14vh, 8rem) 0 clamp(5.5rem, 12vh, 7rem);
 }
 
+body.kigali-drive .kdr-hero--slides .kdr-hero-slide-copy.container {
+    max-width: 100%;
+    width: 100%;
+    padding-left: clamp(1.25rem, 4vw, 3rem);
+    padding-right: clamp(1.25rem, 4vw, 3rem);
+}
+
 body.kigali-drive .kdr-hero-slide-inner {
-    max-width: min(52rem, 100%);
+    width: 60%;
+    max-width: 60%;
 }
 
 body.kigali-drive .kdr-hero-badge {
@@ -1132,7 +1140,7 @@ body.kigali-drive .kdr-hero-slide-title {
     color: #fff;
     line-height: 1.15;
     margin: 0 0 1rem;
-    max-width: min(42rem, 100%);
+    max-width: 100%;
     text-wrap: balance;
 }
 
@@ -1141,7 +1149,7 @@ body.kigali-drive .kdr-hero-slide-sub {
     font-size: clamp(1rem, 2vw, 1.2rem);
     line-height: 1.65;
     margin: 0 0 1.75rem;
-    max-width: 48ch;
+    max-width: 100%;
 }
 
 body.kigali-drive .kdr-hero-actions {
@@ -1607,6 +1615,11 @@ body.kigali-drive .kdr-home-reviews blockquote:last-of-type {
 }
 
 @media (max-width: 991px) {
+    body.kigali-drive .kdr-hero-slide-inner {
+        width: 85%;
+        max-width: 85%;
+    }
+
     body.kigali-drive .kdr-hero-nav-wrap {
         right: 1rem;
         bottom: 3.5rem;
@@ -1641,6 +1654,50 @@ body.kigali-drive .kdr-home-reviews blockquote:last-of-type {
 
     body.kigali-drive .kdr-overview-highlights {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 575px) {
+    body.kigali-drive .kdr-hero-slide-inner {
+        width: 92%;
+        max-width: 92%;
+    }
+}
+
+/* Homepage car search strip */
+body.kigali-drive .kdr-home-search {
+    margin-top: -2.5rem;
+    position: relative;
+    z-index: 20;
+    padding-bottom: 1rem;
+}
+
+body.kigali-drive .kdr-home-search__form {
+    padding: 1.5rem 1.75rem;
+    border: none;
+    box-shadow: var(--kdr-shadow);
+}
+
+body.kigali-drive .kdr-home-search__title {
+    font-family: var(--kdr-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--kdr-navy);
+    margin-bottom: 0.25rem;
+}
+
+body.kigali-drive .kdr-home-search__sub {
+    color: var(--kdr-slate);
+    font-size: 0.9rem;
+}
+
+body.kigali-drive .kdr-home-search__head {
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 767px) {
+    body.kigali-drive .kdr-home-search {
+        margin-top: -1rem;
     }
 }
 

@@ -50,12 +50,8 @@ class Service extends Model
     {
         $slug = $this->slug ?? '';
 
-        if (str_contains($slug, 'apartment') || str_contains($slug, 'villa')) {
-            return ['route' => 'apartments', 'label' => 'Browse apartments', 'icon' => 'fa-building'];
-        }
-
         if (str_contains($slug, 'list')) {
-            return ['route' => 'listYourProperty', 'label' => 'List with us', 'icon' => 'fa-list'];
+            return ['route' => 'listYourProperty', 'label' => 'List your car', 'icon' => 'fa-list'];
         }
 
         if (str_contains($slug, 'car-sale')) {
@@ -122,7 +118,7 @@ class Service extends Model
         return match (true) {
             str_contains($slug, 'car-sale') => 'Car sales',
             str_contains($slug, 'car') => 'Car rental',
-            str_contains($slug, 'apartment') || str_contains($slug, 'villa') => 'Apartments',
+            str_contains($slug, 'apartment') || str_contains($slug, 'villa') => 'Mobility',
             str_contains($slug, 'chauffeur') || str_contains($slug, 'airport') => 'Chauffeur & transfers',
             str_contains($slug, 'corporate') || str_contains($slug, 'fleet') => 'Corporate',
             str_contains($slug, 'list') => 'Listings',

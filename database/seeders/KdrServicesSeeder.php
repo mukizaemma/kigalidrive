@@ -29,30 +29,30 @@ class KdrServicesSeeder extends Seeder
                 'sort_order' => 2,
             ],
             [
-                'title' => 'Apartment & villa rentals',
-                'icon' => 'fa-building',
-                'excerpt' => 'Furnished apartments and villas for short stays and long-term living in Kigali.',
-                'description' => "Premium stays for tourists, corporates, NGOs, and families.\n\n• Verified properties\n• Online booking\n• Amenities listed clearly\n• Flexible lease terms",
-                'sort_order' => 3,
-            ],
-            [
                 'title' => 'Chauffeur & airport transfer',
                 'icon' => 'fa-plane-arrival',
                 'excerpt' => 'Meet-and-greet, airport pickups, and executive transport across Rwanda.',
                 'description' => "Professional drivers who know Kigali and major routes.\n\n• Kigali International Airport transfers\n• Corporate travel\n• Event and delegation transport",
-                'sort_order' => 4,
+                'sort_order' => 3,
             ],
             [
                 'title' => 'Corporate fleet solutions',
                 'icon' => 'fa-briefcase',
                 'excerpt' => 'Dedicated vehicles and billing for companies, NGOs, and embassies.',
                 'description' => "Tailored packages for teams that need reliable mobility.\n\n• Monthly contracts\n• Multiple vehicle types\n• Priority support",
+                'sort_order' => 4,
+            ],
+            [
+                'title' => 'Vehicle delivery & inspection',
+                'icon' => 'fa-clipboard-check',
+                'excerpt' => 'We arrange viewings, test drives, and delivery for rentals and purchases.',
+                'description' => "Convenient handover for renters and buyers.\n\n• Scheduled viewings\n• Pre-rental checks\n• Airport or hotel delivery on request",
                 'sort_order' => 5,
             ],
             [
-                'title' => 'List your property or vehicle',
+                'title' => 'List your car',
                 'icon' => 'fa-list',
-                'excerpt' => 'Owners and agents: list cars or apartments with Kigali Drive Rentals.',
+                'excerpt' => 'Owners and dealers: list vehicles for rent or sale with Kigali Drive Rentals.',
                 'description' => "Reach local and international clients through our platform.\n\n• Simple listing process\n• Admin review and approval\n• Marketing on our website",
                 'sort_order' => 6,
             ],
@@ -70,6 +70,15 @@ class KdrServicesSeeder extends Seeder
                 ])
             );
         }
+
+        Service::query()
+            ->where(function ($q) {
+                $q->where('slug', 'like', '%apartment%')
+                    ->orWhere('slug', 'like', '%villa%')
+                    ->orWhere('title', 'like', '%apartment%')
+                    ->orWhere('title', 'like', '%List your property%');
+            })
+            ->update(['status' => 'Inactive']);
 
         $this->command?->info('Seeded ' . count($items) . ' services.');
     }

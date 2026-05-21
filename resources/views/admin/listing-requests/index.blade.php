@@ -8,7 +8,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Date</th><th>Type</th><th>Ad</th><th>Contact</th><th>Location</th><th>Amount</th><th>Status</th><th></th>
+                    <th>Date</th><th>Type</th><th>Ad</th><th>Contact</th><th>Channel</th><th>Location</th><th>Amount</th><th>Status</th><th></th>
                 </tr>
             </thead>
             <tbody>
@@ -17,7 +17,12 @@
                     <td>{{ $req->created_at->format('d M Y') }}</td>
                     <td>{{ ucfirst($req->product_type) }}</td>
                     <td>{{ ucfirst($req->ad_type) }}</td>
-                    <td>{{ $req->contact_name }}<br><small>{{ $req->phone }}</small></td>
+                    <td>
+                        {{ $req->contact_name }}<br>
+                        <small>{{ $req->phone }}</small>
+                        @if($req->email)<br><small class="text-muted">{{ $req->email }}</small>@endif
+                    </td>
+                    <td><span class="badge bg-info text-dark">{{ $req->submissionChannelLabel() }}</span></td>
                     <td>{{ $req->location }}</td>
                     <td>{{ $req->amount ? number_format($req->amount).' RWF' : '—' }}</td>
                     <td><span class="badge bg-secondary">{{ $req->status }}</span></td>
@@ -34,7 +39,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="8" class="text-muted">No requests yet.</td></tr>
+                <tr><td colspan="9" class="text-muted">No requests yet.</td></tr>
                 @endforelse
             </tbody>
         </table>

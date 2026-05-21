@@ -16,8 +16,19 @@ class ListingRequest extends Model
         'location',
         'details',
         'status',
+        'submission_channel',
         'admin_notes',
     ];
+
+    public function submissionChannelLabel(): string
+    {
+        return match ($this->submission_channel) {
+            'whatsapp' => 'WhatsApp',
+            'email' => 'Email',
+            'form' => 'Online form',
+            default => '—',
+        };
+    }
 
     protected $casts = [
         'amount' => 'decimal:2',

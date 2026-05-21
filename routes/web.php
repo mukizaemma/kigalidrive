@@ -189,6 +189,7 @@ Route::middleware(['redirect.admin'])->group(function () {
 
     Route::get('/list-your-property', [App\Http\Controllers\ListingRequestController::class, 'create'])->name('listYourProperty');
     Route::post('/list-your-property', [App\Http\Controllers\ListingRequestController::class, 'store'])->name('listYourProperty.store');
+    Route::redirect('/list-your-car', '/list-your-property', 301);
 
     Route::get('/updates', [App\Http\Controllers\HomeController::class, 'blogs'])->name('blogs');
     Route::get('/updates/{slug}', [App\Http\Controllers\HomeController::class, 'singleBlog'])->name('singleBlog');

@@ -76,12 +76,25 @@ class HomeController extends Controller
 
         $about = About::first();
 
+        try {
+            $carBrands = Car::query()
+                ->where('status', 'available')
+                ->whereNotNull('brand')
+                ->distinct()
+                ->orderBy('brand')
+                ->pluck('brand');
+        } catch (\Throwable $e) {
+            report($e);
+            $carBrands = collect();
+        }
+
         return view('frontend.kdr-home', compact(
             'featuredCars',
             'businessReviews',
             'googleReviews',
             'slides',
-            'about'
+            'about',
+            'carBrands'
         ));
     }
 

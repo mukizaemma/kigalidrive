@@ -10,7 +10,7 @@
                 <div class="col-lg-8">
                     <span class="kdr-cars-hero__eyebrow"><i class="fab fa-google me-2"></i>Google Reviews</span>
                     <h1 class="kdr-cars-hero__title">What our customers say</h1>
-                    <p class="kdr-cars-hero__lead mb-0">Real reviews from our Google Business Profile — trusted feedback from guests who rented cars or stayed with us in Kigali.</p>
+                    <p class="kdr-cars-hero__lead mb-0">Real reviews from our Google Business Profile — trusted feedback from clients who rented or bought vehicles through us in Kigali.</p>
                 </div>
                 @if($googleData['write_review_url'] ?? null)
                 <div class="col-lg-4 text-lg-end">

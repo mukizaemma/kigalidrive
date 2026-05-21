@@ -239,51 +239,6 @@
     </header>
 
 
-    @if(request()->routeIs('apartments', 'hotel', 'unit.details'))
-    <div class="global-search-bar-section bg-light border-bottom d-none d-lg-block">
-        <div class="container th-container py-3">
-            <form action="{{ route('apartments') }}" method="GET" class="global-search-bar bg-white rounded-3 shadow-sm border p-3">
-                <div class="row g-2 align-items-center">
-                    <div class="col-xl-3 col-lg-3 col-md-4">
-                        <div class="position-relative">
-                            <i class="fas fa-map-marker-alt position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #888; font-size: 14px;"></i>
-                            <input type="text" name="location" list="header-destinations" class="form-control form-control-sm" placeholder="Type destination, address or city — or choose All" value="{{ request('location') }}" autocomplete="off" style="padding-left: 38px; border-radius: 8px; height: 44px;">
-                            <datalist id="header-destinations">
-                                <option value="All">All Destinations</option>
-                                @if(isset($searchLocations) && $searchLocations->isNotEmpty())
-                                    @foreach($searchLocations as $loc)
-                                        <option value="{{ $loc }}">{{ $loc }}</option>
-                                    @endforeach
-                                @endif
-                            </datalist>
-                        </div>
-                    </div>
-                    <div class="col-xl-2 col-lg-2 col-md-3">
-                        <div class="position-relative">
-                            <i class="fas fa-calendar-check position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #888; font-size: 14px;"></i>
-                            <input type="date" name="checkin" class="form-control form-control-sm" placeholder="Check-in" value="{{ request('checkin') }}" min="{{ date('Y-m-d') }}" style="padding-left: 38px; border-radius: 8px; height: 44px;">
-                        </div>
-                    </div>
-                    <div class="col-xl-2 col-lg-2 col-md-3">
-                        <div class="position-relative">
-                            <i class="fas fa-calendar-times position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); color: #888; font-size: 14px;"></i>
-                            <input type="date" name="checkout" class="form-control form-control-sm" placeholder="Check-out" value="{{ request('checkout') }}" min="{{ date('Y-m-d', strtotime('+1 day')) }}" style="padding-left: 38px; border-radius: 8px; height: 44px;">
-                        </div>
-                    </div>
-                    <div class="col-xl-2 col-lg-2 col-md-3">
-                        @include('frontend.partials.guests_rooms_selector', ['selectorId' => 'header-guests-rooms'])
-                    </div>
-                    <div class="col-xl-2 col-lg-2 col-md-4">
-                        <button type="submit" class="btn btn-primary w-100" style="border-radius: 8px; height: 44px; font-weight: 600;">
-                            <i class="fas fa-search me-2"></i>Search
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    @endif
-
 
 
     <div class="container-fluid">

@@ -12,10 +12,15 @@
 
     var selectors = [
         '.container-fluid > section',
+        '.kdr-home-search__form',
         '.kdr-why-section .kdr-why-card',
+        '.kdr-why-section .text-center',
         '.kdr-car-card',
         '.kdr-card',
         '.kdr-service-card',
+        '.kdr-service-detail-hero',
+        '.kdr-service-detail .col-lg-8 > .kdr-card',
+        '.kdr-service-detail-sidebar .kdr-card',
         '.kdr-company-intro__visual',
         '.kdr-company-intro__content',
         '.kdr-home-journey__panel',
@@ -27,7 +32,10 @@
         '.about-contact-grid',
         '.contact-form2',
         '.title-area',
-        '.kdr-empty-state'
+        '.kdr-empty-state',
+        '.footer-widget',
+        '.kdr-google-review-card',
+        '.kdr-google-summary'
     ].join(',');
 
     var seen = new WeakSet();

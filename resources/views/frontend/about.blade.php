@@ -107,7 +107,7 @@
     @if($about && $about->WhyChooseUs)
     <section class="py-5">
         <div class="container py-4">
-            <h2 class="text-center mb-4">Why Choose Stay Nets</h2>
+            <h2 class="text-center mb-4">Why Choose Kigali Drive Rentals</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <div class="about-why-choose">
@@ -147,7 +147,7 @@
                 </div>
                 <div class="col-auto">
                     <a href="{{ $ctaBook }}" class="btn btn-outline-primary btn-lg px-4">
-                        <i class="fa fa-calendar-check me-2"></i>Book Your Stay or Adventure
+                        <i class="fa fa-car me-2"></i>Browse Our Fleet
                     </a>
                 </div>
                 <div class="col-auto">
