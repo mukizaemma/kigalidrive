@@ -6,7 +6,7 @@
         ['icon' => 'fa-user-tie', 'title' => 'Driver or self-drive', 'text' => 'Choose chauffeur service or drive yourself with flexible terms.'],
         ['icon' => 'fa-headset', 'title' => 'Fast support', 'text' => 'Responsive team in Kigali — English, French, Kinyarwanda & Swahili.'],
         ['icon' => 'fa-calendar-check', 'title' => 'Easy booking', 'text' => 'Reserve online in minutes or message us on WhatsApp.'],
-        ['icon' => 'fa-building', 'title' => 'Apartments too', 'text' => 'Premium stays for tourists, corporates, and long-term guests.'],
+        ['icon' => 'fa-hand-holding-dollar', 'title' => 'Cars for sale', 'text' => 'Browse quality vehicles for purchase with clear pricing in RWF.'],
         ['icon' => 'fa-map-location-dot', 'title' => 'Local expertise', 'text' => 'Based in Kisimenti — we know Kigali and Rwanda inside out.'],
     ];
 
@@ -27,7 +27,7 @@
         <div class="text-center mb-5">
             <p class="kdr-why-section__eyebrow">Why choose us</p>
             <h2 id="kdr-why-heading" class="kdr-why-section__title">Why Clients Trust Kigali Drive Rentals</h2>
-            <p class="kdr-why-section__lead">Reliable mobility and housing in Rwanda — tailored for locals, tourists, NGOs, and corporates.</p>
+            <p class="kdr-why-section__lead">Reliable car rentals and sales in Rwanda — tailored for locals, tourists, NGOs, and corporates.</p>
         </div>
         <div class="row g-3 g-lg-4">
             @foreach($whyItems as $item)

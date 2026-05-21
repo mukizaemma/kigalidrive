@@ -1643,3 +1643,33 @@ body.kigali-drive .kdr-home-reviews blockquote:last-of-type {
         grid-template-columns: 1fr;
     }
 }
+
+/* --------------------------------------------------------------------------
+   Scroll reveal — bottom-up fade on scroll
+   -------------------------------------------------------------------------- */
+body.kigali-drive .kdr-reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition:
+        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--kdr-reveal-delay, 0s);
+    will-change: opacity, transform;
+}
+
+body.kigali-drive .kdr-reveal--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+html.kdr-reveal-ready body.kigali-drive .kdr-reveal {
+    /* Ensures hidden state applies after JS runs */
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.kigali-drive .kdr-reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

@@ -56,8 +56,8 @@
                 <aside class="kdr-card p-4">
                     <h3 class="h6 text-uppercase text-muted mb-3">Explore</h3>
                     <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><a href="{{ route('showCars') }}" class="fw-semibold text-decoration-none"><i class="fas fa-car me-2 text-warning"></i>Cars for rent &amp; sale</a></li>
-                        <li class="mb-2"><a href="{{ route('apartments') }}" class="fw-semibold text-decoration-none"><i class="fas fa-building me-2 text-warning"></i>Apartments</a></li>
+                        <li class="mb-2"><a href="{{ route('showCars') }}" class="fw-semibold text-decoration-none"><i class="fas fa-car me-2 text-warning"></i>Rent a car</a></li>
+                        <li class="mb-2"><a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="fw-semibold text-decoration-none"><i class="fas fa-tags me-2 text-warning"></i>Cars for sale</a></li>
                         <li class="mb-2"><a href="{{ route('services.index') }}" class="fw-semibold text-decoration-none"><i class="fas fa-concierge-bell me-2 text-warning"></i>Our services</a></li>
                         <li><a href="{{ route('contact') }}" class="fw-semibold text-decoration-none"><i class="fas fa-envelope me-2 text-warning"></i>Contact us</a></li>
                     </ul>

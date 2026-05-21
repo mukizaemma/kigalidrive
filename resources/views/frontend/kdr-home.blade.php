@@ -5,35 +5,35 @@
     $wa = (optional($setting)->whatsapp_enabled ?? true) && (optional($setting)->whatsapp ?? optional($setting)->phone)
         ? 'https://wa.me/' . preg_replace('/\D+/', '', optional($setting)->whatsapp ?? optional($setting)->phone)
         : null;
-    $defaultHeroTitle = optional($setting)->tagline ?? 'Drive. Stay. Invest. With Confidence.';
-    $defaultHeroSubtitle = 'Your trusted partner in Kigali for premium car rentals and furnished apartments.';
+    $defaultHeroTitle = optional($setting)->tagline ?? 'Premium Car Rentals & Sales in Kigali';
+    $defaultHeroSubtitle = 'Your trusted partner for self-drive and chauffeur rentals — plus quality vehicles for sale across Rwanda.';
     $overviewTitle = optional($about)->title ?? 'Welcome to Kigali Drive Rentals';
-    $overviewTagline = optional($about)->subTitle ?? 'Your trusted partner for mobility and housing in Rwanda';
+    $overviewTagline = optional($about)->subTitle ?? 'Rwanda\'s trusted car rental and sales partner';
     $overviewBodyRaw = optional($about)->welcomeMessage;
     $overviewBody = $overviewBodyRaw
         ? \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($overviewBodyRaw))), 520)
-        : 'At Kigali Drive Rentals, we connect you with quality vehicles and premium apartments in Kigali — with transparent pricing and professional service.';
+        : 'At Kigali Drive Rentals, we connect you with quality vehicles for rent and purchase in Kigali — with transparent pricing, flexible terms, and professional service.';
     $overviewImage = ($about && $about->image1)
         ? asset('storage/images/about/' . ltrim($about->image1, '/'))
         : asset('assets/img/bg/about_bg_1.jpg');
     $overviewUsesFallbackImage = !($about && $about->image1);
     $journeyTitle = optional($about)->mission
         ? \Illuminate\Support\Str::limit(trim(strip_tags($about->mission)), 80)
-        : 'Your Journey Starts With the Right Partner';
+        : 'Your Journey Starts With the Right Vehicle';
     $journeyText = optional($about)->commitment
         ? trim(strip_tags($about->commitment))
         : (optional($about)->mission
             ? \Illuminate\Support\Str::limit(trim(strip_tags($about->mission)), 220)
-            : 'We help you move easier, stay better, and invest smarter — with reliable service and trusted listings across Kigali.');
+            : 'We help you move with confidence — reliable fleet, clear rates, and trusted listings across Kigali.');
     $ctaServices = optional($about)->cta_services_url ?? route('showCars');
-    $ctaBook = optional($about)->cta_book_url ?? route('apartments');
+    $ctaBook = optional($about)->cta_book_url ?? route('showCars');
     $overviewImage2 = ($about && $about->image2)
         ? asset('storage/images/about/' . ltrim($about->image2, '/'))
         : ($overviewUsesFallbackImage ? asset('assets/img/bg/about_bg_2.jpg') : null);
-    $highlightIcons = ['fa-car', 'fa-building', 'fa-tags', 'fa-location-dot'];
+    $highlightIcons = ['fa-car', 'fa-tags', 'fa-shield', 'fa-location-dot'];
     $introStats = [
         ['icon' => 'fa-location-dot', 'value' => 'Kigali', 'label' => 'Rwanda HQ'],
-        ['icon' => 'fa-layer-group', 'value' => '2-in-1', 'label' => 'Cars & apartments'],
+        ['icon' => 'fa-car', 'value' => 'Rent & Sale', 'label' => 'Full fleet'],
     ];
     if (!empty($googleReviews['rating'])) {
         $introStats[] = [
@@ -57,7 +57,11 @@
         $highlights = array_slice(array_unique($highlights), 0, 4);
     }
     if (empty($highlights)) {
-        $highlights = ['Premium fleet', 'Verified apartments', 'Transparent pricing', 'Local expertise'];
+        $highlights = ['Premium fleet', 'Rent or buy', 'Transparent pricing', 'Local expertise'];
+    }
+    $carsForSale = $featuredCars->filter(fn ($c) => in_array($c->listing_type ?? '', ['sale', 'both'], true))->take(3);
+    if ($carsForSale->isEmpty()) {
+        $carsForSale = $featuredCars->take(3);
     }
 @endphp
 
@@ -120,27 +124,15 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
             <div>
-                <h2 class="kdr-section-title mb-1">Featured Cars</h2>
-                <p class="text-muted mb-0">Daily, weekly, monthly & custom — with or without driver</p>
+                <h2 class="kdr-section-title mb-1">Featured Cars for Rent</h2>
+                <p class="text-muted mb-0">Daily, weekly, monthly &amp; custom — with or without driver</p>
             </div>
-            <a href="{{ route('showCars') }}" class="th-btn btn-kdr-primary btn-sm">View all cars</a>
+            <a href="{{ route('showCars') }}" class="th-btn btn-kdr-primary btn-sm">View all rentals</a>
         </div>
         <div class="row g-4">
             @forelse($featuredCars as $car)
             <div class="col-md-6 col-lg-4">
-                <div class="kdr-card overflow-hidden h-100">
-                    <a href="{{ route('carDetails', $car->slug) }}">
-                        <img src="{{ $car->image ? asset('storage/images/cars/'.$car->image) : asset('assets/img/tour/tour_1_1.jpg') }}" class="w-100" style="height:200px;object-fit:cover" alt="{{ $car->name }}">
-                    </a>
-                    <div class="p-4">
-                        <span class="badge bg-dark mb-2">{{ $car->brand ?? 'Premium' }}</span>
-                        <h5 class="mb-1"><a href="{{ route('carDetails', $car->slug) }}" class="text-decoration-none text-dark">{{ $car->name }}</a></h5>
-                        @if($car->price_per_day)
-                        <p class="mb-2"><strong>{{ number_format($car->price_per_day) }} RWF</strong> <small class="text-muted">/ day</small></p>
-                        @endif
-                        <a href="{{ route('carDetails', $car->slug) }}" class="th-btn btn-kdr-primary btn-sm w-100">Reserve Now</a>
-                    </div>
-                </div>
+                @include('frontend.partials.car_card', ['car' => $car, 'rentalPeriod' => 'day'])
             </div>
             @empty
             <p class="text-muted">Premium vehicles coming soon.</p>
@@ -149,36 +141,26 @@
     </div>
 </section>
 
+@if($carsForSale->isNotEmpty())
 <section class="py-5 bg-light">
     <div class="container">
         <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
             <div>
-                <h2 class="kdr-section-title mb-1">Featured Apartments</h2>
-                <p class="text-muted mb-0">Rent or buy — day, night, or long stay</p>
+                <h2 class="kdr-section-title mb-1">Cars for Sale</h2>
+                <p class="text-muted mb-0">Quality pre-owned and new vehicles — transparent pricing in RWF</p>
             </div>
-            <a href="{{ route('apartments') }}" class="th-btn btn-kdr-primary btn-sm">View all apartments</a>
+            <a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="th-btn btn-kdr-primary btn-sm">View all for sale</a>
         </div>
         <div class="row g-4">
-            @forelse($featuredApartments as $property)
+            @foreach($carsForSale as $car)
             <div class="col-md-6 col-lg-4">
-                <div class="kdr-card overflow-hidden h-100">
-                    <a href="{{ route('hotel', $property->slug) }}">
-                        @php $img = $property->images->first(); @endphp
-                        <img src="{{ $img ? asset('storage/images/properties/'.$img->image) : asset('assets/img/tour/tour_2_1.jpg') }}" class="w-100" style="height:200px;object-fit:cover" alt="{{ $property->name }}">
-                    </a>
-                    <div class="p-4">
-                        <h5 class="mb-1"><a href="{{ route('hotel', $property->slug) }}" class="text-decoration-none text-dark">{{ $property->name }}</a></h5>
-                        <p class="text-muted small mb-2"><i class="fas fa-map-marker-alt me-1"></i>{{ $property->location }}</p>
-                        <a href="{{ route('hotel', $property->slug) }}" class="th-btn btn-kdr-primary btn-sm w-100">Book viewing</a>
-                    </div>
-                </div>
+                @include('frontend.partials.car_card', ['car' => $car])
             </div>
-            @empty
-            <p class="text-muted">New listings added regularly.</p>
-            @endforelse
+            @endforeach
         </div>
     </div>
 </section>
+@endif
 
 <section class="kdr-home-journey py-5">
     <div class="container">
@@ -189,7 +171,7 @@
                     <h2 class="kdr-home-journey__title">{{ $journeyTitle }}</h2>
                     <p class="kdr-home-journey__text">{{ $journeyText }}</p>
                     <div class="kdr-home-journey__actions">
-                        <a href="{{ $ctaServices }}" class="th-btn btn-kdr-primary">Our services</a>
+                        <a href="{{ $ctaServices }}" class="th-btn btn-kdr-primary">Browse fleet</a>
                         <a href="{{ $ctaBook }}" class="th-btn kdr-btn-navy">Book now</a>
                     </div>
                 </div>
@@ -222,7 +204,7 @@
                         <small class="text-muted">— {{ $review['author_name'] ?? 'Google user' }}</small>
                     </blockquote>
                     @empty
-                    <p class="text-muted mb-2">See what guests say about us on Google.</p>
+                    <p class="text-muted mb-2">See what clients say about us on Google.</p>
                     @endforelse
                     @if(($googleReviews['write_review_url'] ?? null))
                     <a href="{{ $googleReviews['write_review_url'] }}" target="_blank" rel="noopener noreferrer" class="th-btn btn-kdr-primary btn-sm w-100 mt-2">

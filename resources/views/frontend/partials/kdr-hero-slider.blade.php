@@ -3,8 +3,8 @@
 --}}
 @php
     $heroSlides = ($heroSlides ?? collect())->filter(fn ($s) => filled($s->image));
-    $defaultHeroTitle = $defaultHeroTitle ?? (optional($setting)->tagline ?? 'Drive. Stay. Invest. With Confidence.');
-    $defaultHeroSubtitle = $defaultHeroSubtitle ?? 'Your trusted partner in Kigali for premium car rentals and furnished apartments.';
+    $defaultHeroTitle = $defaultHeroTitle ?? (optional($setting)->tagline ?? 'Premium Car Rentals & Sales in Kigali');
+    $defaultHeroSubtitle = $defaultHeroSubtitle ?? 'Your trusted partner for self-drive and chauffeur rentals — plus quality vehicles for sale.';
 @endphp
 
 <section class="kdr-hero kdr-hero--slides" aria-label="Homepage highlights">
@@ -28,11 +28,11 @@
                             <div class="kdr-hero-actions">
                                 <a href="{{ route('showCars') }}" class="kdr-hero-btn kdr-hero-btn--primary">
                                     <i class="fas fa-car" aria-hidden="true"></i>
-                                    <span>Book a Car</span>
+                                    <span>Rent a Car</span>
                                 </a>
-                                <a href="{{ route('apartments') }}" class="kdr-hero-btn kdr-hero-btn--ghost">
-                                    <span>Browse Apartments</span>
-                                    <i class="fas fa-building" aria-hidden="true"></i>
+                                <a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="kdr-hero-btn kdr-hero-btn--ghost">
+                                    <span>Cars for Sale</span>
+                                    <i class="fas fa-tags" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
@@ -50,11 +50,11 @@
                             <div class="kdr-hero-actions">
                                 <a href="{{ route('showCars') }}" class="kdr-hero-btn kdr-hero-btn--primary">
                                     <i class="fas fa-car" aria-hidden="true"></i>
-                                    <span>Book a Car</span>
+                                    <span>Rent a Car</span>
                                 </a>
-                                <a href="{{ route('apartments') }}" class="kdr-hero-btn kdr-hero-btn--ghost">
-                                    <span>Browse Apartments</span>
-                                    <i class="fas fa-building" aria-hidden="true"></i>
+                                <a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="kdr-hero-btn kdr-hero-btn--ghost">
+                                    <span>Cars for Sale</span>
+                                    <i class="fas fa-tags" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>

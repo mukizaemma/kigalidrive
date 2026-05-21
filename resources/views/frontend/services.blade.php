@@ -8,7 +8,7 @@
                 <div class="col-lg-8">
                     <span class="kdr-cars-hero__eyebrow"><i class="fas fa-concierge-bell me-2"></i>Our services</span>
                     <h1 class="kdr-cars-hero__title">Everything you need in Kigali</h1>
-                    <p class="kdr-cars-hero__lead mb-0">Car rentals, apartment stays, chauffeur services, and property solutions — one trusted team for locals, visitors, and businesses.</p>
+                    <p class="kdr-cars-hero__lead mb-0">Car rentals, chauffeur services, fleet management, and vehicle sales — one trusted team for locals, visitors, and businesses.</p>
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <a href="{{ route('contact') }}" class="th-btn btn-kdr-primary">Talk to our team</a>

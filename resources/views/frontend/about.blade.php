@@ -15,7 +15,7 @@
         ? asset('storage/images/site/' . optional($setting)->home_header_image)
         : ($about && $about->image1 ? asset('storage/images/about/' . $about->image1) : null);
     $title = optional($about)->title ?? 'About Kigali Drive Rentals';
-    $tagline = optional($about)->subTitle ?? 'Premium car rentals and furnished apartments in Kigali, Rwanda.';
+    $tagline = optional($about)->subTitle ?? 'Premium car rentals and sales in Kigali, Rwanda.';
     $connectUrl = route('contact');
     $ctaServices = optional($about)->cta_services_url ?? route('showCars');
     $ctaBook = optional($about)->cta_book_url ?? route('showCars');

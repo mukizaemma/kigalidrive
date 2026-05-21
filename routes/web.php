@@ -181,10 +181,8 @@ Route::middleware(['redirect.admin'])->group(function () {
     Route::get('/services', [App\Http\Controllers\ServiceController::class, 'index'])->name('services.index');
     Route::get('/services/{slug}', [App\Http\Controllers\ServiceController::class, 'show'])->name('services.show');
 
-    Route::get('/apartments', [App\Http\Controllers\HomeController::class, 'apartments'])->name('apartments');
-    Route::get('/apartments/{slug}', [App\Http\Controllers\HomeController::class, 'showAccommodation'])->name('hotel');
-    Route::get('/apartments/{property}/rooms/{unit}', [App\Http\Controllers\HomeController::class, 'showUnit'])->name('unit.details');
-    Route::get('/apartments/{property}/rooms/{unit}/booking-availability', [App\Http\Controllers\HomeController::class, 'checkUnitBookingAvailability'])->name('unit.booking.availability');
+    Route::redirect('/apartments', '/cars', 301);
+    Route::redirect('/apartments/{any}', '/cars', 301)->where('any', '.*');
     Route::post('/storeBookings', [App\Http\Controllers\HomeController::class, 'storeBooking'])->name('bookings.store');
     Route::post('/reservations/apartment', [App\Http\Controllers\ReservationController::class, 'storeApartment'])->name('reservations.apartment');
     Route::post('/accommodations/{property}/reviews', [App\Http\Controllers\ReviewController::class, 'storePropertyReview'])->name('property.reviews.store');
@@ -214,27 +212,25 @@ Route::get('/logouts', [App\Http\Controllers\HomeController::class, 'logouts'])-
 */
 Route::redirect('/transport', '/cars', 301);
 Route::redirect('/transport/{any}', '/cars', 301)->where('any', '.*');
-Route::redirect('/accommodations', '/apartments', 301);
-Route::redirect('/accommodations/hotelsSearch', '/apartments', 301);
-Route::redirect('/accommodations/hotels', '/apartments', 301);
-Route::redirect('/our-apartments', '/apartments', 301);
-Route::redirect('/villas', '/apartments', 301);
-Route::redirect('/hotels', '/apartments', 301);
+Route::redirect('/accommodations', '/cars', 301);
+Route::redirect('/accommodations/hotelsSearch', '/cars', 301);
+Route::redirect('/accommodations/hotels', '/cars', 301);
+Route::redirect('/our-apartments', '/cars', 301);
+Route::redirect('/villas', '/cars', 301);
+Route::redirect('/hotels', '/cars', 301);
 Route::redirect('/connect', '/contact', 301);
 Route::redirect('/articles', '/updates', 301);
 Route::redirect('/our-services', '/services', 301);
-Route::redirect('/destinations', '/apartments', 301);
+Route::redirect('/destinations', '/cars', 301);
 Route::redirect('/tours', '/cars', 301);
 Route::redirect('/services/ticketing', '/contact', 301);
 Route::redirect('/services/left-bags', '/contact', 301);
-Route::redirect('/promotions', '/apartments', 301);
-Route::redirect('/facilities', '/apartments', 301);
+Route::redirect('/promotions', '/cars', 301);
+Route::redirect('/facilities', '/cars', 301);
 Route::redirect('/events', '/updates', 301);
 Route::redirect('/gallery', '/updates', 301);
-Route::get('/accommodations/{slug}', fn ($slug) => redirect("/apartments/{$slug}", 301));
-Route::get('/accommodations/{property}/rooms/{unit}', function ($property, $unit) {
-    return redirect()->route('unit.details', ['property' => $property, 'unit' => $unit], 301);
-});
+Route::get('/accommodations/{slug}', fn () => redirect('/cars', 301));
+Route::get('/accommodations/{property}/rooms/{unit}', fn () => redirect('/cars', 301));
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/email/verify', [App\Http\Controllers\Auth\VerificationController::class, 'show'])->name('verification.notice');

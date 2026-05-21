@@ -22,7 +22,7 @@
                                     <img src="{{ ($setting->logo ?? '') ? asset('storage/images/' . $setting->logo) : asset('assets/img/kdr-logo.png') }}" width="140" alt="{{ $setting->company ?? 'Kigali Drive Rentals' }}">
                                 </a>
                             </div>
-                            <p class="about-text">{{ $setting->tagline ?? 'Drive Better. Stay Smarter.' }}</p>
+                            <p class="about-text">{{ $setting->tagline ?? 'Drive Better. Buy Smarter.' }}</p>
 
                             <div class="footer-reviews-card">
                                 <div class="footer-reviews-card__head">
@@ -67,12 +67,12 @@
                         <h3 class="widget_title">Quick Links</h3>
                         <div class="menu-all-pages-container">
                             <ul class="menu footer-quick-links">
-                                <li><a href="{{ route('showCars') }}">Cars for rent &amp; sale</a></li>
-                                <li><a href="{{ route('apartments') }}">Apartments</a></li>
+                                <li><a href="{{ route('showCars') }}">Rent a car</a></li>
+                                <li><a href="{{ route('showCars', ['listing_type' => 'sale']) }}">Cars for sale</a></li>
                                 <li><a href="{{ route('services.index') }}">Services</a></li>
                                 <li><a href="{{ route('about') }}">About Us</a></li>
                                 <li><a href="{{ route('faq') }}">FAQ</a></li>
-                                <li><a href="{{ route('listYourProperty') }}">List with us</a></li>
+                                <li><a href="{{ route('listYourProperty') }}">List your car</a></li>
                                 <li><a href="{{ route('contact') }}">Contact</a></li>
                                 <li><a href="{{ route('terms') }}">Terms &amp; Conditions</a></li>
                             </ul>
@@ -113,8 +113,8 @@
                         <div class="footer-book-cta">
                             <p class="footer-book-cta__label">Ready to book?</p>
                             <div class="footer-book-cta__buttons">
-                                <a href="{{ route('showCars') }}" class="th-btn style3 footer-book-btn">Book a Car</a>
-                                <a href="{{ route('apartments') }}" class="th-btn style3 footer-book-btn footer-book-btn--outline">Find Apartment</a>
+                                <a href="{{ route('showCars') }}" class="th-btn style3 footer-book-btn">Rent a Car</a>
+                                <a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="th-btn style3 footer-book-btn footer-book-btn--outline">Buy a Car</a>
                             </div>
                         </div>
                     </div>

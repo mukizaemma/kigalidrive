@@ -58,18 +58,6 @@ class HomeController extends Controller
             $featuredCars = collect();
         }
 
-        try {
-            $featuredApartments = Property::publishedForGuests()
-                ->whereIn('property_type', ['apartment', 'villa'])
-                ->with('images')
-                ->latest()
-                ->take(6)
-                ->get();
-        } catch (\Throwable $e) {
-            report($e);
-            $featuredApartments = collect();
-        }
-
         $googleReviews = app(\App\Services\GoogleBusinessReviewService::class)->getData(Setting::first());
         $businessReviews = collect($googleReviews['reviews'] ?? [])->take(3);
 
@@ -90,7 +78,6 @@ class HomeController extends Controller
 
         return view('frontend.kdr-home', compact(
             'featuredCars',
-            'featuredApartments',
             'businessReviews',
             'googleReviews',
             'slides',
@@ -1365,17 +1352,19 @@ public function gallery()
 
 
 public function terms(){
-    $properties = \App\Models\Property::publishedForGuests()
-        ->latest()
-        ->take(10)
-        ->get();
+    try {
+        $featuredCars = Car::where('status', 'available')->latest()->take(6)->get();
+    } catch (\Throwable $e) {
+        report($e);
+        $featuredCars = collect();
+    }
     $setting = Setting::first();
     $about = About::first();
     $terms = \App\Models\Term::first();
     return view('frontend.terms',[
         'setting'=>$setting,
         'about'=>$about,
-        'properties'=>$properties,
+        'featuredCars'=>$featuredCars,
         'terms'=>$terms,
     ]);
 }

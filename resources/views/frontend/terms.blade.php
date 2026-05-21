@@ -116,24 +116,24 @@
             <div class="col-lg-4">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
-                        <h4 class="mb-4">Latest Properties</h4>
+                        <h4 class="mb-4">Featured Cars</h4>
                         <ul class="list-unstyled mb-0">
-                            @forelse($properties as $property)
+                            @forelse($featuredCars ?? [] as $car)
                                 <li>
                                     @php
-                                        $thumb = $property->featured_image
-                                            ? asset('storage/images/properties/' . $property->featured_image)
+                                        $thumb = ($car->image && file_exists(storage_path('app/public/images/cars/' . $car->image)))
+                                            ? asset('storage/images/cars/' . $car->image)
                                             : asset('assets/img/tour/tour_3_1.jpg');
                                     @endphp
-                                    <a href="{{ route('hotel', $property->slug ?? $property->id) }}" class="terms-sidebar-property">
+                                    <a href="{{ route('carDetails', $car->slug ?? $car->id) }}" class="terms-sidebar-property">
                                         <div class="terms-sidebar-property__img-wrap">
-                                            <img src="{{ $thumb }}" alt="{{ $property->name }}">
+                                            <img src="{{ $thumb }}" alt="{{ $car->name }}">
                                         </div>
-                                        <div class="terms-sidebar-property__name">{{ $property->name }}</div>
+                                        <div class="terms-sidebar-property__name">{{ $car->name }}</div>
                                     </a>
                                 </li>
                             @empty
-                                <li class="text-muted">No properties available.</li>
+                                <li class="text-muted">No vehicles listed yet.</li>
                             @endforelse
                         </ul>
                     </div>
