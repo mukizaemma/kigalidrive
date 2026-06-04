@@ -90,7 +90,6 @@
                             <select name="subject" class="form-select" required>
                                 <option value="">Select topic</option>
                                 <option value="Car rental enquiry" @selected(old('subject') == 'Car rental enquiry')>Car rental</option>
-                                <option value="Car purchase enquiry" @selected(old('subject') == 'Car purchase enquiry')>Car purchase</option>
                                 <option value="List my car" @selected(old('subject') == 'List my car' || old('subject') == 'List my property')>List my car</option>
                                 <option value="General enquiry" @selected(old('subject') == 'General enquiry')>General enquiry</option>
                             </select>

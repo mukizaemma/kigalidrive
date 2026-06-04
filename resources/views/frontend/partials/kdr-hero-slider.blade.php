@@ -5,9 +5,10 @@
     $heroSlides = ($heroSlides ?? collect())->filter(fn ($s) => filled($s->image));
     $defaultHeroTitle = $defaultHeroTitle ?? (optional($setting)->tagline ?? 'Premium Car Rentals & Sales in Kigali');
     $defaultHeroSubtitle = $defaultHeroSubtitle ?? 'Your trusted partner for self-drive and chauffeur rentals — plus quality vehicles for sale.';
+    $compactCopy = $compactCopy ?? false;
 @endphp
 
-<section class="kdr-hero kdr-hero--slides" aria-label="Homepage highlights">
+<section class="kdr-hero kdr-hero--slides {{ $compactCopy ? 'kdr-hero--compact-copy' : '' }}" aria-label="Homepage highlights">
     <div class="swiper kdr-hero-swiper" id="kdrHeroSlider">
         <div class="swiper-wrapper">
             @forelse($heroSlides as $slide)

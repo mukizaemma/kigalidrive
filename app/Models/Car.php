@@ -65,14 +65,39 @@ class Car extends Model
         return $this->reviews()->count();
     }
 
-    public function getDisplayPriceAttribute()
+    public function scopeForRent($query)
     {
-        if ($this->price_to_buy > 0) {
-            return ['amount' => $this->price_to_buy, 'label' => 'For Sale'];
+        return $query->where(function ($q) {
+            $q->whereNull('listing_type')
+                ->orWhereIn('listing_type', ['rent', 'both']);
+        })->where(function ($q) {
+            $q->where('price_per_day', '>', 0)
+                ->orWhere('price_per_week', '>', 0)
+                ->orWhere('price_per_month', '>', 0);
+        });
+    }
+
+    public function isRentable(): bool
+    {
+        if ($this->listing_type === 'sale') {
+            return false;
         }
 
+        return (
+            ($this->price_per_day ?? 0) > 0
+            || ($this->price_per_week ?? 0) > 0
+            || ($this->price_per_month ?? 0) > 0
+        );
+    }
+
+    public function getDisplayPriceAttribute()
+    {
         if ($this->price_per_day > 0) {
             return ['amount' => $this->price_per_day, 'label' => '/ day'];
+        }
+
+        if ($this->price_per_week > 0) {
+            return ['amount' => $this->price_per_week, 'label' => '/ week'];
         }
 
         if ($this->price_per_month > 0) {
@@ -81,6 +106,4 @@ class Car extends Model
 
         return null;
     }
-
-
 }

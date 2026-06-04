@@ -6,7 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>@yield('title', optional($setting)->company ?? 'Kigali Drive Rentals')</title>
     <meta name="author" content="Kigali Drive Rentals">
-    <meta name="description" content="{{ optional($setting)->tagline ?? 'Premium car rentals and car sales in Kigali, Rwanda. Self-drive or with driver.' }}">
+    <meta name="description" content="{{ optional($setting)->tagline ?? 'Premium car rentals in Kigali, Rwanda. Self-drive or with driver — daily, weekly & monthly.' }}">
     <meta name="keywords" content="{{ optional($setting)->company ?? 'Kigali Drive Rentals' }}">
     <meta name="robots" content="INDEX,FOLLOW">
 
@@ -122,7 +122,7 @@
                     <div class="about-logo">
                         <a href="{{ route('home') }}"><img src="{{ asset('storage/images') . (optional($setting)->logo ?? '') }}" alt="{{ optional($setting)->company ?? 'Kigali Drive Rentals' }}"></a>
                     </div>
-                    <p class="about-text">{{ optional($setting)->tagline ?? 'Premium car rentals and sales in Kigali, Rwanda.' }}</p>
+                    <p class="about-text">{{ optional($setting)->tagline ?? 'Premium car rentals in Kigali, Rwanda.' }}</p>
                     <div class="th-social">
                         <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
                         <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
@@ -182,14 +182,11 @@
                 <ul>
 
                     <li><a href="{{ route('home') }}">Home</a></li>
-                    <li><a href="{{ route('showCars') }}">Cars</a></li>
-                    <li><a href="{{ route('showCars', ['listing_type' => 'sale']) }}">Cars for Sale</a></li>
+                    <li><a href="{{ route('showCars') }}">Our fleet</a></li>
                     <li><a href="{{ route('services.index') }}">Services</a></li>
                     <li><a href="{{ route('about') }}">About</a></li>
-                    <li><a href="{{ route('faq') }}">FAQ</a></li>
                     <li><a href="{{ route('blogs') }}">Updates</a></li>
                     <li><a href="{{ route('faq') }}">FAQ</a></li>
-                    <li><a href="{{ route('reviews.index') }}">Google Reviews</a></li>
                     <li><a href="{{ route('contact') }}">Contact</a></li>
                     <li><a href="{{ route('listYourProperty') }}">List your car</a></li>
 
@@ -214,13 +211,11 @@
                             <nav class="main-menu">
                                 <ul>
                                     <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a></li>
-                                    <li><a href="{{ route('showCars') }}" class="{{ request()->routeIs('showCars', 'carDetails') && request('listing_type') !== 'sale' ? 'active' : '' }}">Rent a Car</a></li>
-                                    <li><a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="{{ request('listing_type') === 'sale' ? 'active' : '' }}">Buy a Car</a></li>
+                                    <li><a href="{{ route('showCars') }}" class="{{ request()->routeIs('showCars', 'carDetails') ? 'active' : '' }}">Our Fleet</a></li>
                                     <li><a href="{{ route('services.index') }}" class="{{ request()->routeIs('services.index', 'services.show') ? 'active' : '' }}">Services</a></li>
                                     <li><a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">About</a></li>
                                     <li><a href="{{ route('faq') }}">FAQ</a></li>
                                     <li><a href="{{ route('blogs') }}">Updates</a></li>
-                                    <li><a href="{{ route('reviews.index') }}">Google Reviews</a></li>
                                     <li><a href="{{ route('contact') }}">Contact</a></li>
                                 </ul>
                             </nav>
@@ -249,8 +244,14 @@
         @yield('content')
     </div>
 
-    @include('frontend.partials.kdr-why-choose-us')
-    
+    @if(! request()->routeIs('about'))
+        @include('frontend.partials.kdr-why-choose-us')
+    @endif
+
+    @if(request()->routeIs('home') && ($latestArticles ?? collect())->isNotEmpty())
+        @include('frontend.partials.kdr-home-latest-articles', ['latestArticles' => $latestArticles])
+    @endif
+
     @include('layouts.includes.site-footer')
 
     @stack('modals')

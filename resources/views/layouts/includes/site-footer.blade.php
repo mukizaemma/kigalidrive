@@ -67,8 +67,7 @@
                         <h3 class="widget_title">Quick Links</h3>
                         <div class="menu-all-pages-container">
                             <ul class="menu footer-quick-links">
-                                <li><a href="{{ route('showCars') }}">Rent a car</a></li>
-                                <li><a href="{{ route('showCars', ['listing_type' => 'sale']) }}">Cars for sale</a></li>
+                                <li><a href="{{ route('showCars') }}">Our fleet</a></li>
                                 <li><a href="{{ route('services.index') }}">Services</a></li>
                                 <li><a href="{{ route('about') }}">About Us</a></li>
                                 <li><a href="{{ route('faq') }}">FAQ</a></li>
@@ -113,8 +112,8 @@
                         <div class="footer-book-cta">
                             <p class="footer-book-cta__label">Ready to book?</p>
                             <div class="footer-book-cta__buttons">
-                                <a href="{{ route('showCars') }}" class="th-btn style3 footer-book-btn">Rent a Car</a>
-                                <a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="th-btn style3 footer-book-btn footer-book-btn--outline">Buy a Car</a>
+                                <a href="{{ route('showCars') }}" class="th-btn style3 footer-book-btn">Browse fleet</a>
+                                <a href="{{ route('contact') }}" class="th-btn style3 footer-book-btn footer-book-btn--outline">Get a quote</a>
                             </div>
                         </div>
                     </div>

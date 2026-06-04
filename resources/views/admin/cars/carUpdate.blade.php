@@ -42,14 +42,11 @@
 
                             <div class="modal-body">
 
-                                {{-- Advert Type & Service --}}
+                                <input type="hidden" name="advert_type" value="rent">
                                 <div class="row mb-3">
                                     <div class="col-lg-6 col-sm-12">
-                                        <label class="form-label">Advert Type <span class="text-danger">*</span></label>
-                                        <select name="advert_type" id="advert_type" class="form-control" required>
-                                            <option value="rent" {{ old('advert_type', $advertType ?? 'rent') == 'rent' ? 'selected' : '' }}>Rent</option>
-                                            <option value="sell" {{ old('advert_type', $advertType ?? 'rent') == 'sell' ? 'selected' : '' }}>Sell</option>
-                                        </select>
+                                        <label class="form-label">Listing</label>
+                                        <span class="badge bg-primary">Rental only</span>
                                     </div>
                                     <div class="col-lg-6 col-sm-12">
                                         <label class="form-label">Brand</label>
@@ -137,33 +134,25 @@
                                     </div>
                                 </div>
 
-                                {{-- Pricing (Rent) --}}
                                 <div id="rent_fields">
                                     <div class="row mb-3">
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label class="form-label">Price Per Day (USD)</label>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <label class="form-label">Price per day (USD)</label>
                                             <input type="number" step="0.01" name="price_per_day" id="price_per_day"
                                                 class="form-control"
                                                 value="{{ old('price_per_day', $car->price_per_day) }}">
                                         </div>
-
-                                        <div class="col-lg-6 col-sm-12">
-                                            <label class="form-label">Price Per Month (USD)</label>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <label class="form-label">Price per week (USD)</label>
+                                            <input type="number" step="0.01" name="price_per_week" id="price_per_week"
+                                                class="form-control"
+                                                value="{{ old('price_per_week', $car->price_per_week) }}">
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <label class="form-label">Price per month (USD)</label>
                                             <input type="number" step="0.01" name="price_per_month" id="price_per_month"
                                                 class="form-control"
                                                 value="{{ old('price_per_month', $car->price_per_month) }}">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Pricing (Sell) --}}
-                                <div id="sell_fields" style="display:none;">
-                                    <div class="row mb-3">
-                                        <div class="col-lg-12">
-                                            <label class="form-label">Buy Price (USD)</label>
-                                            <input type="number" step="0.01" name="price_to_buy" id="price_to_buy"
-                                                class="form-control"
-                                                value="{{ old('price_to_buy', $car->price_to_buy) }}">
                                         </div>
                                     </div>
                                 </div>

@@ -92,7 +92,8 @@
                 <p class="small text-muted mt-3 mb-0">Add <code>GOOGLE_PLACES_API_KEY</code> to your .env and set your Google Business URL in Admin → Settings to show reviews here automatically.</p>
                 @endif
                 @else
-                <p class="text-muted mb-0">Google Business Profile URL is not configured yet. Add it in <a href="{{ route('setting') }}">Admin → Settings</a>.</p>
+                <p class="text-muted mb-2">We share client feedback on Google. Check back soon or get in touch — we are happy to answer any questions.</p>
+                <a href="{{ route('contact') }}" class="th-btn btn-kdr-primary btn-sm">Contact us</a>
                 @endif
             </div>
         </div>

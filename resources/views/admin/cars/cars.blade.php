@@ -74,11 +74,6 @@
                                             <div>{{ formatUsd($rs->price_per_month) }} / month</div>
                                         @endif
 
-                                        @if($rs->price_to_buy)
-                                            <div class="text-success">
-                                                Buy: {{ formatUsd($rs->price_to_buy) }}
-                                            </div>
-                                        @endif
                                     </td>
 
                                     {{-- Description --}}
@@ -148,10 +143,9 @@
                             <div class="row mb-3">
                                 <div class="col-lg-6 col-sm-12">
                                     <label class="form-label">Advert Type</label>
-                                    <select name="advert_type" id="advert_type" class="form-control" required>
-                                        <option value="rent">Rent</option>
-                                        <option value="sell">Sell</option>
-                                    </select>
+                                    <input type="hidden" name="advert_type" value="rent">
+                                    <label class="form-label d-block">Listing</label>
+                                    <span class="badge bg-primary">Rental only</span>
                                 </div>
                                 <div class="col-lg-6 col-sm-12">
                                     <label class="form-label">Brand</label>
@@ -202,22 +196,17 @@
 
                             <div id="rent_fields">
                                 <div class="row mb-3">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <label class="form-label">Price Per Day (USD)</label>
+                                    <div class="col-lg-4 col-sm-12">
+                                        <label class="form-label">Price per day (USD)</label>
                                         <input type="number" step="0.01" name="price_per_day" id="price_per_day" class="form-control">
                                     </div>
-                                    <div class="col-lg-6 col-sm-12">
-                                        <label class="form-label">Price Per Month (USD)</label>
-                                        <input type="number" step="0.01" name="price_per_month" id="price_per_month" class="form-control">
+                                    <div class="col-lg-4 col-sm-12">
+                                        <label class="form-label">Price per week (USD)</label>
+                                        <input type="number" step="0.01" name="price_per_week" class="form-control">
                                     </div>
-                                </div>
-                            </div>
-
-                            <div id="sell_fields" style="display:none;">
-                                <div class="row mb-3">
-                                    <div class="col-lg-12">
-                                        <label class="form-label">Buy Price (USD)</label>
-                                        <input type="number" step="0.01" name="price_to_buy" id="price_to_buy" class="form-control">
+                                    <div class="col-lg-4 col-sm-12">
+                                        <label class="form-label">Price per month (USD)</label>
+                                        <input type="number" step="0.01" name="price_per_month" id="price_per_month" class="form-control">
                                     </div>
                                 </div>
                             </div>

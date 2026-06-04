@@ -36,7 +36,7 @@ class ReservationController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:50',
-            'booking_type' => 'required|in:rent,buy,view_car',
+            'booking_type' => 'required|in:rent,view_car',
             'rental_package' => ['nullable', 'string', 'max:64', Rule::in($packageKeys), 'required_if:booking_type,rent'],
             'full_address' => 'nullable|string|max:500',
             'time_needed' => 'nullable|string|max:255',

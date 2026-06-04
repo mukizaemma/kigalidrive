@@ -77,7 +77,7 @@ class CarsController extends Controller
             'transmission' => 'nullable|string|max:50',
             'seats' => 'nullable|integer|min:1',
             'brand' => 'nullable|string|max:100',
-            'advert_type' => 'required|in:rent,sell',
+            'advert_type' => 'required|in:rent',
             'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
             'car_images' => 'nullable|array',
             'car_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
@@ -109,13 +109,14 @@ class CarsController extends Controller
                 'fuel_type' => $request->input('fuel_type'),
                 'seats' => $request->input('seats'),
                 'transmission' => $request->input('transmission'),
-                'price_per_day' => $request->input('advert_type') === 'rent' ? $request->input('price_per_day') : null,
-                'price_per_month' => $request->input('advert_type') === 'rent' ? $request->input('price_per_month') : null,
-                'price_to_buy' => $request->input('advert_type') === 'sell' ? $request->input('price_to_buy') : null,
+                'price_per_day' => $request->input('price_per_day'),
+                'price_per_week' => $request->input('price_per_week'),
+                'price_per_month' => $request->input('price_per_month'),
+                'price_to_buy' => null,
                 'image' => $coverImageName, // Cover image
                 'description' => $request->input('description'),
                 'brand' => $request->input('brand'),
-                'listing_type' => $request->input('advert_type') === 'sell' ? 'sale' : 'rent',
+                'listing_type' => 'rent',
                 'added_by' => $request->user()->id,
                 'status' => 'available',
             ]);
@@ -147,16 +148,10 @@ class CarsController extends Controller
         $car = Car::findOrFail($id);
         $carImages = Carimage::where('car_id', $car->id)->get();
         
-        // Determine advert type based on pricing
-        $advertType = 'rent';
-        if ($car->price_to_buy && !$car->price_per_day && !$car->price_per_month) {
-            $advertType = 'sell';
-        }
-
         return view('admin.cars.carUpdate', [
             'car' => $car,
             'carImages' => $carImages,
-            'advertType' => $advertType,
+            'advertType' => 'rent',
         ]);
     }
     public function view($id)
@@ -181,7 +176,7 @@ class CarsController extends Controller
                 'transmission' => 'nullable|string|max:50',
                 'seats' => 'nullable|integer|min:1',
                 'brand' => 'nullable|string|max:100',
-                'advert_type' => 'required|in:rent,sell',
+                'advert_type' => 'required|in:rent',
                 'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
                 'car_images' => 'nullable|array',
                 'car_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
@@ -212,16 +207,10 @@ class CarsController extends Controller
             $car->listing_type = $request->input('advert_type') === 'sell' ? 'sale' : 'rent';
             $car->status = $request->input('status');
             
-            // Update pricing based on advert type
-            if ($request->input('advert_type') === 'rent') {
-                $car->price_per_day = $request->input('price_per_day');
-                $car->price_per_month = $request->input('price_per_month');
-                $car->price_to_buy = null;
-            } else {
-                $car->price_per_day = null;
-                $car->price_per_month = null;
-                $car->price_to_buy = $request->input('price_to_buy');
-            }
+            $car->price_per_day = $request->input('price_per_day');
+            $car->price_per_week = $request->input('price_per_week');
+            $car->price_per_month = $request->input('price_per_month');
+            $car->price_to_buy = null;
     
             // Update slug if name changed
             if ($car->isDirty('name')) {

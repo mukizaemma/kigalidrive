@@ -22,6 +22,7 @@
             <a href="{{ route('blogsComment') }}" class="nav-item nav-link"><i class="fas fa-comments me-2"></i>Article comments</a>
             <a href="{{ route('admin.faqs.index') }}" class="nav-item nav-link"><i class="fas fa-circle-question me-2"></i>FAQ</a>
             <a href="{{ route('slides') }}" class="nav-item nav-link"><i class="fas fa-images me-2"></i>Home slides</a>
+            <a href="{{ route('admin.home-hire.index') }}" class="nav-item nav-link"><i class="fas fa-bullhorn me-2"></i>Homepage marketing</a>
             <a href="{{ route('aboutPage') }}" class="nav-item nav-link"><i class="fas fa-info-circle me-2"></i>About page</a>
             <a href="{{ route('admin.rental-agreement.edit') }}" class="nav-item nav-link"><i class="fas fa-file-contract me-2"></i>Rental agreement</a>
             <hr class="my-2">

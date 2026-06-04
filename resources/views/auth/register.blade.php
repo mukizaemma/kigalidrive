@@ -18,7 +18,7 @@
                 <ul>
                     <li><a href="{{ route('home') }}">Home</a></li>
                     <li><a href="{{ route('showCars') }}">Cars</a></li>
-                    <li><a href="{{ route('showCars', ['listing_type' => 'sale']) }}">Cars for Sale</a></li>
+                    <li><a href="{{ route('showCars') }}">Our Fleet</a></li>
                     <li><a href="{{ route('services.index') }}">Services</a></li>
                     <li><a href="{{ route('contact') }}">Contact</a></li>
                     <li><a href="{{ route('listYourProperty') }}">List your car</a></li>
@@ -57,7 +57,7 @@
                                 <ul>
                                     <li><a href="{{ route('home') }}">Home</a></li>
                                     <li><a href="{{ route('showCars') }}">Rent a Car</a></li>
-                                    <li><a href="{{ route('showCars', ['listing_type' => 'sale']) }}">Buy a Car</a></li>
+                                    <li><a href="{{ route('showCars') }}">Our Fleet</a></li>
                                     <li><a href="{{ route('services.index') }}">Services</a></li>
                                     <li><a href="{{ route('contact') }}">Contact</a></li>
                                     <li><a href="{{ route('listYourProperty') }}">List your car</a></li>

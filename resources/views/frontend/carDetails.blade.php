@@ -134,15 +134,20 @@
                         </div>
 
                         <div class="text-end">
-                            @if($car->price_to_buy)
-                                <div style="font-size:20px;font-weight:700;">
-                                    {{ formatUsd($car->price_to_buy) }}
-                                    <small class="text-muted">For Sale</small>
-                                </div>
-                            @elseif($car->price_per_day)
+                            @if($car->price_per_day)
                                 <div style="font-size:20px;font-weight:700;">
                                     {{ formatUsd($car->price_per_day) }}
                                     <small class="text-muted">/ day</small>
+                                </div>
+                            @elseif($car->price_per_week)
+                                <div style="font-size:20px;font-weight:700;">
+                                    {{ formatUsd($car->price_per_week) }}
+                                    <small class="text-muted">/ week</small>
+                                </div>
+                            @elseif($car->price_per_month)
+                                <div style="font-size:20px;font-weight:700;">
+                                    {{ formatUsd($car->price_per_month) }}
+                                    <small class="text-muted">/ month</small>
                                 </div>
                             @endif
                             <button type="button" class="th-btn style4 mt-2" data-bs-toggle="modal" data-bs-target="#carBookingModal">
@@ -224,12 +229,15 @@
                                         </p>
 
                                         <p style="font-size:18px;font-weight:700;">
-                                            @if($car->price_to_buy)
-                                                {{ formatUsd($car->price_to_buy) }}
-                                                <small class="text-muted">For Sale</small>
-                                            @else
+                                            @if($car->price_per_day)
                                                 {{ formatUsd($car->price_per_day) }}
                                                 <small class="text-muted">/ day</small>
+                                            @elseif($car->price_per_week)
+                                                {{ formatUsd($car->price_per_week) }}
+                                                <small class="text-muted">/ week</small>
+                                            @elseif($car->price_per_month)
+                                                {{ formatUsd($car->price_per_month) }}
+                                                <small class="text-muted">/ month</small>
                                             @endif
                                         </p>
 
@@ -289,10 +297,15 @@
                                                                 {{ formatUsd($r->price_per_day) }}
                                                                 <span class="text-muted fw-normal">/ day</span>
                                                             </p>
-                                                        @elseif($r->price_to_buy)
+                                                        @elseif($r->price_per_week)
                                                             <p class="fw-bold mb-2">
-                                                                {{ formatUsd($r->price_to_buy) }}
-                                                                <span class="text-muted fw-normal">For Sale</span>
+                                                                {{ formatUsd($r->price_per_week) }}
+                                                                <span class="text-muted fw-normal">/ week</span>
+                                                            </p>
+                                                        @elseif($r->price_per_month)
+                                                            <p class="fw-bold mb-2">
+                                                                {{ formatUsd($r->price_per_month) }}
+                                                                <span class="text-muted fw-normal">/ month</span>
                                                             </p>
                                                         @endif
                                                     </div>

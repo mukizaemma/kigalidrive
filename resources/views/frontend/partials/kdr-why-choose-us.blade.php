@@ -1,13 +1,13 @@
 @php
     $whyItems = [
-        ['icon' => 'fa-car', 'title' => 'Wide vehicle selection', 'text' => 'Sedans, SUVs, hybrids, and luxury options for every trip.'],
-        ['icon' => 'fa-shield', 'title' => 'Safe & maintained fleet', 'text' => 'Regular servicing and verified listings you can trust.'],
-        ['icon' => 'fa-tags', 'title' => 'Transparent pricing', 'text' => 'Clear daily, weekly, and monthly rates — no hidden surprises.'],
-        ['icon' => 'fa-user-tie', 'title' => 'Driver or self-drive', 'text' => 'Choose chauffeur service or drive yourself with flexible terms.'],
+        ['icon' => 'fa-car', 'title' => 'Wide rental fleet', 'text' => 'Sedans, SUVs, and executive options for every trip in Rwanda.'],
+        ['icon' => 'fa-shield', 'title' => 'Safe & maintained', 'text' => 'Vehicles serviced and prepared for Kigali roads and upcountry travel.'],
+        ['icon' => 'fa-tags', 'title' => 'Transparent USD rates', 'text' => 'Daily, weekly, and monthly pricing — no hidden surprises.'],
+        ['icon' => 'fa-user-tie', 'title' => 'Driver or self-drive', 'text' => 'Professional chauffeur or flexible self-drive hire.'],
         ['icon' => 'fa-headset', 'title' => 'Fast support', 'text' => 'Responsive team in Kigali — English, French, Kinyarwanda & Swahili.'],
         ['icon' => 'fa-calendar-check', 'title' => 'Easy booking', 'text' => 'Reserve online in minutes or message us on WhatsApp.'],
-        ['icon' => 'fa-hand-holding-dollar', 'title' => 'Cars for sale', 'text' => 'Browse quality vehicles for purchase with clear pricing in USD.'],
-        ['icon' => 'fa-map-location-dot', 'title' => 'Local expertise', 'text' => 'Based in Kisimenti — we know Kigali and Rwanda inside out.'],
+        ['icon' => 'fa-plane-arrival', 'title' => 'Airport & city hire', 'text' => 'KGL transfers and comfortable rides across the capital.'],
+        ['icon' => 'fa-map-marked-alt', 'title' => 'Local expertise', 'text' => 'Based in Kigali — we know Rwanda inside out.'],
     ];
 
     $whyBgFile = optional($setting)->why_trust_background_image ?? optional($setting)->home_background_image ?? null;
@@ -27,7 +27,7 @@
         <div class="text-center mb-5">
             <p class="kdr-why-section__eyebrow">Why choose us</p>
             <h2 id="kdr-why-heading" class="kdr-why-section__title">Why Clients Trust Kigali Drive Rentals</h2>
-            <p class="kdr-why-section__lead">Reliable car rentals and sales in Rwanda — tailored for locals, tourists, NGOs, and corporates.</p>
+            <p class="kdr-why-section__lead">Rwanda's rental partner for visitors, NGOs, corporates, and Kigali residents — reliable vehicles, clear terms, human support.</p>
         </div>
         <div class="row g-3 g-lg-4">
             @foreach($whyItems as $item)

@@ -50,6 +50,7 @@ class HomeController extends Controller
     {
         try {
             $featuredCars = Car::where('status', 'available')
+                ->forRent()
                 ->latest()
                 ->take(6)
                 ->get();
@@ -77,15 +78,37 @@ class HomeController extends Controller
         $about = About::first();
 
         try {
-            $carBrands = Car::query()
-                ->where('status', 'available')
-                ->whereNotNull('brand')
-                ->distinct()
-                ->orderBy('brand')
-                ->pluck('brand');
+            $hireIntro = \App\Models\HomeHireIntro::find(1);
+            $hireScenarios = \App\Models\HomeHireScenario::active()->ordered()->get();
         } catch (\Throwable $e) {
             report($e);
-            $carBrands = collect();
+            $hireIntro = null;
+            $hireScenarios = collect();
+        }
+
+        try {
+            $latestArticles = Blog::query()
+                ->where('status', 'Published')
+                ->latest()
+                ->take(3)
+                ->get();
+        } catch (\Throwable $e) {
+            report($e);
+            $latestArticles = collect();
+        }
+
+        try {
+            $fleetCount = Car::query()->where('status', 'available')->forRent()->count();
+            $heroFromPrice = Car::query()
+                ->where('status', 'available')
+                ->forRent()
+                ->whereNotNull('price_per_day')
+                ->where('price_per_day', '>', 0)
+                ->min('price_per_day');
+        } catch (\Throwable $e) {
+            report($e);
+            $fleetCount = 0;
+            $heroFromPrice = null;
         }
 
         return view('frontend.kdr-home', compact(
@@ -94,17 +117,24 @@ class HomeController extends Controller
             'googleReviews',
             'slides',
             'about',
-            'carBrands'
+            'hireIntro',
+            'hireScenarios',
+            'fleetCount',
+            'heroFromPrice',
+            'latestArticles'
         ));
     }
 
     public function faq()
     {
         $faqs = \App\Models\Faq::active()->ordered()->get();
+        $setting = Setting::first();
+        $googleData = app(\App\Services\GoogleBusinessReviewService::class)->getData($setting);
 
         return view('frontend.faq', [
             'faqs' => $faqs,
-            'setting' => Setting::first(),
+            'setting' => $setting,
+            'googleData' => $googleData,
         ]);
     }
 
@@ -205,12 +235,17 @@ public function hotelsSearch(Request $request)
 
     public function showCars(Request $request)
     {
+        if (in_array($request->input('listing_type'), ['sale', 'sell', 'buy'], true)) {
+            return redirect()->route('showCars', $request->except('listing_type'));
+        }
+
         $q = $request->input('q');
         $orderby = $request->input('orderby', 'date');
         $rentalPeriod = $request->input('rental_period', 'day');
 
         $query = Car::query()
             ->where('status', 'available')
+            ->forRent()
             ->with('images');
 
         if ($request->filled('q')) {
@@ -225,17 +260,6 @@ public function hotelsSearch(Request $request)
 
         if ($request->filled('model')) {
             $query->where('model', 'like', '%' . $request->input('model') . '%');
-        }
-
-        if ($request->filled('listing_type')) {
-            $type = $request->input('listing_type');
-            if ($type === 'rent') {
-                $query->whereIn('listing_type', ['rent', 'both']);
-            } elseif ($type === 'sale') {
-                $query->whereIn('listing_type', ['sale', 'both']);
-            } else {
-                $query->where('listing_type', $type);
-            }
         }
 
         if ($request->filled('brand')) {
@@ -318,8 +342,16 @@ public function hotelsSearch(Request $request)
     public function carDetails($slug){
         $car = Car::with('images')->where('slug', $slug)->firstOrFail();
 
+        if (! $car->isRentable()) {
+            abort(404);
+        }
+
         $images = $car->images;
-        $allCars = Car::where('id','!=',$car->id)->where('status', 'available')->limit(3)->get();
+        $allCars = Car::where('id', '!=', $car->id)
+            ->where('status', 'available')
+            ->forRent()
+            ->limit(3)
+            ->get();
         $rentalPackages = app(\App\Services\CarRentalPackageService::class)->packagesFor($car);
 
         return view('frontend.carDetails',[

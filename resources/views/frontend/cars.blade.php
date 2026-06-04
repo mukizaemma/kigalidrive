@@ -12,9 +12,9 @@
         <div class="kdr-cars-hero mb-4 mb-lg-5">
             <div class="row align-items-center g-4">
                 <div class="col-lg-8">
-                    <span class="kdr-cars-hero__eyebrow"><i class="fas fa-car me-2"></i>Car rental &amp; sales</span>
-                    <h1 class="kdr-cars-hero__title">Browse our fleet in Kigali</h1>
-                    <p class="kdr-cars-hero__lead mb-0">Self-drive or with driver · Daily, weekly &amp; monthly rates · Transparent pricing in USD.</p>
+                    <span class="kdr-cars-hero__eyebrow"><i class="fas fa-car me-2"></i>Car rental</span>
+                    <h1 class="kdr-cars-hero__title">Our rental fleet in Kigali</h1>
+                    <p class="kdr-cars-hero__lead mb-0">Self-drive or with driver · Daily, weekly &amp; monthly · Clear USD pricing · Airport &amp; city hire.</p>
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <button type="button" class="th-btn btn-kdr-primary" data-bs-toggle="modal" data-bs-target="#carRentalRequestModal">
@@ -35,16 +35,7 @@
                             <input type="text" id="filter_q" name="q" class="form-control" value="{{ request('q') }}" placeholder="Name, brand, keyword…">
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-6">
-                        <label class="form-label" for="filter_listing_type">Listing type</label>
-                        <select id="filter_listing_type" name="listing_type" class="form-select">
-                            <option value="">All types</option>
-                            <option value="rent" @selected(request('listing_type') === 'rent')>For rent</option>
-                            <option value="sale" @selected(request('listing_type') === 'sale')>For sale</option>
-                            <option value="both" @selected(request('listing_type') === 'both')>Rent &amp; sale</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-2 col-md-6">
+                    <div class="col-lg-3 col-md-6">
                         <label class="form-label" for="filter_brand">Brand</label>
                         <select id="filter_brand" name="brand" class="form-select">
                             <option value="">All brands</option>

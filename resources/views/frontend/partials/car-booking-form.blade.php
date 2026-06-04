@@ -1,8 +1,7 @@
 @php
     $rentalPackages = $rentalPackages ?? [];
     $hasRent = count($rentalPackages) > 0;
-    $hasBuy = (bool) $car->price_to_buy;
-    $defaultType = old('booking_type', $hasRent ? 'rent' : ($hasBuy ? 'buy' : 'view_car'));
+    $defaultType = old('booking_type', $hasRent ? 'rent' : 'view_car');
 @endphp
 
 <div class="modal fade" id="carBookingModal" tabindex="-1" aria-labelledby="carBookingModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -38,30 +37,20 @@
                         </div>
                     @endif
 
-                    @if($hasRent || $hasBuy)
+                    @if($hasRent)
                     <ul class="nav nav-pills kdr-car-booking__type-tabs mb-3" role="tablist">
-                        @if($hasRent)
                         <li class="nav-item" role="presentation">
                             <button type="button" class="nav-link {{ $defaultType === 'rent' ? 'active' : '' }}"
                                     data-booking-type="rent" aria-selected="{{ $defaultType === 'rent' ? 'true' : 'false' }}">
                                 <i class="fa fa-car me-1"></i> Rent
                             </button>
                         </li>
-                        @endif
                         <li class="nav-item" role="presentation">
                             <button type="button" class="nav-link {{ $defaultType === 'view_car' ? 'active' : '' }}"
                                     data-booking-type="view_car">
                                 <i class="fa fa-eye me-1"></i> View car
                             </button>
                         </li>
-                        @if($hasBuy)
-                        <li class="nav-item" role="presentation">
-                            <button type="button" class="nav-link {{ $defaultType === 'buy' ? 'active' : '' }}"
-                                    data-booking-type="buy">
-                                <i class="fa fa-shopping-cart me-1"></i> Buy
-                            </button>
-                        </li>
-                        @endif
                     </ul>
                     @endif
 
@@ -221,35 +210,6 @@
                         </div>
                     </div>
 
-                    {{-- Buy --}}
-                    <div class="kdr-car-booking__panel" data-panel="buy" @if($defaultType !== 'buy') hidden @endif>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Full name <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control" data-panel-field required
-                                       value="{{ auth()->check() ? auth()->user()->name : old('name') }}">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phone <span class="text-danger">*</span></label>
-                                <input type="tel" name="phone" class="form-control" data-panel-field required
-                                       value="{{ old('phone') }}">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email <span class="text-danger">*</span></label>
-                                <input type="email" name="email" class="form-control" data-panel-field required
-                                       value="{{ auth()->check() ? auth()->user()->email : old('email') }}">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">When do you need the vehicle? <span class="text-danger">*</span></label>
-                                <input type="text" name="time_needed" id="time_needed" class="form-control" data-panel-field
-                                       value="{{ old('time_needed') }}" placeholder="e.g. Within 2 weeks">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Message</label>
-                                <textarea name="additional_request" class="form-control" rows="2" data-panel-field>{{ old('additional_request') }}</textarea>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="modal-footer kdr-modal-footer--stacked flex-column align-items-stretch">

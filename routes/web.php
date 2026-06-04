@@ -42,6 +42,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/faqs/{faq}', [App\Http\Controllers\Admin\AdminFaqController::class, 'update'])->name('admin.faqs.update');
     Route::delete('/admin/faqs/{faq}', [App\Http\Controllers\Admin\AdminFaqController::class, 'destroy'])->name('admin.faqs.destroy');
 
+    Route::get('/admin/home-hire', [App\Http\Controllers\Admin\AdminHomeHireController::class, 'index'])->name('admin.home-hire.index');
+    Route::put('/admin/home-hire/intro', [App\Http\Controllers\Admin\AdminHomeHireController::class, 'updateIntro'])->name('admin.home-hire.intro.update');
+    Route::post('/admin/home-hire/scenarios', [App\Http\Controllers\Admin\AdminHomeHireController::class, 'storeScenario'])->name('admin.home-hire.scenarios.store');
+    Route::put('/admin/home-hire/scenarios/{scenario}', [App\Http\Controllers\Admin\AdminHomeHireController::class, 'updateScenario'])->name('admin.home-hire.scenarios.update');
+    Route::delete('/admin/home-hire/scenarios/{scenario}', [App\Http\Controllers\Admin\AdminHomeHireController::class, 'destroyScenario'])->name('admin.home-hire.scenarios.destroy');
+
     Route::get('/admin/reviews', [App\Http\Controllers\Admin\AdminReviewController::class, 'index'])->name('admin.reviews.index');
     Route::get('/admin/reviews/create', [App\Http\Controllers\Admin\AdminReviewController::class, 'create'])->name('admin.reviews.create');
     Route::post('/admin/reviews', [App\Http\Controllers\Admin\AdminReviewController::class, 'store'])->name('admin.reviews.store');
