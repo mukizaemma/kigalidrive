@@ -154,16 +154,7 @@ class SettingsController extends Controller
         ];
 
         if (Schema::hasColumn('terms', 'terms')) {
-            $defaults['terms'] = 'Our Terms and conditions';
-            $defaults['privacy'] = 'Our Privacy policies';
-            $defaults['privacy_details'] = 'We do not share or use your data for third-party marketing.';
-            $defaults['cookies'] = 'We use cookies to improve site experience.';
-            $defaults['refunds'] = 'Refund policy details.';
-            $defaults['booking_cancellation'] = 'Booking cancellation policy.';
-            $defaults['listing_commission'] = 'Listing commission policy.';
-            $defaults['payment_methods'] = 'Accepted payment methods.';
-            $defaults['return'] = 'Our Return policies';
-            $defaults['support'] = 'Our Support policies';
+            $defaults['terms'] = '<p>Add your rental terms and conditions here.</p>';
             $defaults['added_by'] = Auth::id();
         } else {
             $defaults['content'] = '<p>Terms and policies — edit in admin.</p>';
@@ -452,23 +443,18 @@ class SettingsController extends Controller
     public function saveTerms(Request $request){
         $data = $this->ensureDefaultTerms();
 
-        if (Schema::hasColumn('terms', 'privacy')) {
-            $data->privacy = $request->input('privacy');
-            $data->privacy_details = $request->input('privacy_details');
-            $data->cookies = $request->input('cookies');
-            $data->refunds = $request->input('refunds');
-            $data->booking_cancellation = $request->input('booking_cancellation');
-            $data->listing_commission = $request->input('listing_commission');
-            $data->payment_methods = $request->input('payment_methods');
-            $data->return = $request->input('return');
-            $data->terms = $request->input('terms');
-            $data->support = $request->input('support');
+        $validated = $request->validate([
+            'terms' => 'nullable|string',
+        ]);
+
+        if (Schema::hasColumn('terms', 'terms')) {
+            $data->terms = $validated['terms'] ?? '';
         } elseif (Schema::hasColumn('terms', 'content')) {
-            $data->content = $request->input('content', $data->content);
+            $data->content = $validated['terms'] ?? '';
         }
 
         $data->save();
 
-        return redirect()->back()->with('success', 'Terms and policies has been updated successfully');
+        return redirect()->back()->with('success', 'Terms and conditions updated successfully.');
     }
 }

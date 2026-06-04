@@ -1395,19 +1395,22 @@ public function gallery()
 
 public function terms(){
     try {
-        $featuredCars = Car::where('status', 'available')->latest()->take(6)->get();
+        $featuredCars = Car::query()
+            ->where('status', 'available')
+            ->forRent()
+            ->latest()
+            ->take(4)
+            ->get();
     } catch (\Throwable $e) {
         report($e);
         $featuredCars = collect();
     }
     $setting = Setting::first();
-    $about = About::first();
     $terms = \App\Models\Term::first();
-    return view('frontend.terms',[
-        'setting'=>$setting,
-        'about'=>$about,
-        'featuredCars'=>$featuredCars,
-        'terms'=>$terms,
+    return view('frontend.terms', [
+        'setting' => $setting,
+        'featuredCars' => $featuredCars,
+        'terms' => $terms,
     ]);
 }
 

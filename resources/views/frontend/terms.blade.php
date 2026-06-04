@@ -1,142 +1,51 @@
 @extends('layouts.frontbase')
-<base href="/public">
+
+@section('title', 'Terms & Conditions | ' . (optional($setting)->company ?? 'Kigali Drive Rentals'))
+
 @section('content')
-<style>
-    .terms-sidebar-property {
-        display: block;
-        text-decoration: none;
-        color: inherit;
-        margin-bottom: 1.25rem;
-        border-radius: 12px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        transition: box-shadow 0.3s ease, transform 0.25s ease;
-    }
-    .terms-sidebar-property:hover {
-        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
-    }
-    .terms-sidebar-property:last-child {
-        margin-bottom: 0;
-    }
-    .terms-sidebar-property__img-wrap {
-        width: 100%;
-        aspect-ratio: 16 / 10;
-        overflow: hidden;
-        background: #f0f0f0;
-    }
-    .terms-sidebar-property__img-wrap img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.4s ease;
-    }
-    .terms-sidebar-property:hover .terms-sidebar-property__img-wrap img {
-        transform: scale(1.05);
-    }
-    .terms-sidebar-property__name {
-        padding: 14px 16px;
-        font-weight: 600;
-        font-size: 15px;
-        color: #1a1a1a;
-        line-height: 1.35;
-    }
-    .terms-sidebar-property:hover .terms-sidebar-property__name {
-        color: #0071c2;
-    }
-</style>
-
-
-<section class="page-header bg--cover" style="background-image: url({{ asset('assets/img/bg/breadcumb-bg-1.jpg') }});">
+<section class="kdr-car-detail py-4 py-lg-5">
     <div class="container">
-        <div class="page-header__content text-center">
-            <h2>Terms & Policies</h2>
+        <div class="kdr-cars-hero mb-4 mb-lg-5">
+            <h1 class="kdr-cars-hero__title mb-1">Terms &amp; Conditions</h1>
+            <p class="kdr-cars-hero__lead mb-0">Rental policies for Kigali Drive Rentals.</p>
         </div>
-    </div>
-</section>
 
-<section class="space bg-smoke">
-    <div class="container">
-        <div class="row g-5">
+        <div class="row g-4 g-lg-5 align-items-start">
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <h3 class="mb-3">Terms and Conditions</h3>
-                        <div class="mb-4">
-                            {!! $terms->terms ?? '' !!}
-                        </div>
-
-                        <h4 class="mt-4">Privacy Policy</h4>
-                        <div class="mb-3">{!! $terms->privacy ?? '' !!}</div>
-
-                        @if(!empty($terms->privacy_details))
-                            <h4 class="mt-4">Privacy Details</h4>
-                            <div class="mb-3">{!! $terms->privacy_details !!}</div>
-                        @endif
-
-                        @if(!empty($terms->cookies))
-                            <h4 class="mt-4">Cookies</h4>
-                            <div class="mb-3">{!! $terms->cookies !!}</div>
-                        @endif
-
-                        @if(!empty($terms->refunds))
-                            <h4 class="mt-4">Refunds</h4>
-                            <div class="mb-3">{!! $terms->refunds !!}</div>
-                        @endif
-
-                        @if(!empty($terms->booking_cancellation))
-                            <h4 class="mt-4">Booking Cancellation</h4>
-                            <div class="mb-3">{!! $terms->booking_cancellation !!}</div>
-                        @endif
-
-                        @if(!empty($terms->listing_commission))
-                            <h4 class="mt-4">Listing Commission</h4>
-                            <div class="mb-3">{!! $terms->listing_commission !!}</div>
-                        @endif
-
-                        @if(!empty($terms->payment_methods))
-                            <h4 class="mt-4">Payment Methods</h4>
-                            <div class="mb-3">{!! $terms->payment_methods !!}</div>
-                        @endif
-
-                        @if(!empty($terms->support))
-                            <h4 class="mt-4">Support Policy</h4>
-                            <div class="mb-3">{!! $terms->support !!}</div>
-                        @endif
-
-                        @if(!empty($terms->return))
-                            <h4 class="mt-4">Returns Policy</h4>
-                            <div class="mb-3">{!! $terms->return !!}</div>
-                        @endif
+                <div class="kdr-car-detail__block">
+                    @if(filled(optional($terms)->terms))
+                    <div class="kdr-car-detail__prose kdr-rich-text">
+                        {!! $terms->terms !!}
                     </div>
+                    @else
+                    <p class="text-muted mb-0">Terms and conditions are being updated. Please <a href="{{ route('contact') }}">contact us</a> if you have questions.</p>
+                    @endif
                 </div>
             </div>
 
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <h4 class="mb-4">Featured Cars</h4>
-                        <ul class="list-unstyled mb-0">
-                            @forelse($featuredCars ?? [] as $car)
-                                <li>
-                                    @php
-                                        $thumb = ($car->image && file_exists(storage_path('app/public/images/cars/' . $car->image)))
-                                            ? asset('storage/images/cars/' . $car->image)
-                                            : asset('assets/img/tour/tour_3_1.jpg');
-                                    @endphp
-                                    <a href="{{ route('carDetails', $car->slug ?? $car->id) }}" class="terms-sidebar-property">
-                                        <div class="terms-sidebar-property__img-wrap">
-                                            <img src="{{ $thumb }}" alt="{{ $car->name }}">
-                                        </div>
-                                        <div class="terms-sidebar-property__name">{{ $car->name }}</div>
-                                    </a>
-                                </li>
-                            @empty
-                                <li class="text-muted">No vehicles listed yet.</li>
-                            @endforelse
-                        </ul>
-                    </div>
+                <div class="kdr-car-detail__panel">
+                    <h2 class="h5 mb-3" style="font-family: var(--kdr-display); font-weight: 800; color: var(--kdr-navy);">Latest from our fleet</h2>
+                    <ul class="list-unstyled mb-3">
+                        @forelse($featuredCars as $car)
+                        <li class="mb-3">
+                            @php
+                                $thumb = ($car->image && file_exists(storage_path('app/public/images/cars/' . $car->image)))
+                                    ? asset('storage/images/cars/' . $car->image)
+                                    : asset('assets/img/tour/tour_3_1.jpg');
+                            @endphp
+                            <a href="{{ route('carDetails', $car->slug ?? $car->id) }}" class="kdr-terms-fleet-card text-decoration-none">
+                                <span class="kdr-terms-fleet-card__img">
+                                    <img src="{{ $thumb }}" alt="{{ $car->name }}" loading="lazy">
+                                </span>
+                                <span class="kdr-terms-fleet-card__name">{{ $car->name }}</span>
+                            </a>
+                        </li>
+                        @empty
+                        <li class="text-muted small">No vehicles listed yet.</li>
+                        @endforelse
+                    </ul>
+                    <a href="{{ route('showCars') }}" class="th-btn btn-kdr-primary btn-sm w-100 text-center">View all fleet</a>
                 </div>
             </div>
         </div>

@@ -34,7 +34,7 @@
                                     <button class="nav-link" id="site-images-tab" data-bs-toggle="tab" data-bs-target="#site-images-tab-pane" type="button" role="tab">Site Images</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms-tab-pane" type="button" role="tab">Terms & Policies</button>
+                                    <button class="nav-link" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms-tab-pane" type="button" role="tab">Terms &amp; Conditions</button>
                                 </li>
                             </ul>
 
@@ -180,68 +180,18 @@
                                 </div>
 
                                 <div class="tab-pane fade" id="terms-tab-pane" role="tabpanel">
-                                    <form class="form" action="{{ route('saveTerms', $terms->id) }}" method="POST" enctype="multipart/form-data" class="p-4 bg-light rounded">
-                                        @csrf
-                                        <div class="form-body">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Privacy Policy</label>
-                                                    <textarea id="privacyPolicy" rows="5" class="form-control summernote" name="privacy">{!! $terms->privacy !!}</textarea>
-                                                </div>
+                                    <div class="p-4 bg-light rounded">
+                                        <p class="text-muted small">Edit the full terms document in one place (same content as the public Terms page).</p>
+                                        <form action="{{ route('saveTerms', $terms->id) }}" method="POST">
+                                            @csrf
+                                            <label for="aboutTermsContent" class="form-label fw-semibold">Terms &amp; conditions</label>
+                                            <textarea id="aboutTermsContent" name="terms" rows="14" class="form-control summernote">{!! old('terms', $terms->terms) !!}</textarea>
+                                            <div class="mt-4">
+                                                <button type="submit" class="btn btn-primary"><i class="fa fa-save me-1"></i> Save</button>
+                                                <a href="{{ route('getTerms') }}" class="btn btn-outline-secondary ms-2">Open full Terms editor</a>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Privacy Details</label>
-                                                    <textarea id="privacyDetails" rows="5" class="form-control summernote" name="privacy_details">{!! $terms->privacy_details ?? '' !!}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Cookies Policy</label>
-                                                    <textarea id="cookiesPolicy" rows="5" class="form-control summernote" name="cookies">{!! $terms->cookies ?? '' !!}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Refunds Policy</label>
-                                                    <textarea id="refundsPolicy" rows="5" class="form-control summernote" name="refunds">{!! $terms->refunds ?? '' !!}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Booking Cancellation</label>
-                                                    <textarea id="bookingCancellation" rows="5" class="form-control summernote" name="booking_cancellation">{!! $terms->booking_cancellation ?? '' !!}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Listing Commission</label>
-                                                    <textarea id="listingCommission" rows="5" class="form-control summernote" name="listing_commission">{!! $terms->listing_commission ?? '' !!}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Payment Methods</label>
-                                                    <textarea id="paymentMethods" rows="5" class="form-control summernote" name="payment_methods">{!! $terms->payment_methods ?? '' !!}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Return Policy</label>
-                                                    <textarea id="returnPolicy" rows="5" class="form-control summernote" name="return">{!! $terms->return ?? '' !!}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    <label class="form-label">Support Policy</label>
-                                                    <textarea id="supportPolicy" rows="5" class="form-control summernote" name="support">{!! $terms->support ?? '' !!}</textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-actions mt-4">
-                                            <button type="submit" class="btn btn-primary text-black"><i class="fa fa-save"></i> Save Policies</button>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
