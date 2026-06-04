@@ -158,7 +158,7 @@ class ReservationController extends Controller
             'check_in' => 'nullable|date',
             'check_out' => 'nullable|date|after_or_equal:check_in',
             'additional_request' => 'nullable|string|max:2000',
-            'channel' => 'required|in:email,whatsapp,form',
+            'channel' => 'required|in:email,whatsapp',
         ]);
 
         $setting = Setting::firstOrFail();
@@ -265,6 +265,12 @@ class ReservationController extends Controller
             'reservation_message' => $message,
         ];
 
+        try {
+            $this->notifier->notifyAdmin($payload, $setting);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         if ($channel === 'whatsapp') {
             $externalUrl = $this->channels->whatsappUrl($setting, $message);
             if ($externalUrl) {
@@ -290,14 +296,6 @@ class ReservationController extends Controller
             throw ValidationException::withMessages([
                 'channel' => 'Email is not available right now. Please choose WhatsApp or contact us by phone.',
             ]);
-        }
-
-        if ($channel === 'form') {
-            try {
-                $this->notifier->notifyAdmin($payload, $setting);
-            } catch (\Throwable $e) {
-                // guest booking still succeeds
-            }
         }
 
         return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, null, $flash);

@@ -32,7 +32,7 @@ class ListingRequestController extends Controller
             'contact_name' => 'required|string|max:255',
             'phone' => 'required|string|max:50',
             'email' => [
-                Rule::requiredIf(in_array($channel, ['email', 'form'], true)),
+                Rule::requiredIf($channel === 'email'),
                 'nullable',
                 'email',
                 'max:255',
@@ -41,7 +41,7 @@ class ListingRequestController extends Controller
             'location' => 'required|string|max:255',
             'vehicle_info' => 'nullable|string|max:255',
             'details' => 'nullable|string|max:3000',
-            'channel' => 'required|in:email,whatsapp,form',
+            'channel' => 'required|in:email,whatsapp',
         ]);
 
         $details = trim((string) ($validated['details'] ?? ''));

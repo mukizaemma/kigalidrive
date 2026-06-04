@@ -82,8 +82,9 @@ class ReservationNotificationService
 
     public function notifyAdmin(array $data, Setting $setting): void
     {
-        $email = $setting->booking_email_enabled ? ($setting->booking_email ?: $setting->email) : null;
-        if (!$email) {
+        $channels = app(SubmissionChannelService::class);
+        $email = $channels->adminEmail($setting, 'booking');
+        if (! $email) {
             return;
         }
 

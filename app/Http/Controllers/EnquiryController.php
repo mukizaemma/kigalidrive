@@ -25,7 +25,7 @@ class EnquiryController extends Controller
 
         $validated = $request->validate([
             'form_type' => 'required|in:contact,car_enquiry,apartment_enquiry',
-            'channel' => 'required|in:email,whatsapp,form',
+            'channel' => 'required|in:email,whatsapp',
             'names' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:50',

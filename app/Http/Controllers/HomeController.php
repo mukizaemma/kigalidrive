@@ -766,7 +766,7 @@ public function storeBooking(Request $request)
         'special_requests' => 'nullable|string',
         'extra_charges' => 'nullable|array',
         'extra_charges.*' => 'integer|exists:unit_extra_charges,id',
-        'channel' => 'required|in:email,whatsapp,form',
+        'channel' => 'required|in:email,whatsapp',
     ]);
 
     $setting = Setting::firstOrFail();
@@ -894,6 +894,21 @@ public function storeBooking(Request $request)
     $redirectUrl = route('hotel', $property->slug);
     $successMessage = 'Your availability request has been received. Reference: ' . $referenceNumber . '. We will check availability and contact you to confirm your booking.';
 
+    $notificationRecipients = array_filter([config('mail.admin_email')]);
+    if ($booking->property && $booking->property->owner && $booking->property->owner->email) {
+        $ownerEmail = $booking->property->owner->email;
+        if (! in_array($ownerEmail, $notificationRecipients)) {
+            $notificationRecipients[] = $ownerEmail;
+        }
+    }
+    try {
+        foreach ($notificationRecipients as $email) {
+            Mail::to($email)->send(new BookingNotification($booking));
+        }
+    } catch (\Exception $e) {
+        \Log::error('Failed to send booking notification: ' . $e->getMessage());
+    }
+
     if ($request->channel === 'whatsapp') {
         $externalUrl = $channels->whatsappUrl($setting, $waMessage);
         if ($externalUrl) {
@@ -910,32 +925,6 @@ public function storeBooking(Request $request)
                 . '&body=' . rawurlencode($waMessage);
 
             return $channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl);
-        }
-    }
-
-    if ($request->channel === 'form') {
-        $notificationRecipients = array_filter([config('mail.admin_email')]);
-        if ($booking->property && $booking->property->owner && $booking->property->owner->email) {
-            $ownerEmail = $booking->property->owner->email;
-            if (! in_array($ownerEmail, $notificationRecipients)) {
-                $notificationRecipients[] = $ownerEmail;
-            }
-        }
-        try {
-            foreach ($notificationRecipients as $email) {
-                Mail::to($email)->send(new BookingNotification($booking));
-            }
-        } catch (\Exception $e) {
-            \Log::error('Failed to send booking notification: ' . $e->getMessage());
-        }
-
-        try {
-            $guestEmail = $booking->guest_email ?? ($booking->user->email ?? null);
-            if ($guestEmail) {
-                Mail::to($guestEmail)->send(new BookingConfirmation($booking));
-            }
-        } catch (\Exception $e) {
-            \Log::error('Failed to send client booking confirmation: ' . $e->getMessage());
         }
     }
 

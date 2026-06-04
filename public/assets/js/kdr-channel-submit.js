@@ -148,6 +148,19 @@
         afterSuccessfulSubmit(form, data);
     }
 
+    function updateChannelHint(form) {
+        const picker = form.querySelector('[data-kdr-channel-picker]');
+        if (!picker) {
+            return;
+        }
+        const selected = form.querySelector('input[name="channel"]:checked');
+        const value = selected ? selected.value : null;
+        picker.querySelectorAll('[data-hint-for]').forEach(function (el) {
+            const match = el.getAttribute('data-hint-for') === value;
+            el.hidden = !match;
+        });
+    }
+
     function initChannelForm(form) {
         if (form.dataset.kdrChannelInit === '1') {
             return;
@@ -164,8 +177,11 @@
         form.querySelectorAll('input[name="channel"]').forEach(function (radio) {
             radio.addEventListener('change', function () {
                 clearChannelError(form);
+                updateChannelHint(form);
             });
         });
+
+        updateChannelHint(form);
 
         form.addEventListener('submit', function (e) {
             const channelInput = form.querySelector('input[name="channel"]:checked');

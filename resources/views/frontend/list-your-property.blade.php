@@ -97,7 +97,7 @@
 
     function syncEmailRequired() {
         var channel = form.querySelector('input[name="channel"]:checked');
-        var needsEmail = channel && (channel.value === 'email' || channel.value === 'form');
+        var needsEmail = channel && channel.value === 'email';
         if (emailInput) {
             emailInput.required = needsEmail;
         }

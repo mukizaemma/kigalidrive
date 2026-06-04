@@ -28,23 +28,15 @@ class SubmissionChannelService
             return $channels;
         }
 
-        if ($context === 'car_booking') {
+        if (in_array($context, ['car_booking', 'booking', 'listing'], true)) {
             if ($this->whatsappEnabled($setting)) {
                 $channels['whatsapp'] = 'WhatsApp';
             }
-            if ($this->emailEnabled($setting, $context)) {
+            if ($this->emailEnabled($setting, $context === 'car_booking' ? 'car_booking' : 'booking')) {
                 $channels['email'] = 'Email';
             }
 
             return $channels;
-        }
-
-        if ($this->emailEnabled($setting, $context)) {
-            $channels['email'] = 'Email';
-            $channels['form'] = 'Online form (email to admin)';
-        }
-        if ($this->whatsappEnabled($setting)) {
-            $channels['whatsapp'] = 'WhatsApp';
         }
 
         return $channels;

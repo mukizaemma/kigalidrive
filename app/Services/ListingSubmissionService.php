@@ -71,6 +71,12 @@ class ListingSubmissionService
         $redirectUrl = route('listYourProperty');
         $successMessage = 'Your listing request was received (reference #' . $listing->id . '). Our team will contact you shortly.';
 
+        try {
+            $this->notifyAdmin($setting, $listing, $messageText, $context);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         if ($channel === 'whatsapp') {
             $externalUrl = $this->channels->whatsappUrl($setting, $messageText);
             if ($externalUrl) {
@@ -88,10 +94,6 @@ class ListingSubmissionService
 
                 return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl);
             }
-        }
-
-        if ($channel === 'form') {
-            $this->notifyAdmin($setting, $listing, $messageText, $context);
         }
 
         return $this->channels->submissionResponse($request, $redirectUrl, $successMessage);

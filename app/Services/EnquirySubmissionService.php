@@ -76,6 +76,12 @@ class EnquirySubmissionService
             'status' => 'pending',
         ]);
 
+        try {
+            $this->notifyAdmin($setting, $payload, $messageText, $context);
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         $redirectUrl = route($redirectRoute, $redirectParams);
         $successMessage = 'Thank you! Your message was received. Reference #' . $enquiry->id . ' — we will respond shortly.';
 
@@ -104,10 +110,6 @@ class EnquirySubmissionService
             throw \Illuminate\Validation\ValidationException::withMessages([
                 'channel' => 'Email is not available right now. Please choose another option.',
             ]);
-        }
-
-        if ($channel === 'form') {
-            $this->notifyAdmin($setting, $payload, $messageText, $context);
         }
 
         return $this->channels->submissionResponse($request, $redirectUrl, $successMessage);
