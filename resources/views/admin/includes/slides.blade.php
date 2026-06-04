@@ -24,7 +24,7 @@
             <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
                 <div>
                     <h5 class="mb-1">Homepage hero slides</h5>
-                    <p class="text-muted small mb-0">Caption, heading, subheading, and image. Buttons on the site are fixed to Cars and Apartments.</p>
+                    <p class="text-muted small mb-0">Caption, heading, subheading, and image. Buttons on the site link to car listings.</p>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#slideImage">
@@ -129,8 +129,7 @@
                         </div>
                         <div class="col-md-6 d-flex align-items-end">
                             <p class="small text-muted mb-0">
-                                On the homepage, buttons are always <strong>Book a Car</strong> → Cars and
-                                <strong>Browse Apartments</strong> → Apartments.
+                                On the homepage, buttons link to <strong>Rent a Car</strong> and <strong>Buy a Car</strong> listings.
                             </p>
                         </div>
                     </div>

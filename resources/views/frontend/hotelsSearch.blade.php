@@ -21,7 +21,7 @@
         </div>
 
         <div class="kdr-cars-filters kdr-apartments-filters mb-4">
-            <form id="apartmentsFilterForm" method="GET" action="{{ route('apartments') }}" class="kdr-cars-filters__form">
+            <form id="apartmentsFilterForm" method="GET" action="{{ route('showCars') }}" class="kdr-cars-filters__form">
                 <div class="row g-3 align-items-end">
                     <div class="col-lg-4 col-md-6">
                         <label class="form-label" for="filter_q">Search</label>
@@ -61,7 +61,7 @@
                         </select>
                     </div>
                     <div class="col-lg-1 col-md-6 d-grid">
-                        <a href="{{ route('apartments') }}" class="btn btn-outline-secondary" title="Clear filters">Clear</a>
+                        <a href="{{ route('showCars') }}" class="btn btn-outline-secondary" title="Clear filters">Clear</a>
                     </div>
                 </div>
             </form>
@@ -77,7 +77,7 @@
 (function () {
     const resultsContainer = document.getElementById('accommodations-results');
     const filtersForm = document.getElementById('apartmentsFilterForm');
-    const baseUrl = @json(route('apartments'));
+    const baseUrl = @json(route('showCars'));
 
     function getCurrentParams() {
         const params = {};

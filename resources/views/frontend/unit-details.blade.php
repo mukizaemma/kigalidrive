@@ -63,7 +63,7 @@
     <div class="unit-header-section">
         <nav aria-label="breadcrumb" class="mb-2">
             <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ route('apartments') }}" class="breadcrumb-link">Apartments</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('showCars') }}" class="breadcrumb-link">Cars</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('hotel', $property->slug ?? $property->id) }}" class="breadcrumb-link">{{ $property->name }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $unitDisplayName }}</li>
             </ol>

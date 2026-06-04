@@ -101,7 +101,7 @@
                     <div class="text-center py-5">
                         <i class="fas fa-search fa-3x text-muted mb-3"></i>
                         <p class="text-muted">No properties found matching your search criteria.</p>
-                        <a href="{{ route('apartments') }}" class="th-btn style3">View All Properties</a>
+                        <a href="{{ route('showCars') }}" class="th-btn style3">Browse Cars</a>
                     </div>
                 </div>
             @endforelse

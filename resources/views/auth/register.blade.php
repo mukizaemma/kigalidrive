@@ -18,9 +18,10 @@
                 <ul>
                     <li><a href="{{ route('home') }}">Home</a></li>
                     <li><a href="{{ route('showCars') }}">Cars</a></li>
-                    <li><a href="{{ route('apartments') }}">Apartments</a></li>
+                    <li><a href="{{ route('showCars', ['listing_type' => 'sale']) }}">Cars for Sale</a></li>
+                    <li><a href="{{ route('services.index') }}">Services</a></li>
                     <li><a href="{{ route('contact') }}">Contact</a></li>
-                    <li><a href="{{ route('listYourProperty') }}">List with us</a></li>
+                    <li><a href="{{ route('listYourProperty') }}">List your car</a></li>
                     @if(auth()->check())
                         <li>
                             <form id="logout-mobile-form" action="{{ route('logout') }}" method="POST">
@@ -55,17 +56,18 @@
                             <nav class="main-menu d-none d-xl-inline-block">
                                 <ul>
                                     <li><a href="{{ route('home') }}">Home</a></li>
-                                    <li><a href="{{ route('showCars') }}">Cars</a></li>
-                                    <li><a href="{{ route('apartments') }}">Apartments</a></li>
+                                    <li><a href="{{ route('showCars') }}">Rent a Car</a></li>
+                                    <li><a href="{{ route('showCars', ['listing_type' => 'sale']) }}">Buy a Car</a></li>
+                                    <li><a href="{{ route('services.index') }}">Services</a></li>
                                     <li><a href="{{ route('contact') }}">Contact</a></li>
-                                    <li><a href="{{ route('listYourProperty') }}">List with us</a></li>
+                                    <li><a href="{{ route('listYourProperty') }}">List your car</a></li>
                                 </ul>
                             </nav>
                             <button type="button" class="th-menu-toggle d-block d-xl-none"><i class="far fa-bars"></i></button>
                         </div>
                         <div class="col-auto d-none d-xl-block">
                             <div class="header-button">
-                                <a href="{{ route('myPropertyCreate') }}" class="th-btn style3 th-icon">Add Property</a>
+                                <a href="{{ route('listYourProperty') }}" class="th-btn style3 th-icon">List your car</a>
                             </div>
                         </div>
                     </div>

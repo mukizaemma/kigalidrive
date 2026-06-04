@@ -6,7 +6,7 @@
             <div class="kdr-auth-hero__overlay"></div>
             <div class="kdr-auth-hero__content">
                 <h2>Manage your listings with confidence</h2>
-                <p class="mb-0 small opacity-90">Secure dashboard for cars, apartments, bookings, and availability.</p>
+                <p class="mb-0 small opacity-90">Secure dashboard for cars, bookings, and availability.</p>
             </div>
         </div>
 
@@ -63,7 +63,7 @@
                     </a>
 
                     <p class="text-center text-muted small mt-3 mb-0">
-                        Browse our cars and apartments on the homepage.
+                        Browse our cars on the homepage.
                     </p>
                 </form>
             </div>

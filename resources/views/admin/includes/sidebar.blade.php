@@ -13,9 +13,7 @@
             <hr class="my-2">
             <small class="text-muted px-3 text-uppercase">Listings</small>
             <a href="{{ route('getCars') }}" class="nav-item nav-link"><i class="fas fa-car me-2"></i>Cars</a>
-            <a href="{{ route('admin.properties.index') }}" class="nav-item nav-link"><i class="fas fa-building me-2"></i>Apartments</a>
             <a href="{{ route('admin.services.index') }}" class="nav-item nav-link"><i class="fas fa-concierge-bell me-2"></i>Services</a>
-            <a href="{{ route('admin.units.index') }}" class="nav-item nav-link"><i class="fas fa-door-open me-2"></i>Units</a>
             <a href="{{ route('admin.listing-requests.index') }}" class="nav-item nav-link"><i class="fas fa-inbox me-2"></i>Listing requests</a>
             <a href="{{ route('admin.enquiries.index') }}" class="nav-item nav-link"><i class="fas fa-envelope-open-text me-2"></i>Enquiries</a>
             <hr class="my-2">

@@ -55,7 +55,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6 d-flex align-items-end">
-                                <p class="small text-muted mb-0">Homepage buttons: Book a Car → Cars, Browse Apartments → Apartments.</p>
+                                <p class="small text-muted mb-0">Homepage buttons: Rent a Car and Buy a Car link to the cars listings.</p>
                             </div>
                         </div>
                         <div class="mt-4">

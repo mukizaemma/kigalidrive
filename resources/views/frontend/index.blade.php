@@ -111,8 +111,8 @@
                     <div class="hero-style7 text-center" style="padding: 40px 0 30px 0;">
                         <h1 class="hero-title text-white mb-4" style="font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 700;">Your Travel Booking Partner</h1>
                         <div class="btn-group mb-4 flex-wrap justify-content-center">
-                            <a href="{{ route('hotels') }}" class="th-btn th-icon style3">Hotels</a>
-                            <a href="{{ route('apartments') }}" class="th-btn style2 th-icon">Apartments</a>
+                            <a href="{{ route('showCars') }}" class="th-btn th-icon style3">Rent a Car</a>
+                            <a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="th-btn style2 th-icon">Buy a Car</a>
                         </div>
                     </div>
 
