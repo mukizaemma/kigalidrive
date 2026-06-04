@@ -62,7 +62,8 @@
                 @endif
 
                 @if($hasChannels)
-                <form action="{{ route('enquiries.store') }}" method="POST" class="contact-form2 bg-white rounded-3 p-4 shadow-sm kdr-enquiry-form kdr-channel-form">
+                <form action="{{ route('enquiries.store') }}" method="POST" class="contact-form2 bg-white rounded-3 p-4 shadow-sm kdr-enquiry-form kdr-channel-form"
+                      data-kdr-has-channels="{{ $hasChannels ? '1' : '0' }}">
                     @csrf
                     <input type="hidden" name="form_type" value="contact">
                     <div class="hp-field" aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden;">

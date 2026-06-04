@@ -270,6 +270,10 @@ class ReservationController extends Controller
             if ($externalUrl) {
                 return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl, $flash);
             }
+
+            throw ValidationException::withMessages([
+                'channel' => 'WhatsApp is not available right now. Please choose Email or contact us by phone.',
+            ]);
         }
 
         if ($channel === 'email') {
@@ -282,6 +286,10 @@ class ReservationController extends Controller
 
                 return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl, $flash);
             }
+
+            throw ValidationException::withMessages([
+                'channel' => 'Email is not available right now. Please choose WhatsApp or contact us by phone.',
+            ]);
         }
 
         if ($channel === 'form') {

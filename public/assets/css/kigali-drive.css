@@ -357,6 +357,291 @@ body.kigali-drive .kdr-car-booking__summary-row dd {
     margin: 0;
 }
 
+/* —— Car detail page —— */
+body.kigali-drive .kdr-car-detail {
+    background: linear-gradient(180deg, var(--kdr-cream) 0%, #fff 35%);
+}
+
+body.kigali-drive .kdr-car-gallery {
+    background: #fff;
+    border-radius: var(--kdr-radius);
+    overflow: hidden;
+    box-shadow: var(--kdr-shadow);
+    border: 1px solid rgba(10, 29, 55, 0.08);
+}
+
+body.kigali-drive .kdr-car-gallery__main-wrap {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: var(--kdr-navy-dark);
+}
+
+body.kigali-drive .kdr-car-gallery__main {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+body.kigali-drive .kdr-car-gallery__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--kdr-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+body.kigali-drive .kdr-car-gallery__nav:hover {
+    background: #fff;
+    transform: translateY(-50%) scale(1.05);
+}
+
+body.kigali-drive .kdr-car-gallery__nav--prev { left: 12px; }
+body.kigali-drive .kdr-car-gallery__nav--next { right: 12px; }
+
+body.kigali-drive .kdr-car-gallery__thumbs {
+    display: flex;
+    gap: 0.65rem;
+    padding: 0.75rem;
+    background: #fff;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+body.kigali-drive .kdr-car-gallery__thumb {
+    flex: 0 0 auto;
+    width: 88px;
+    height: 64px;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    background: transparent;
+    position: relative;
+    opacity: 0.75;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+body.kigali-drive .kdr-car-gallery__thumb::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: transparent;
+    border-radius: 0 0 10px 10px;
+    transition: background 0.2s;
+}
+
+body.kigali-drive .kdr-car-gallery__thumb.is-active {
+    opacity: 1;
+}
+
+body.kigali-drive .kdr-car-gallery__thumb.is-active::after {
+    background: var(--kdr-gold);
+}
+
+body.kigali-drive .kdr-car-gallery__thumb:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+body.kigali-drive .kdr-car-gallery__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 10px;
+}
+
+body.kigali-drive .kdr-car-detail__panel {
+    background: #fff;
+    border-radius: var(--kdr-radius);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    box-shadow: var(--kdr-shadow);
+    border: 1px solid rgba(10, 29, 55, 0.08);
+    position: sticky;
+    top: 100px;
+}
+
+body.kigali-drive .kdr-car-detail__brand {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--kdr-gold-dark);
+    margin-bottom: 0.35rem;
+}
+
+body.kigali-drive .kdr-car-detail__title {
+    font-family: var(--kdr-display);
+    font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+    font-weight: 800;
+    color: var(--kdr-navy);
+    line-height: 1.2;
+    margin: 0 0 0.5rem;
+}
+
+body.kigali-drive .kdr-car-detail__meta {
+    color: var(--kdr-slate);
+    font-size: 0.92rem;
+    margin: 0 0 1rem;
+}
+
+body.kigali-drive .kdr-car-detail__price {
+    margin-bottom: 1rem;
+}
+
+body.kigali-drive .kdr-car-detail__price-value {
+    font-family: var(--kdr-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--kdr-navy);
+}
+
+body.kigali-drive .kdr-car-detail__price-unit {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--kdr-slate);
+}
+
+body.kigali-drive .kdr-car-detail__rates {
+    margin: 0 0 1rem;
+    padding: 0;
+    font-size: 0.88rem;
+}
+
+body.kigali-drive .kdr-car-detail__rates li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid rgba(10, 29, 55, 0.06);
+    color: var(--kdr-slate);
+}
+
+body.kigali-drive .kdr-car-detail__rates li:last-child {
+    border-bottom: none;
+}
+
+body.kigali-drive .kdr-car-detail__rates strong {
+    color: var(--kdr-navy);
+    white-space: nowrap;
+}
+
+body.kigali-drive .kdr-car-detail__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+body.kigali-drive .kdr-car-detail__status-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+}
+
+body.kigali-drive .kdr-car-detail__status-badge--available {
+    background: #e6f9ee;
+    color: #0b7a3a;
+}
+
+body.kigali-drive .kdr-car-detail__status-badge--rented {
+    background: #fff3e0;
+    color: #b45309;
+}
+
+body.kigali-drive .kdr-car-detail__status-badge--maintenance {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+body.kigali-drive .kdr-car-detail__hire-type {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--kdr-slate);
+}
+
+body.kigali-drive .kdr-car-detail__book {
+    margin-top: 0.25rem;
+}
+
+body.kigali-drive .kdr-car-detail__block {
+    background: #fff;
+    border-radius: var(--kdr-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid rgba(10, 29, 55, 0.06);
+    box-shadow: 0 4px 20px rgba(10, 29, 55, 0.04);
+}
+
+body.kigali-drive .kdr-car-detail__heading {
+    font-family: var(--kdr-display);
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--kdr-navy);
+    margin-bottom: 1rem;
+}
+
+body.kigali-drive .kdr-car-detail__prose {
+    color: var(--kdr-slate);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+body.kigali-drive .kdr-car-detail__spec {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--kdr-cream);
+    border-radius: 12px;
+    height: 100%;
+}
+
+body.kigali-drive .kdr-car-detail__spec i {
+    color: var(--kdr-gold-dark);
+    font-size: 1.1rem;
+    margin-top: 0.15rem;
+}
+
+body.kigali-drive .kdr-car-detail__spec-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--kdr-slate);
+}
+
+body.kigali-drive .kdr-car-detail__spec-value {
+    font-weight: 700;
+    color: var(--kdr-navy);
+}
+
+@media (max-width: 991.98px) {
+    body.kigali-drive .kdr-car-detail__panel {
+        position: static;
+    }
+}
+
 /* —— Cars listing page —— */
 body.kigali-drive .kdr-cars-hero {
     background: linear-gradient(135deg, var(--kdr-cream) 0%, #fff 60%);

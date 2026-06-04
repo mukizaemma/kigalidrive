@@ -84,6 +84,10 @@ class EnquirySubmissionService
             if ($externalUrl) {
                 return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl);
             }
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'channel' => 'WhatsApp is not available right now. Please choose another option.',
+            ]);
         }
 
         if ($channel === 'email') {
@@ -96,6 +100,10 @@ class EnquirySubmissionService
 
                 return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl);
             }
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'channel' => 'Email is not available right now. Please choose another option.',
+            ]);
         }
 
         if ($channel === 'form') {

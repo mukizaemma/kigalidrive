@@ -1,8 +1,12 @@
 @php
     $channelContext = $channelContext ?? 'contact';
     $channelService = app(\App\Services\SubmissionChannelService::class);
-    $availableChannels = $channelService->availableChannels($setting ?? null, $channelContext);
-    $selectedChannel = old('channel');
+    $settingModel = $setting ?? null;
+    $availableChannels = $settingModel
+        ? $channelService->availableChannels($settingModel, $channelContext)
+        : [];
+    $channelKeys = array_keys($availableChannels);
+    $selectedChannel = old('channel', $channelKeys[0] ?? null);
 @endphp
 
 @if(count($availableChannels) === 0)
@@ -15,7 +19,7 @@
         <div class="kdr-channel-picker__options">
             @foreach($availableChannels as $value => $label)
             <label class="kdr-channel-option">
-                <input type="radio" name="channel" value="{{ $value }}" @checked($selectedChannel === $value)>
+                <input type="radio" name="channel" value="{{ $value }}" required @checked($selectedChannel === $value)>
                 <span class="kdr-channel-option__box">
                     @if($value === 'whatsapp')
                         <i class="fab fa-whatsapp kdr-channel-option__icon text-success" aria-hidden="true"></i>
@@ -35,7 +39,7 @@
         @enderror
         <p class="text-muted small mt-2 mb-0">
             @if(($channelContext ?? 'booking') === 'car_booking')
-                Choose WhatsApp or Email, then submit. We save your request on our site and open the app you chose with your booking details ready to send.
+                Choose WhatsApp or Email, then submit. Your booking is saved here first, then your chosen app opens in a <strong>new tab</strong> with the details ready to send.
             @elseif(($channelContext ?? 'booking') === 'contact')
                 Choose a method before submitting. WhatsApp opens with your message pre-filled; Email opens your mail app with a draft to us.
             @else

@@ -2,6 +2,9 @@
     $rentalPackages = $rentalPackages ?? [];
     $hasRent = count($rentalPackages) > 0;
     $defaultType = old('booking_type', $hasRent ? 'rent' : 'view_car');
+    $channelService = app(\App\Services\SubmissionChannelService::class);
+    $bookingChannels = $channelService->availableChannels($setting ?? null, 'car_booking');
+    $hasBookingChannels = count($bookingChannels) > 0;
 @endphp
 
 <div class="modal fade" id="carBookingModal" tabindex="-1" aria-labelledby="carBookingModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -17,7 +20,8 @@
 
             <form action="{{ route('reservations.car') }}" method="POST" id="carBookingForm"
                   class="kdr-channel-form kdr-car-booking d-flex flex-column flex-grow-1"
-                  data-packages='@json($rentalPackages)'>
+                  data-packages='@json($rentalPackages)'
+                  data-kdr-has-channels="{{ $hasBookingChannels ? '1' : '0' }}">
                 @csrf
                 <input type="hidden" name="car_id" value="{{ $car->id }}">
                 <input type="hidden" name="rental_duration" id="rental_duration" value="{{ old('rental_duration') }}">
@@ -218,8 +222,9 @@
                     </div>
                     <div class="kdr-modal-footer__actions d-flex gap-2 justify-content-end">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary th-btn btn-kdr-primary kdr-car-booking__submit">
-                            <i class="fa fa-paper-plane me-2"></i>Save &amp; open to send
+                        <button type="submit" class="btn btn-primary th-btn btn-kdr-primary kdr-car-booking__submit"
+                                @disabled(! $hasBookingChannels)>
+                            <i class="fa fa-paper-plane me-2"></i>Save &amp; open in new tab
                         </button>
                     </div>
                 </div>

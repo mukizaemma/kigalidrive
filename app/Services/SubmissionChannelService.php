@@ -70,20 +70,45 @@ class SubmissionChannelService
         }
     }
 
+    public function isValidContactEmail(?string $email): bool
+    {
+        if (! filled($email)) {
+            return false;
+        }
+
+        return filter_var(trim($email), FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    public function isValidWhatsappNumber(?string $phone): bool
+    {
+        if (! filled($phone)) {
+            return false;
+        }
+
+        $digits = preg_replace('/\D+/', '', $phone);
+
+        return strlen($digits) >= 9 && strlen($digits) <= 15;
+    }
+
     public function emailEnabled(Setting $setting, string $context = 'booking'): bool
     {
         if ($context === 'contact') {
-            return filled($setting->email);
+            return $this->isValidContactEmail($setting->email);
         }
 
+        $address = $setting->booking_email ?: $setting->email;
+
         return (bool) ($setting->booking_email_enabled ?? true)
-            && filled($setting->booking_email ?: $setting->email);
+            && $this->isValidContactEmail($address);
     }
 
     public function whatsappEnabled(Setting $setting): bool
     {
-        return (bool) ($setting->whatsapp_enabled ?? true)
-            && filled($setting->whatsapp ?: $setting->phone);
+        if (! ($setting->whatsapp_enabled ?? true)) {
+            return false;
+        }
+
+        return $this->isValidWhatsappNumber($setting->whatsapp ?: $setting->phone);
     }
 
     public function whatsappNumber(Setting $setting): ?string

@@ -46,11 +46,24 @@
 
     function openExternalUrl(url) {
         if (!url) {
-            return;
+            return false;
         }
         const opened = window.open(url, '_blank', 'noopener,noreferrer');
         if (!opened) {
             window.location.href = url;
+            return true;
+        }
+        return true;
+    }
+
+    function closeParentModal(form) {
+        const modalEl = form.closest('.modal');
+        if (!modalEl || typeof bootstrap === 'undefined') {
+            return;
+        }
+        const instance = bootstrap.Modal.getInstance(modalEl);
+        if (instance) {
+            instance.hide();
         }
     }
 
@@ -70,7 +83,40 @@
         }
     }
 
-    async function submitWithExternalChannel(form, channel) {
+    function showSuccess(form, message) {
+        if (message && typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Saved',
+                text: message,
+                confirmButtonColor: '#c5a059',
+            });
+            return;
+        }
+        if (message) {
+            alert(message);
+        }
+    }
+
+    function afterSuccessfulSubmit(form, data) {
+        if (data.open_url) {
+            openExternalUrl(data.open_url);
+        }
+
+        closeParentModal(form);
+
+        if (data.redirect) {
+            setTimeout(function () {
+                window.location.href = data.redirect;
+            }, data.open_url ? 400 : 0);
+            return;
+        }
+
+        setSubmitting(form, false);
+        showSuccess(form, data.message);
+    }
+
+    async function submitWithExternalChannel(form) {
         const formData = new FormData(form);
         const response = await fetch(form.action, {
             method: (form.method || 'POST').toUpperCase(),
@@ -99,19 +145,7 @@
             return;
         }
 
-        if (data.open_url) {
-            openExternalUrl(data.open_url);
-        }
-
-        if (data.redirect) {
-            window.location.href = data.redirect;
-            return;
-        }
-
-        setSubmitting(form, false);
-        if (data.message && typeof Swal !== 'undefined') {
-            Swal.fire({ icon: 'success', title: 'Success', text: data.message });
-        }
+        afterSuccessfulSubmit(form, data);
     }
 
     function initChannelForm(form) {
@@ -119,6 +153,13 @@
             return;
         }
         form.dataset.kdrChannelInit = '1';
+
+        const hasChannels = form.dataset.kdrHasChannels !== '0';
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        if (!hasChannels && submitButton) {
+            submitButton.disabled = true;
+        }
 
         form.querySelectorAll('input[name="channel"]').forEach(function (radio) {
             radio.addEventListener('change', function () {
@@ -143,7 +184,7 @@
 
             e.preventDefault();
             setSubmitting(form, true);
-            submitWithExternalChannel(form, channelInput.value).catch(function () {
+            submitWithExternalChannel(form).catch(function () {
                 setSubmitting(form, false);
                 showChannelError(form, 'Unable to submit right now. Please try again.');
             });
