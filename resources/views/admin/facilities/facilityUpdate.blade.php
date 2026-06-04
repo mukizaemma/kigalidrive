@@ -54,7 +54,7 @@
                                     <div class="row">
                                         <div class="mb-3">
                                             <label for="summernote" class="form-label">Description</label>
-                                            <textarea id="facilityDescription" rows="5" class="form-control" name="description">{!!$facility->description!!}</textarea>
+                                            <textarea id="facilityDescription" rows="5" class="form-control summernote" name="description">{!!$facility->description!!}</textarea>
                                         </div>
                                     </div>
 

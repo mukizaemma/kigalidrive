@@ -34,7 +34,13 @@
             <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
         <p class="text-muted small mt-2 mb-0">
-            Choose a method before submitting. WhatsApp opens with your details pre-filled; Email opens your mail app with a draft to us; Online form sends the request through our website.
+            @if(($channelContext ?? 'booking') === 'car_booking')
+                Choose WhatsApp or Email, then submit. We save your request on our site and open the app you chose with your booking details ready to send.
+            @elseif(($channelContext ?? 'booking') === 'contact')
+                Choose a method before submitting. WhatsApp opens with your message pre-filled; Email opens your mail app with a draft to us.
+            @else
+                Choose a method before submitting. WhatsApp opens with your details pre-filled; Email opens your mail app with a draft to us; Online form sends the request through our website.
+            @endif
         </p>
     </div>
 @endif

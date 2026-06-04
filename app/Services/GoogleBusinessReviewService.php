@@ -165,8 +165,10 @@ class GoogleBusinessReviewService
                         'rating' => (int) ($r['rating'] ?? 5),
                         'text' => (string) ($r['text'] ?? ''),
                         'relative_time' => (string) ($r['relative_time_description'] ?? ''),
+                        'time' => (int) ($r['time'] ?? 0),
                     ])
                     ->filter(fn (array $r) => $r['text'] !== '')
+                    ->sortByDesc('time')
                     ->values()
                     ->all();
 
@@ -198,10 +200,10 @@ class GoogleBusinessReviewService
     /**
      * @return list<array{author_name: string, author_photo: ?string, rating: int, text: string, relative_time: string}>
      */
-    public function getReviews(?Setting $setting = null, int $limit = 12): array
+    public function getReviews(?Setting $setting = null, int $limit = 6): array
     {
         $data = $this->getData($setting);
 
-        return array_slice($data['reviews'], 0, $limit);
+        return array_slice($data['reviews'], 0, max(1, min($limit, 12)));
     }
 }

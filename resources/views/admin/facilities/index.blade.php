@@ -107,7 +107,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <label for="summernote" class="form-label">Description</label>
-                                <textarea id="facilityDescription" rows="5" class="form-control" name="description"></textarea>
+                                <textarea id="facilityDescription" rows="5" class="form-control summernote" name="description"></textarea>
                             </div>
 
                         </div>

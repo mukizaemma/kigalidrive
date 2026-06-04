@@ -18,8 +18,14 @@
             <!-- Recent Sales Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Manage Comments</h6>
+                    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+                        <div>
+                            <h6 class="mb-0">Article comments</h6>
+                            <p class="text-muted small mb-0">Approve real comments before they appear on the site. Reject spam without publishing.</p>
+                        </div>
+                        @if(($pendingCount ?? 0) > 0)
+                        <span class="badge bg-warning text-dark">{{ $pendingCount }} pending approval</span>
+                        @endif
                     </div>
                 
                     <!-- Tabs for Filters -->
@@ -34,7 +40,11 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ $filter === 'unpublished' ? 'active' : '' }}" 
-                               href="{{ route('blogsComment', ['filter' => 'unpublished']) }}">Unpublished Comments</a>
+                               href="{{ route('blogsComment', ['filter' => 'unpublished']) }}">Pending approval</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ $filter === 'rejected' ? 'active' : '' }}" 
+                               href="{{ route('blogsComment', ['filter' => 'rejected']) }}">Rejected</a>
                         </li>
                     </ul>
                 
@@ -45,28 +55,56 @@
                                 <tr class="text-dark">
                                     <th scope="col">Date</th>
                                     <th scope="col">Comment</th>
-                                    <th scope="col">Publication</th>
-                                    <th scope="col">Names</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col" style="width:150px">Action</th>
+                                    <th scope="col">Article</th>
+                                    <th scope="col">Author</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" style="width:200px">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($comments as $comment)
                                 <tr>
-                                    <td>{{ $comment->created_at }}</td>
-                                    <td>{!! \Illuminate\Support\Str::limit(strip_tags($comment->comment), 50) !!}</td>
-                                    <td>{{ $comment->blog->title ?? '' }}</td>
-                                    <td>{{ $comment->names ?? '' }}</td>
-                                    <td>{{ $comment->email ?? '' }}</td>
+                                    <td class="small">{{ $comment->created_at->format('d M Y H:i') }}</td>
+                                    <td>{!! \Illuminate\Support\Str::limit(strip_tags($comment->comment), 80) !!}</td>
+                                    <td class="small">
+                                        @if($comment->blog)
+                                        <a href="{{ route('viewBlog', $comment->blog_id) }}">{{ Str::limit($comment->blog->title, 40) }}</a>
+                                        @endif
+                                    </td>
+                                    <td class="small">
+                                        {{ $comment->names }}<br>
+                                        <span class="text-muted">{{ $comment->email }}</span>
+                                        @if($comment->ip_address)
+                                        <br><span class="text-muted">{{ $comment->ip_address }}</span>
+                                        @endif
+                                    </td>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            <button type="button" class="btn btn-primary mr-2" data-bs-toggle="modal" data-bs-target="#comment_{{ $comment->id }}">
-                                                {{ $comment->status === 'Unpublished' ? 'View' : 'Approved' }}
-                                            </button>
+                                        @if($comment->status === 'Published')
+                                            <span class="badge bg-success">Published</span>
+                                        @elseif($comment->status === 'Rejected')
+                                            <span class="badge bg-danger">Rejected</span>
+                                        @else
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#comment_{{ $comment->id }}">View</button>
+                                            @if($comment->status !== 'Published')
+                                            <form action="{{ route('commentApprove', $comment) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                            </form>
+                                            @endif
+                                            @if($comment->status !== 'Rejected')
+                                            <form action="{{ route('commentReject', $comment) }}" method="POST" class="d-inline" onsubmit="return confirm('Reject this comment?');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                                            </form>
+                                            @endif
                                             <a href="{{ route('destroyBlogComment', ['id' => $comment->id]) }}" 
-                                               class="btn btn-warning btn-sm" 
-                                               onclick="return confirm('Are you sure to do this?')"> 
+                                               class="btn btn-sm btn-outline-secondary" 
+                                               onclick="return confirm('Delete permanently?')"> 
                                                <i class="fa fa-trash"></i>
                                             </a>
                                         </div>

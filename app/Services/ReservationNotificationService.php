@@ -25,6 +25,9 @@ class ReservationNotificationService
         if (!empty($data['product_label'])) {
             $lines[] = 'Product: ' . $data['product_label'];
         }
+        if (! empty($data['rental_package_label'])) {
+            $lines[] = 'Package: ' . $data['rental_package_label'];
+        }
         if (! empty($data['rental_duration'])) {
             $lines[] = 'Rental duration: ' . $data['rental_duration'];
         }
@@ -35,10 +38,24 @@ class ReservationNotificationService
             }
         }
         if (! empty($data['pickup_date'])) {
-            $lines[] = 'Pickup date: ' . $data['pickup_date'];
+            $pickup = $data['pickup_date'];
+            if (! empty($data['pickup_time'])) {
+                $pickup .= ' at ' . $data['pickup_time'];
+            }
+            $lines[] = 'Pickup: ' . $pickup;
         }
         if (! empty($data['dropoff_date'])) {
-            $lines[] = 'Drop-off date: ' . $data['dropoff_date'];
+            $dropoff = $data['dropoff_date'];
+            if (! empty($data['dropoff_time'])) {
+                $dropoff .= ' at ' . $data['dropoff_time'];
+            }
+            $lines[] = 'Return: ' . $dropoff;
+        }
+        if (! empty($data['pickup_location'])) {
+            $lines[] = 'Pickup location: ' . $data['pickup_location'];
+        }
+        if (! empty($data['dropoff_location'])) {
+            $lines[] = 'Return location: ' . $data['dropoff_location'];
         }
         if (! empty($data['preferred_date'])) {
             $lines[] = 'Preferred viewing date: ' . $data['preferred_date'];

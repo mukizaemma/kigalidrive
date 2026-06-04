@@ -381,37 +381,56 @@ class AdminController extends Controller
             $comments->where('status', 'Published');
         } elseif ($filter === 'unpublished') {
             $comments->where('status', 'Unpublished');
+        } elseif ($filter === 'rejected') {
+            $comments->where('status', 'Rejected');
         }
     
-        $comments = $comments->latest()->paginate(2);
-    
+        $comments = $comments->with('blog')->latest()->paginate(20);
+
+        $pendingCount = BlogComment::where('status', 'Unpublished')->count();
+
         return view('admin.posts.comments', [
             'comments' => $comments,
-            'filter' => $filter, // Pass the current filter to the view
+            'filter' => $filter,
+            'pendingCount' => $pendingCount,
         ]);
     }
-    
 
-    public function commentApprove(BlogComment $comment){
-
-        if($comment->status !=='Published'){
-            $comment->status='Published';
+    public function commentApprove(BlogComment $comment)
+    {
+        if ($comment->status !== 'Published') {
+            $comment->status = 'Published';
+            $comment->published_at = now();
+            $comment->rejection_reason = null;
             $comment->save();
 
             $user = $comment->user;
-
-            if($user){
+            if ($user && $user->email) {
                 $details = [
-                    'greeting' => 'Hello ' . $user->name . '!',
+                    'greeting' => 'Hello '.$user->name.'!',
                     'body' => 'Thank you so much for your helpful comment',
                     'lastline' => 'Blessings!',
                 ];
                 Mail::to($user->email)->queue(new CommentApprovalNotification($details));
-                return redirect()->route('blogsComment')->with('success', 'Comment approved successfully');
             }
-        }
-        return redirect()->back()->with('error', 'Unable to approve comment');
 
+            return redirect()->route('blogsComment')->with('success', 'Comment approved and is now visible on the article.');
+        }
+
+        return redirect()->back()->with('error', 'Comment is already published.');
+    }
+
+    public function commentReject(Request $request, BlogComment $comment)
+    {
+        $request->validate([
+            'rejection_reason' => 'nullable|string|max:255',
+        ]);
+
+        $comment->status = 'Rejected';
+        $comment->rejection_reason = $request->input('rejection_reason', 'Rejected by moderator');
+        $comment->save();
+
+        return redirect()->route('blogsComment')->with('success', 'Comment rejected and hidden from the website.');
     }
 
     public function destroyBlogComment($id)

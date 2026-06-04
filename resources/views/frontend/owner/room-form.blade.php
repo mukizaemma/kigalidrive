@@ -105,7 +105,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <textarea id="roomDescription" name="description" rows="4" class="form-control">{!! old('description', $room->description ?? '') !!}</textarea>
+                <textarea id="roomDescription" name="description" rows="4" class="form-control summernote" data-height="200">{!! old('description', $room->description ?? '') !!}</textarea>
             </div>
 
             <h6 class="text-uppercase text-muted small mb-2">Amenities <span class="fw-normal">(grouped like admin)</span></h6>

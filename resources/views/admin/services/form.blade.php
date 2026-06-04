@@ -34,8 +34,13 @@
                             <input type="text" name="excerpt" class="form-control" value="{{ old('excerpt', $service->excerpt) }}" maxlength="500" placeholder="Brief summary for cards (max 500 chars)">
                         </div>
                         <div class="col-12">
-                            <label class="form-label">Description</label>
-                            <textarea name="description" class="form-control" rows="8">{{ old('description', $service->description) }}</textarea>
+                            @include('admin.partials.rich-textarea', [
+                                'name' => 'description',
+                                'id' => 'serviceDescription',
+                                'label' => 'Description',
+                                'value' => $service->description,
+                                'height' => 260,
+                            ])
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Icon (Font Awesome class)</label>

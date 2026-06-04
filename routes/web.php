@@ -34,7 +34,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/Comments', [App\Http\Controllers\AdminController::class, 'blogsComment'])->name('blogsComment');
     Route::post('/Comment/approve/{comment}', [App\Http\Controllers\AdminController::class, 'commentApprove'])->name('commentApprove');
+    Route::post('/Comment/reject/{comment}', [App\Http\Controllers\AdminController::class, 'commentReject'])->name('commentReject');
     Route::get('/CommentDelete/{id}', [App\Http\Controllers\AdminController::class, 'destroyBlogComment'])->name('destroyBlogComment');
+
+    Route::get('/admin/faqs', [App\Http\Controllers\Admin\AdminFaqController::class, 'index'])->name('admin.faqs.index');
+    Route::post('/admin/faqs', [App\Http\Controllers\Admin\AdminFaqController::class, 'store'])->name('admin.faqs.store');
+    Route::put('/admin/faqs/{faq}', [App\Http\Controllers\Admin\AdminFaqController::class, 'update'])->name('admin.faqs.update');
+    Route::delete('/admin/faqs/{faq}', [App\Http\Controllers\Admin\AdminFaqController::class, 'destroy'])->name('admin.faqs.destroy');
 
     Route::get('/admin/reviews', [App\Http\Controllers\Admin\AdminReviewController::class, 'index'])->name('admin.reviews.index');
     Route::get('/admin/reviews/create', [App\Http\Controllers\Admin\AdminReviewController::class, 'create'])->name('admin.reviews.create');
@@ -196,7 +202,9 @@ Route::middleware(['redirect.admin'])->group(function () {
 
     Route::post('/enquiries', [App\Http\Controllers\EnquiryController::class, 'store'])->name('enquiries.store');
     Route::post('/sendMessage', [App\Http\Controllers\EnquiryController::class, 'store'])->name('sendMessage');
-    Route::post('/sendComment', [App\Http\Controllers\HomeController::class, 'sendComment'])->name('sendComment');
+    Route::post('/sendComment', [App\Http\Controllers\HomeController::class, 'sendComment'])
+        ->middleware('throttle:8,1')
+        ->name('sendComment');
 });
 
 Route::get('/reviews', [App\Http\Controllers\ReviewController::class, 'index'])->name('reviews.index');

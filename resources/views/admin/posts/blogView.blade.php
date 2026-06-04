@@ -18,8 +18,36 @@
             <div class="container-fluid px-4">
                 {{-- <h1 class="mt-4">Dashboard</h1> --}}
                 <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item active">{{$post->title}}</li>
+                    <li class="breadcrumb-item"><a href="{{ route('getBlogs') }}">Articles</a></li>
+                    <li class="breadcrumb-item active">{{ $post->title }}</li>
                 </ol>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="bg-light rounded p-3 text-center">
+                            <div class="text-muted small">Views</div>
+                            <div class="h4 mb-0">{{ number_format($post->views ?? 0) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded p-3 text-center">
+                            <div class="text-muted small">Status</div>
+                            <div class="h6 mb-0">{{ $post->status }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded p-3 text-center">
+                            <div class="text-muted small">Pending comments</div>
+                            <div class="h4 mb-0 text-warning">{{ $pendingComments ?? 0 }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded p-3 text-center">
+                            <div class="text-muted small">Published comments</div>
+                            <div class="h4 mb-0 text-success">{{ $publishedComments ?? 0 }}</div>
+                        </div>
+                    </div>
+                </div>
 
 
                 <div class="container-fluid px-4">
@@ -46,7 +74,7 @@
                                     <div class="row mb-4">
                                         <div class="col-lg-12">
                                             <h4 class="form-label">Description</h4>
-                                            <textarea id="Blogs" rows="5" class="form-control bg-light text-dark border-0" name="description" readonly>{!!$post->description!!}</textarea>
+                                            <textarea id="Blogs" rows="5" class="form-control bg-light text-dark border-0" name="body" readonly>{!! $post->body !!}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -56,8 +84,8 @@
                 
                     <!-- Comments Section -->
                     <div class="card mt-5">
-                        <div class="card-header bg-light text-white">
-                            <h5><span style="color: yellow">{{ $totalComments }}</span> Comments</h5>
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">{{ $totalComments }} comments — moderate before they appear publicly</h5>
                         </div>
                         <div class="card-body">
                             @if($comments->count() == 0)
@@ -71,7 +99,9 @@
                                                 <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small>
                                             </div>
                                         </div>
-                                        <p class="mt-2 mb-0">{{ $comment->comment }}</p>
+                                        <p class="mt-2 mb-1">{{ $comment->comment }}</p>
+                                        <span class="badge {{ $comment->status === 'Published' ? 'bg-success' : ($comment->status === 'Rejected' ? 'bg-danger' : 'bg-warning text-dark') }}">{{ $comment->status }}</span>
+                                        @if($comment->ip_address)<small class="text-muted ms-2">{{ $comment->ip_address }}</small>@endif
                 
                                         <!-- Reply Button -->
                                         {{-- <button type="button" class="btn btn-link text-primary p-0 mt-2" data-bs-toggle="modal" data-bs-target="#replyModal-{{ $comment->id }}">

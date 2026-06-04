@@ -115,7 +115,7 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <label for="summernote" class="form-label">Room Description</label>
-                                <textarea id="roomDescriptionModal" rows="5" class="form-control" name="description"></textarea>
+                                <textarea id="roomDescriptionModal" rows="5" class="form-control summernote" name="description"></textarea>
                             </div>
 
                         </div>
@@ -161,20 +161,4 @@
             </div>
         </div>
         @include('admin.includes.footer')
-@push('scripts')
-<script>
-$(function () {
-    $('#NewProduct').on('shown.bs.modal', function () {
-        var $t = $('#roomDescriptionModal');
-        if (!$t.length || $t.next('.note-editor').length) return;
-        $t.summernote({
-            placeholder: 'Room Description',
-            tabsize: 2,
-            height: 220,
-            toolbar: window._summernoteToolbar || []
-        });
-    });
-});
-</script>
-@endpush
  @endsection

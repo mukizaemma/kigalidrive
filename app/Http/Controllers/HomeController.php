@@ -100,7 +100,12 @@ class HomeController extends Controller
 
     public function faq()
     {
-        return view('frontend.faq');
+        $faqs = \App\Models\Faq::active()->ordered()->get();
+
+        return view('frontend.faq', [
+            'faqs' => $faqs,
+            'setting' => Setting::first(),
+        ]);
     }
 
 public function hotelsSearch(Request $request)
@@ -315,10 +320,13 @@ public function hotelsSearch(Request $request)
 
         $images = $car->images;
         $allCars = Car::where('id','!=',$car->id)->where('status', 'available')->limit(3)->get();
+        $rentalPackages = app(\App\Services\CarRentalPackageService::class)->packagesFor($car);
+
         return view('frontend.carDetails',[
             'car'=>$car,
             'images'=>$images,
             'allCars'=>$allCars,
+            'rentalPackages'=>$rentalPackages,
         ]);
     }
 
@@ -1653,33 +1661,30 @@ public function bookNow(Request $request)
 
 
     public function singleBlog($slug) {
-        $blog = Blog::where('slug', $slug)->firstOrFail();
-        $latestBlogs = Blog::where('status', 'Published')->where('id', '!=',$blog->id)->latest()->paginate(10);
+        $blog = Blog::where('slug', $slug)->where('status', 'Published')->firstOrFail();
+        $latestBlogs = Blog::where('status', 'Published')->where('id', '!=', $blog->id)->latest()->take(5)->get();
 
         $setting = Setting::first();
 
-        if ($blog) {
-            $blog->increment('views');
-            $comments = BlogComment::where('status','Published')->latest()->get();
-            $commentsCount = $comments->count();
+        $blog->increment('views');
 
-            $relatedBlogs = Blog::where('id', '!=', $blog->id)
-                                    ->where('status', 'Published')
-                                    ->take(5) 
-                                    ->get();
-        } else {
+        $comments = BlogComment::where('blog_id', $blog->id)
+            ->published()
+            ->latest()
+            ->get();
 
-            return redirect()->route('blogs')->with('error', 'Article not found');
-        }
-    
+        $guard = app(\App\Services\BlogCommentGuard::class);
+        $commentChallenge = $guard->issueChallenge();
+        $guard->storeChallenge($commentChallenge);
 
         return view('frontend.blog', [
-            'blog' => $blog, 
-            'latestBlogs' => $latestBlogs, 
-            'comments' => $comments, 
-            'commentsCount' => $commentsCount, 
-            'setting' => $setting, 
-            'relatedBlogs'=>$relatedBlogs,
+            'blog' => $blog,
+            'latestBlogs' => $latestBlogs,
+            'comments' => $comments,
+            'commentsCount' => $comments->count(),
+            'setting' => $setting,
+            'relatedBlogs' => $latestBlogs,
+            'commentChallenge' => $commentChallenge,
         ]);
     }
     public function blogs()
@@ -1756,24 +1761,35 @@ public function bookNow(Request $request)
     }
 
     public function sendComment(Request $request) {
+        $request->validate([
+            'blog_id' => 'required|exists:blogs,id',
+            'names' => 'required|string|max:80',
+            'email' => 'required|email|max:120',
+            'comment' => 'required|string|min:20|max:2000',
+            'challenge_token' => 'required|string',
+            'challenge_answer' => 'required|integer',
+        ]);
+
+        $guard = app(\App\Services\BlogCommentGuard::class);
+        if ($error = $guard->validate($request)) {
+            return redirect()->back()->withInput()->with('error', $error);
+        }
+
         $user = auth()->user();
-    
-        $comment = BlogComment::create([
+
+        BlogComment::create([
             'blog_id' => $request->input('blog_id'),
             'names' => $request->input('names'),
             'email' => $request->input('email'),
             'comment' => $request->input('comment'),
-            'user_id' => $user ? $user->id : null,
+            'status' => 'Unpublished',
+            'added_by' => $user?->id,
+            'ip_address' => $request->ip(),
         ]);
-    
-        if ($comment) {
-            // Mail::to('mukizaemma34@gmail.com')->send(new BlogCommentsNotofications($comment));
-            return redirect()->back()->with('success', 'Comment added successfully');
-        }
-    
-        else{
-            return redirect()->back()->with('error', 'Failed to add the comment. Please try again.');
-        }
+
+        $guard->clearChallenge();
+
+        return redirect()->back()->with('success', 'Thank you! Your comment was received and will appear after our team approves it.');
     }
 
     /**

@@ -187,8 +187,8 @@
                         </div>
                         <div class="col-md-12 mb-3">
                             <label for="unitDescription" class="form-label">Unit Description</label>
-                            <textarea name="description" class="form-control @error('description') is-invalid @enderror"
-                                      id="unitDescription" rows="6">{!! old('description', $unit->description) !!}</textarea>
+                            <textarea name="description" class="form-control summernote @error('description') is-invalid @enderror"
+                                      id="unitDescription" rows="6" data-height="220">{!! old('description', $unit->description) !!}</textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

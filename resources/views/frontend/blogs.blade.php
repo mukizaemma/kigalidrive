@@ -26,9 +26,7 @@
                             <div class="p-4">
                                 <div class="small text-muted mb-2">
                                     <i class="fa-regular fa-calendar me-1"></i>{{ $article->created_at->format('d M Y') }}
-                                    @if($article->author)
-                                    <span class="ms-2"><i class="fa-regular fa-user me-1"></i>{{ $article->author }}</span>
-                                    @endif
+                                    <span class="ms-2"><i class="far fa-eye me-1"></i>{{ number_format($article->views ?? 0) }} views</span>
                                 </div>
                                 <h2 class="h5 mb-2">
                                     <a href="{{ route('singleBlog', $article->slug) }}" class="text-decoration-none text-dark">{{ $article->title }}</a>
@@ -59,6 +57,7 @@
                         <li class="mb-2"><a href="{{ route('showCars') }}" class="fw-semibold text-decoration-none"><i class="fas fa-car me-2 text-warning"></i>Rent a car</a></li>
                         <li class="mb-2"><a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="fw-semibold text-decoration-none"><i class="fas fa-tags me-2 text-warning"></i>Cars for sale</a></li>
                         <li class="mb-2"><a href="{{ route('services.index') }}" class="fw-semibold text-decoration-none"><i class="fas fa-concierge-bell me-2 text-warning"></i>Our services</a></li>
+                        <li class="mb-2"><a href="{{ route('faq') }}" class="fw-semibold text-decoration-none"><i class="fas fa-circle-question me-2 text-warning"></i>FAQ</a></li>
                         <li><a href="{{ route('contact') }}" class="fw-semibold text-decoration-none"><i class="fas fa-envelope me-2 text-warning"></i>Contact us</a></li>
                     </ul>
                 </aside>
@@ -66,4 +65,6 @@
         </div>
     </div>
 </section>
+
+@include('frontend.partials.google-reviews-cta', ['setting' => $setting ?? null])
 @endsection

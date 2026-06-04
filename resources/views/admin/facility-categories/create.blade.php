@@ -74,7 +74,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description') }}</textarea>
+                        <textarea name="description" id="description" class="form-control summernote @error('description') is-invalid @enderror" rows="3">{!! old('description') !!}</textarea>
                         @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="d-flex gap-2">

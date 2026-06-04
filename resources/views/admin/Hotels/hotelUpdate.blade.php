@@ -178,7 +178,7 @@
                                 <div class="row mb-3">
                                     <div class="col-lg-12">
                                         <label class="form-label">Hotel Description</label>
-                                        <textarea rows="5" class="form-control" name="description" id="hotelDescription">{!! $hotel->description !!}</textarea>
+                                        <textarea rows="5" class="form-control summernote" name="description" id="hotelDescription">{!! $hotel->description !!}</textarea>
                                     </div>
                                 </div>
 

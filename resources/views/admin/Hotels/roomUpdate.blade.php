@@ -127,7 +127,7 @@
                                     <div class="col-lg-12">
                                         <label class="form-label">Room Description</label>
                                         <textarea rows="5" class="form-control"
-                                                name="description" id="roomDescription">{!! $room->description !!}</textarea>
+                                                name="description" id="roomDescription" class="form-control summernote">{!! $room->description !!}</textarea>
                                     </div>
                                 </div>
 

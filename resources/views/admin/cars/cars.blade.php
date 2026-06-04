@@ -246,8 +246,13 @@
 
                             <div class="row mb-3">
                                 <div class="col-lg-12">
-                                    <label class="form-label">Description</label>
-                                    <textarea rows="5" class="form-control" name="description"></textarea>
+                                    @include('admin.partials.rich-textarea', [
+                                        'name' => 'description',
+                                        'id' => 'carDescription',
+                                        'label' => 'Description',
+                                        'wrapperClass' => 'mb-0',
+                                        'height' => 220,
+                                    ])
                                 </div>
                             </div>
 

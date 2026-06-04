@@ -182,8 +182,8 @@
                 <div class="kdr-home-reviews h-100">
                     <div class="kdr-home-reviews__header">
                         <div>
-                            <p class="kdr-home-reviews__eyebrow mb-1">Testimonials</p>
-                            <h3 class="kdr-home-reviews__title mb-0">What clients say</h3>
+                            <p class="kdr-home-reviews__eyebrow mb-1"><i class="fab fa-google me-1"></i> Google Reviews</p>
+                            <h3 class="kdr-home-reviews__title mb-0">What clients say on Google</h3>
                         </div>
                         @if(!empty($googleReviews['rating']))
                         <div class="kdr-home-reviews__score" title="Google rating">
@@ -206,19 +206,21 @@
                         <small class="text-muted">— {{ $review['author_name'] ?? 'Google user' }}</small>
                     </blockquote>
                     @empty
-                    <p class="text-muted mb-2">See what clients say about us on Google.</p>
+                    <p class="text-muted mb-2 small">Reviews are posted on Google — not on this website.</p>
                     @endforelse
                     @if(($googleReviews['write_review_url'] ?? null))
                     <a href="{{ $googleReviews['write_review_url'] }}" target="_blank" rel="noopener noreferrer" class="th-btn btn-kdr-primary btn-sm w-100 mt-2">
-                        <i class="fab fa-google me-1"></i> Write a review
+                        <i class="fab fa-google me-1"></i> Write a review on Google
                     </a>
                     @endif
-                    <a href="{{ route('reviews.index') }}" class="btn btn-link btn-sm w-100 mt-1 text-muted">View all reviews</a>
+                    <a href="{{ route('reviews.index') }}" class="btn btn-link btn-sm w-100 mt-1 text-muted">Read all Google reviews</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+@include('frontend.partials.google-reviews-cta', ['googleData' => $googleReviews ?? [], 'setting' => $setting ?? null])
 
 @if($wa)
 <a href="{{ $wa }}" target="_blank" class="kdr-whatsapp-float" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>

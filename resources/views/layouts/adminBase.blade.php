@@ -33,6 +33,7 @@
 
     {{-- summernote --}}
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    @include('layouts.includes.admin-summernote-styles')
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('admin/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -93,7 +94,7 @@
     </div>
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="admin/lib/chart/chart.min.js"></script>
     <script src="admin/lib/easing/easing.min.js"></script>
@@ -106,14 +107,9 @@
     <!-- Template Javascript -->
     <script src="admin/js/main.js"></script>
 
-            {{-- summernote --}}
-    {{-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script> --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- summernote (single jQuery instance above) --}}
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script src="/admin/js/summernote.js"></script>
+    <script src="{{ asset('assets/js/kdr-summernote-init.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('scripts')
 </body>

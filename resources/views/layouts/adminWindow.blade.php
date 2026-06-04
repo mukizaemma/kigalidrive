@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
 
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+        @include('layouts.includes.admin-summernote-styles')
 
         @yield('head')
     </head>
@@ -37,10 +38,9 @@
     <script src="{{asset('assets')}}/admin/js/datatables-simple-demo.js"></script>
 
     {{-- summernote --}}
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-
-    <script src="{{asset('assets')}}/js/summernote.js"></script>
+    <script src="{{ asset('assets/js/kdr-summernote-init.js') }}"></script>
 
     @yield('scripts')
 

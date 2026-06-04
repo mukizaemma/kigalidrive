@@ -266,6 +266,97 @@ body.kigali-drive .modal-dialog.kdr-modal-landscape textarea.form-control {
     }
 }
 
+/* —— Car booking wizard —— */
+body.kigali-drive .kdr-car-booking__type-tabs .nav-link {
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+}
+
+body.kigali-drive .kdr-car-booking__steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    color: var(--kdr-muted, #6c757d);
+}
+
+body.kigali-drive .kdr-car-booking__step.is-active {
+    color: var(--kdr-primary, #0a1d37);
+    font-weight: 700;
+}
+
+body.kigali-drive .kdr-car-booking__step.is-done {
+    color: var(--kdr-accent, #198754);
+}
+
+body.kigali-drive .kdr-package-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+body.kigali-drive .kdr-package-card {
+    margin: 0;
+    cursor: pointer;
+}
+
+body.kigali-drive .kdr-package-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.kigali-drive .kdr-package-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.85rem 1rem;
+    border: 2px solid rgba(10, 29, 55, 0.12);
+    border-radius: 10px;
+    background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    min-height: 100%;
+}
+
+body.kigali-drive .kdr-package-card input:checked + .kdr-package-card__body {
+    border-color: var(--kdr-primary, #0a1d37);
+    box-shadow: 0 0 0 3px rgba(10, 29, 55, 0.08);
+}
+
+body.kigali-drive .kdr-package-card__title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+body.kigali-drive .kdr-package-card__price {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--kdr-primary, #0a1d37);
+}
+
+body.kigali-drive .kdr-car-booking__summary-list {
+    display: grid;
+    gap: 0.5rem;
+}
+
+body.kigali-drive .kdr-car-booking__summary-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+body.kigali-drive .kdr-car-booking__summary-row dt {
+    font-weight: 600;
+    margin: 0;
+    color: var(--kdr-muted, #6c757d);
+}
+
+body.kigali-drive .kdr-car-booking__summary-row dd {
+    margin: 0;
+}
+
 /* —— Cars listing page —— */
 body.kigali-drive .kdr-cars-hero {
     background: linear-gradient(135deg, var(--kdr-cream) 0%, #fff 60%);
@@ -1005,6 +1096,81 @@ body.kigali-drive .kdr-google-review-card__text {
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+body.kigali-drive .kdr-google-reviews-latest__title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: #e85d04;
+    margin-bottom: 0.5rem;
+}
+
+body.kigali-drive .kdr-google-review-card__identity {
+    flex: 1;
+    min-width: 0;
+}
+
+body.kigali-drive .kdr-google-review-card__when {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--kdr-muted, #6c757d);
+}
+
+body.kigali-drive .kdr-google-review-card__rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.65rem;
+}
+
+body.kigali-drive .kdr-google-review-card__verified {
+    color: #4285f4;
+    font-size: 0.95rem;
+}
+
+body.kigali-drive .kdr-google-review-card__more {
+    margin-top: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 0.85rem;
+    color: var(--kdr-muted, #6c757d);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+body.kigali-drive .kdr-google-review-card.is-expanded .kdr-google-review-card__text {
+    -webkit-line-clamp: unset;
+    display: block;
+    overflow: visible;
+}
+
+/* Dark grid (reviews page — “happy clients” layout) */
+body.kigali-drive .kdr-google-reviews-grid--dark .kdr-google-review-card {
+    background: #1a1d21;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+body.kigali-drive .kdr-google-reviews-grid--dark .kdr-google-review-card__name {
+    color: #fff;
+}
+
+body.kigali-drive .kdr-google-reviews-grid--dark .kdr-google-review-card__when {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+body.kigali-drive .kdr-google-reviews-grid--dark .kdr-google-review-card__text {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+body.kigali-drive .kdr-google-reviews-grid--dark .kdr-google-review-card__more {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+body.kigali-drive .kdr-google-reviews-grid--dark .kdr-google-review-card__avatar--fallback {
+    background: linear-gradient(135deg, #2d3748, #1a202c);
+    color: #f6ad55;
 }
 
 /* —— Global brand alignment —— */

@@ -23,8 +23,9 @@ class ReviewController extends Controller
     {
         $setting = Setting::first();
         $googleData = $this->googleReviews->getData($setting);
+        $latestReviews = $this->googleReviews->getReviews($setting, 6);
 
-        return view('frontend.reviews.index', compact('googleData', 'setting'));
+        return view('frontend.reviews.index', compact('googleData', 'setting', 'latestReviews'));
     }
 
     /**

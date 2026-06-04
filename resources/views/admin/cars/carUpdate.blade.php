@@ -177,14 +177,14 @@
                                     </div>
                                 </div>
 
-                                {{-- Description --}}
-                                <div class="row mb-3">
-                                    <div class="col-lg-12">
-                                        <label class="form-label">Description</label>
-                                        <textarea class="form-control" rows="5"
-                                                name="description">{{ old('description', $car->description) }}</textarea>
-                                    </div>
-                                </div>
+                                @include('admin.partials.rich-textarea', [
+                                    'name' => 'description',
+                                    'id' => 'carDescription',
+                                    'label' => 'Description',
+                                    'value' => $car->description,
+                                    'height' => 240,
+                                    'hint' => 'Use the toolbar for lists, bold text, and links. Prices in descriptions should be in USD.',
+                                ])
 
                             </div>
 

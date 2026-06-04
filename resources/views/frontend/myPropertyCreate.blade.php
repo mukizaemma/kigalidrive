@@ -146,7 +146,7 @@
     <div class="row mb-3">
         <div class="col-lg-12">
             <label class="form-label">Property Description</label>
-            <textarea id="hotelDescription" rows="5" class="form-control" name="description">{!! old('description') !!}</textarea>
+            <textarea id="hotelDescription" rows="5" class="form-control summernote" name="description" data-height="220">{!! old('description') !!}</textarea>
             @error('description') <div class="text-danger mt-1">{{ $message }}</div> @enderror
         </div>
     </div>

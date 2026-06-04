@@ -9,10 +9,12 @@ use App\Models\Property;
 use App\Models\Setting;
 use App\Models\Unit;
 use App\Services\BookingReferenceService;
+use App\Services\CarRentalPackageService;
 use App\Services\ReservationNotificationService;
 use App\Services\SubmissionChannelService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class ReservationController extends Controller
@@ -20,30 +22,58 @@ class ReservationController extends Controller
     public function __construct(
         protected BookingReferenceService $bookingRef,
         protected ReservationNotificationService $notifier,
-        protected SubmissionChannelService $channels
+        protected SubmissionChannelService $channels,
+        protected CarRentalPackageService $packages
     ) {}
 
     public function storeCar(Request $request)
     {
+        $car = Car::findOrFail($request->input('car_id'));
+        $packageKeys = $this->packages->allowedKeys($car);
+
         $validated = $request->validate([
             'car_id' => 'required|exists:cars,id',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:50',
             'booking_type' => 'required|in:rent,buy,view_car',
+            'rental_package' => ['nullable', 'string', 'max:64', Rule::in($packageKeys), 'required_if:booking_type,rent'],
             'full_address' => 'nullable|string|max:500',
             'time_needed' => 'nullable|string|max:255',
             'rental_duration' => 'nullable|string|max:100',
-            'with_driver' => 'required|in:0,1',
+            'with_driver' => 'nullable|in:0,1',
             'pickup_date' => 'nullable|date|required_if:booking_type,rent',
+            'pickup_time' => 'nullable|date_format:H:i',
             'dropoff_date' => 'nullable|date|after_or_equal:pickup_date|required_if:booking_type,rent',
+            'dropoff_time' => 'nullable|date_format:H:i',
             'preferred_date' => 'nullable|date|required_if:booking_type,view_car',
             'preferred_time' => 'nullable|string|max:20',
             'pickup_location' => 'nullable|string|max:255',
             'dropoff_location' => 'nullable|string|max:255',
             'additional_request' => 'nullable|string|max:2000',
-            'channel' => 'required|in:email,whatsapp,form',
+            'channel' => 'required|in:email,whatsapp',
         ]);
+
+        $setting = Setting::firstOrFail();
+        $channelContext = 'car_booking';
+        $this->channels->assertAnyChannelActive($setting, $channelContext);
+        $this->channels->assertChannelActive($setting, $validated['channel'], $channelContext);
+
+        if ($validated['booking_type'] === 'rent') {
+            if ($packageKeys === []) {
+                throw ValidationException::withMessages([
+                    'rental_package' => 'This vehicle has no rental packages configured. Please contact us directly.',
+                ]);
+            }
+
+            $package = $this->packages->assertValidPackage($car, $validated['rental_package']);
+            $validated['rental_duration'] = $package['rental_duration'];
+            $validated['with_driver'] = $package['with_driver'] ? '1' : '0';
+        } elseif ($validated['booking_type'] === 'buy') {
+            $validated['with_driver'] = $validated['with_driver'] ?? '0';
+        } else {
+            $validated['with_driver'] = $validated['with_driver'] ?? '0';
+        }
 
         $validated['time_needed'] = $this->resolveCarTimeNeeded($validated);
         if (blank($validated['time_needed'])) {
@@ -51,17 +81,15 @@ class ReservationController extends Controller
                 'time_needed' => match ($validated['booking_type']) {
                     'buy' => 'Please tell us when you need the vehicle.',
                     'view_car' => 'Please select a preferred viewing date.',
-                    default => 'Please select pickup and drop-off dates.',
+                    default => 'Please select pickup and return dates.',
                 },
             ]);
         }
 
-        $setting = Setting::firstOrFail();
-        $this->channels->assertAnyChannelActive($setting, 'booking');
-        $this->channels->assertChannelActive($setting, $validated['channel'], 'booking');
-
-        $car = Car::findOrFail($validated['car_id']);
         $bookingNumber = $this->bookingRef->generate();
+        $packageLabel = $validated['booking_type'] === 'rent'
+            ? $this->packages->labelFor($car, $validated['rental_package'] ?? null)
+            : null;
 
         $rental = CarRental::create([
             'car_id' => $car->id,
@@ -74,11 +102,14 @@ class ReservationController extends Controller
             'full_address' => $validated['full_address'] ?? null,
             'time_needed' => $validated['time_needed'],
             'rental_duration' => $validated['rental_duration'] ?? null,
-            'with_driver' => (int) $validated['with_driver'] === 1,
+            'rental_package' => $validated['rental_package'] ?? null,
+            'with_driver' => isset($validated['with_driver']) ? (int) $validated['with_driver'] === 1 : null,
             'pickup_location' => $validated['pickup_location'] ?? null,
             'dropoff_location' => $validated['dropoff_location'] ?? null,
             'pickup_date' => $validated['pickup_date'] ?? null,
+            'pickup_time' => $validated['pickup_time'] ?? null,
             'dropoff_date' => $validated['dropoff_date'] ?? null,
+            'dropoff_time' => $validated['dropoff_time'] ?? null,
             'preferred_date' => $validated['preferred_date'] ?? null,
             'preferred_time' => $validated['preferred_time'] ?? null,
             'additional_request' => $validated['additional_request'] ?? null,
@@ -96,10 +127,15 @@ class ReservationController extends Controller
             'booking_type' => $rental->booking_type,
             'full_address' => $rental->full_address,
             'time_needed' => $rental->time_needed,
+            'rental_package_label' => $packageLabel,
             'rental_duration' => $rental->rental_duration,
             'with_driver' => $rental->with_driver,
-            'pickup_date' => $rental->pickup_date,
-            'dropoff_date' => $rental->dropoff_date,
+            'pickup_date' => $rental->pickup_date ? Carbon::parse($rental->pickup_date)->format('Y-m-d') : null,
+            'pickup_time' => $rental->pickup_time ? Carbon::parse($rental->pickup_time)->format('g:i A') : null,
+            'dropoff_date' => $rental->dropoff_date ? Carbon::parse($rental->dropoff_date)->format('Y-m-d') : null,
+            'dropoff_time' => $rental->dropoff_time ? Carbon::parse($rental->dropoff_time)->format('g:i A') : null,
+            'pickup_location' => $rental->pickup_location,
+            'dropoff_location' => $rental->dropoff_location,
             'preferred_date' => $validated['preferred_date'] ?? null,
             'preferred_time' => $validated['preferred_time'] ?? null,
             'additional_request' => $rental->additional_request,
@@ -179,7 +215,12 @@ class ReservationController extends Controller
     protected function resolveCarTimeNeeded(array $validated): string
     {
         if ($validated['booking_type'] === 'rent' && ! empty($validated['pickup_date']) && ! empty($validated['dropoff_date'])) {
-            return $this->formatRentalPeriod($validated['pickup_date'], $validated['dropoff_date']);
+            return $this->formatRentalPeriod(
+                $validated['pickup_date'],
+                $validated['dropoff_date'],
+                $validated['pickup_time'] ?? null,
+                $validated['dropoff_time'] ?? null
+            );
         }
 
         if ($validated['booking_type'] === 'view_car') {
@@ -197,14 +238,21 @@ class ReservationController extends Controller
         return trim((string) ($validated['time_needed'] ?? ''));
     }
 
-    protected function formatRentalPeriod(string $pickupDate, string $dropoffDate): string
-    {
+    protected function formatRentalPeriod(
+        string $pickupDate,
+        string $dropoffDate,
+        ?string $pickupTime = null,
+        ?string $dropoffTime = null
+    ): string {
         $pickup = Carbon::parse($pickupDate)->startOfDay();
         $dropoff = Carbon::parse($dropoffDate)->startOfDay();
         $days = max(1, $pickup->diffInDays($dropoff));
         $dayLabel = $days === 1 ? '1 day' : $days . ' days';
 
-        return $dayLabel . ' (' . $pickup->format('j M Y') . ' – ' . $dropoff->format('j M Y') . ')';
+        $pickupLabel = $pickup->format('j M Y') . ($pickupTime ? ' ' . Carbon::parse($pickupTime)->format('g:i A') : '');
+        $dropoffLabel = $dropoff->format('j M Y') . ($dropoffTime ? ' ' . Carbon::parse($dropoffTime)->format('g:i A') : '');
+
+        return $dayLabel . ' (' . $pickupLabel . ' – ' . $dropoffLabel . ')';
     }
 
     protected function finish(Request $request, Setting $setting, string $channel, array $payload, string $slug, string $type)

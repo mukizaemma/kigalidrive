@@ -188,6 +188,8 @@
                     <li><a href="{{ route('about') }}">About</a></li>
                     <li><a href="{{ route('faq') }}">FAQ</a></li>
                     <li><a href="{{ route('blogs') }}">Updates</a></li>
+                    <li><a href="{{ route('faq') }}">FAQ</a></li>
+                    <li><a href="{{ route('reviews.index') }}">Google Reviews</a></li>
                     <li><a href="{{ route('contact') }}">Contact</a></li>
                     <li><a href="{{ route('listYourProperty') }}">List your car</a></li>
 
@@ -218,6 +220,7 @@
                                     <li><a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">About</a></li>
                                     <li><a href="{{ route('faq') }}">FAQ</a></li>
                                     <li><a href="{{ route('blogs') }}">Updates</a></li>
+                                    <li><a href="{{ route('reviews.index') }}">Google Reviews</a></li>
                                     <li><a href="{{ route('contact') }}">Contact</a></li>
                                 </ul>
                             </nav>

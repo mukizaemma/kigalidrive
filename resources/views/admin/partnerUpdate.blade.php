@@ -102,7 +102,7 @@
                                 <div class="row mb-3">
                                     <div class="col-lg-12">
                                         <label class="form-label">Partnership Description</label>
-                                        <textarea rows="5" class="form-control" id="partnerDescription" name="description">{!! $partner->description !!}</textarea>
+                                        <textarea rows="5" class="form-control summernote" id="partnerDescription" name="description">{!! $partner->description !!}</textarea>
                                     </div>
                                 </div>
 

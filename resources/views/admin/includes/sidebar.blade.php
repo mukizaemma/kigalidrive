@@ -18,8 +18,9 @@
             <a href="{{ route('admin.carBookings.index') }}" class="nav-item nav-link"><i class="fas fa-car-side me-2"></i>Car bookings</a>
             <hr class="my-2">
             <small class="text-muted px-3 text-uppercase">Content</small>
-            <a href="{{ route('getBlogs') }}" class="nav-item nav-link"><i class="fas fa-newspaper me-2"></i>Updates / Blog</a>
-            <a href="{{ route('blogsComment') }}" class="nav-item nav-link"><i class="fas fa-comments me-2"></i>Blog comments</a>
+            <a href="{{ route('getBlogs') }}" class="nav-item nav-link"><i class="fas fa-newspaper me-2"></i>Articles</a>
+            <a href="{{ route('blogsComment') }}" class="nav-item nav-link"><i class="fas fa-comments me-2"></i>Article comments</a>
+            <a href="{{ route('admin.faqs.index') }}" class="nav-item nav-link"><i class="fas fa-circle-question me-2"></i>FAQ</a>
             <a href="{{ route('slides') }}" class="nav-item nav-link"><i class="fas fa-images me-2"></i>Home slides</a>
             <a href="{{ route('aboutPage') }}" class="nav-item nav-link"><i class="fas fa-info-circle me-2"></i>About page</a>
             <a href="{{ route('admin.rental-agreement.edit') }}" class="nav-item nav-link"><i class="fas fa-file-contract me-2"></i>Rental agreement</a>

@@ -68,29 +68,29 @@
                                         <h6 class="border-bottom pb-2 mb-3 mt-4">Intro</h6>
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Welcome / Introduction</label>
-                                            <textarea name="welcomeMessage" id="aboutDescription" rows="5" class="form-control summernote">{{ old('welcomeMessage', $data->welcomeMessage) }}</textarea>
+                                            <textarea name="welcomeMessage" id="aboutDescription" rows="5" class="form-control summernote">{!! old('welcomeMessage', $data->welcomeMessage) !!}</textarea>
                                         </div>
 
                                         <h6 class="border-bottom pb-2 mb-3 mt-4">Mission & Vision</h6>
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Our Mission</label>
-                                            <textarea name="mission" class="form-control" rows="4" placeholder="To provide exceptional travel services...">{{ old('mission', $data->mission) }}</textarea>
+                                            <textarea name="mission" id="mission" class="form-control summernote" rows="4" placeholder="To provide exceptional travel services...">{!! old('mission', $data->mission) !!}</textarea>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Our Vision</label>
-                                            <textarea name="vision" class="form-control" rows="4" placeholder="To be the leading one-stop travel...">{{ old('vision', $data->vision ?? '') }}</textarea>
+                                            <textarea name="vision" id="vision" class="form-control summernote" rows="4" placeholder="To be the leading one-stop travel...">{!! old('vision', $data->vision ?? '') !!}</textarea>
                                         </div>
 
                                         <h6 class="border-bottom pb-2 mb-3 mt-4">What We Do</h6>
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">What We Do (services list – you can use bullet points)</label>
-                                            <textarea name="what_we_do" id="whatWeDo" class="form-control summernote" rows="8">{{ old('what_we_do', $data->what_we_do ?? '') }}</textarea>
+                                            <textarea name="what_we_do" id="whatWeDo" class="form-control summernote" rows="8">{!! old('what_we_do', $data->what_we_do ?? '') !!}</textarea>
                                         </div>
 
                                         <h6 class="border-bottom pb-2 mb-3 mt-4">Why Choose Us</h6>
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Why Choose Us</label>
-                                            <textarea name="WhyChooseUs" id="whyChooseUs" class="form-control summernote" rows="6">{{ old('WhyChooseUs', $data->WhyChooseUs) }}</textarea>
+                                            <textarea name="WhyChooseUs" id="whyChooseUs" class="form-control summernote" rows="6">{!! old('WhyChooseUs', $data->WhyChooseUs) !!}</textarea>
                                         </div>
 
                                         <h6 class="border-bottom pb-2 mb-3 mt-4">Our Commitment</h6>

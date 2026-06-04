@@ -107,11 +107,21 @@
                                                 <strong>Time:</strong> {{ \Carbon\Carbon::parse($booking->preferred_time)->format('h:i A') }}
                                             @endif
                                         @elseif($booking->booking_type == 'rent')
+                                            @if($booking->rental_package)
+                                                <strong>Package:</strong> {{ $booking->rental_package }}<br>
+                                            @endif
                                             @if($booking->pickup_date)
-                                                <strong>Pickup:</strong> {{ \Carbon\Carbon::parse($booking->pickup_date)->format('M d, Y') }}<br>
+                                                <strong>Pickup:</strong> {{ \Carbon\Carbon::parse($booking->pickup_date)->format('M d, Y') }}
+                                                @if($booking->pickup_time)
+                                                    {{ \Carbon\Carbon::parse($booking->pickup_time)->format('g:i A') }}
+                                                @endif
+                                                <br>
                                             @endif
                                             @if($booking->dropoff_date)
-                                                <strong>Drop-off:</strong> {{ \Carbon\Carbon::parse($booking->dropoff_date)->format('M d, Y') }}
+                                                <strong>Return:</strong> {{ \Carbon\Carbon::parse($booking->dropoff_date)->format('M d, Y') }}
+                                                @if($booking->dropoff_time)
+                                                    {{ \Carbon\Carbon::parse($booking->dropoff_time)->format('g:i A') }}
+                                                @endif
                                             @endif
                                         @else
                                             <span class="text-muted">N/A</span>
@@ -227,21 +237,33 @@
                                                             {{ $booking->preferred_time ? \Carbon\Carbon::parse($booking->preferred_time)->format('h:i A') : 'N/A' }}
                                                         </div>
                                                     @elseif($booking->booking_type == 'rent')
+                                                        @if($booking->rental_package && $booking->car)
+                                                        <div class="col-md-12 mb-3">
+                                                            <strong>Package:</strong><br>
+                                                            {{ app(\App\Services\CarRentalPackageService::class)->labelFor($booking->car, $booking->rental_package) ?? $booking->rental_package }}
+                                                        </div>
+                                                        @endif
                                                         <div class="col-md-6 mb-3">
                                                             <strong>Pickup Location:</strong><br>
                                                             {{ $booking->pickup_location ?? 'N/A' }}
                                                         </div>
                                                         <div class="col-md-6 mb-3">
-                                                            <strong>Drop-off Location:</strong><br>
+                                                            <strong>Return Location:</strong><br>
                                                             {{ $booking->dropoff_location ?? 'N/A' }}
                                                         </div>
                                                         <div class="col-md-6 mb-3">
-                                                            <strong>Pickup Date:</strong><br>
+                                                            <strong>Pickup:</strong><br>
                                                             {{ $booking->pickup_date ? \Carbon\Carbon::parse($booking->pickup_date)->format('M d, Y') : 'N/A' }}
+                                                            @if($booking->pickup_time)
+                                                                {{ \Carbon\Carbon::parse($booking->pickup_time)->format('g:i A') }}
+                                                            @endif
                                                         </div>
                                                         <div class="col-md-6 mb-3">
-                                                            <strong>Drop-off Date:</strong><br>
+                                                            <strong>Return:</strong><br>
                                                             {{ $booking->dropoff_date ? \Carbon\Carbon::parse($booking->dropoff_date)->format('M d, Y') : 'N/A' }}
+                                                            @if($booking->dropoff_time)
+                                                                {{ \Carbon\Carbon::parse($booking->dropoff_time)->format('g:i A') }}
+                                                            @endif
                                                         </div>
                                                     @endif
                                                     @if($booking->total_amount)

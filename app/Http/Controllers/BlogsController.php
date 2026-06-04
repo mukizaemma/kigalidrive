@@ -100,6 +100,8 @@ class BlogsController extends Controller
         $post = Blog::findOrFail($id);
         $comments = BlogComment::where('blog_id', $post->id)->latest()->get();
         $totalComments = $comments->count();
+        $pendingComments = $comments->where('status', 'Unpublished')->count();
+        $publishedComments = $comments->where('status', 'Published')->count();
         $program = SchemaHelper::legacyProgramsEnabled() ? Program::all() : collect();
 
         return view('admin.posts.blogView', [
@@ -107,6 +109,8 @@ class BlogsController extends Controller
             'program' => $program,
             'comments' => $comments,
             'totalComments' => $totalComments,
+            'pendingComments' => $pendingComments,
+            'publishedComments' => $publishedComments,
         ]);
     }
 

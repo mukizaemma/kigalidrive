@@ -141,7 +141,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <textarea id="hotelDescription" rows="5" class="form-control" name="description">{!! old('description', $hotel->description ?? '') !!}</textarea>
+                <textarea id="hotelDescription" rows="5" class="form-control summernote" name="description" data-height="220">{!! old('description', $hotel->description ?? '') !!}</textarea>
             </div>
 
             <h5 class="border-bottom pb-2 mb-3">Cancellation policy</h5>
