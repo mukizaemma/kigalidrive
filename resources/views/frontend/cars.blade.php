@@ -14,7 +14,7 @@
                 <div class="col-lg-8">
                     <span class="kdr-cars-hero__eyebrow"><i class="fas fa-car me-2"></i>Car rental &amp; sales</span>
                     <h1 class="kdr-cars-hero__title">Browse our fleet in Kigali</h1>
-                    <p class="kdr-cars-hero__lead mb-0">Self-drive or with driver · Daily, weekly &amp; monthly rates · Transparent pricing in RWF.</p>
+                    <p class="kdr-cars-hero__lead mb-0">Self-drive or with driver · Daily, weekly &amp; monthly rates · Transparent pricing in USD.</p>
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <button type="button" class="th-btn btn-kdr-primary" data-bs-toggle="modal" data-bs-target="#carRentalRequestModal">

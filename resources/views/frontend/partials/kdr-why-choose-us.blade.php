@@ -6,7 +6,7 @@
         ['icon' => 'fa-user-tie', 'title' => 'Driver or self-drive', 'text' => 'Choose chauffeur service or drive yourself with flexible terms.'],
         ['icon' => 'fa-headset', 'title' => 'Fast support', 'text' => 'Responsive team in Kigali — English, French, Kinyarwanda & Swahili.'],
         ['icon' => 'fa-calendar-check', 'title' => 'Easy booking', 'text' => 'Reserve online in minutes or message us on WhatsApp.'],
-        ['icon' => 'fa-hand-holding-dollar', 'title' => 'Cars for sale', 'text' => 'Browse quality vehicles for purchase with clear pricing in RWF.'],
+        ['icon' => 'fa-hand-holding-dollar', 'title' => 'Cars for sale', 'text' => 'Browse quality vehicles for purchase with clear pricing in USD.'],
         ['icon' => 'fa-map-location-dot', 'title' => 'Local expertise', 'text' => 'Based in Kisimenti — we know Kigali and Rwanda inside out.'],
     ];
 

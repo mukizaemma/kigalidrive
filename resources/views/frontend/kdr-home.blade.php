@@ -149,7 +149,7 @@
         <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
             <div>
                 <h2 class="kdr-section-title mb-1">Cars for Sale</h2>
-                <p class="text-muted mb-0">Quality pre-owned and new vehicles — transparent pricing in RWF</p>
+                <p class="text-muted mb-0">Quality pre-owned and new vehicles — transparent pricing in USD</p>
             </div>
             <a href="{{ route('showCars', ['listing_type' => 'sale']) }}" class="th-btn btn-kdr-primary btn-sm">View all for sale</a>
         </div>

@@ -11,16 +11,11 @@
         <div class="navbar-nav w-100">
             <a href="{{ route('dashboard') }}" class="nav-item nav-link"><i class="fas fa-grip-horizontal me-2"></i>Dashboard</a>
             <hr class="my-2">
-            <small class="text-muted px-3 text-uppercase">Listings</small>
             <a href="{{ route('getCars') }}" class="nav-item nav-link"><i class="fas fa-car me-2"></i>Cars</a>
             <a href="{{ route('admin.services.index') }}" class="nav-item nav-link"><i class="fas fa-concierge-bell me-2"></i>Services</a>
             <a href="{{ route('admin.listing-requests.index') }}" class="nav-item nav-link"><i class="fas fa-inbox me-2"></i>Listing requests</a>
             <a href="{{ route('admin.enquiries.index') }}" class="nav-item nav-link"><i class="fas fa-envelope-open-text me-2"></i>Enquiries</a>
-            <hr class="my-2">
-            <small class="text-muted px-3 text-uppercase">Bookings</small>
-            <a href="{{ route('admin.bookings.index') }}" class="nav-item nav-link"><i class="fas fa-calendar-check me-2"></i>Reservations</a>
             <a href="{{ route('admin.carBookings.index') }}" class="nav-item nav-link"><i class="fas fa-car-side me-2"></i>Car bookings</a>
-            <a href="{{ route('admin.booking-calendar.index') }}" class="nav-item nav-link"><i class="fas fa-border-all me-2"></i>Calendar</a>
             <hr class="my-2">
             <small class="text-muted px-3 text-uppercase">Content</small>
             <a href="{{ route('getBlogs') }}" class="nav-item nav-link"><i class="fas fa-newspaper me-2"></i>Updates / Blog</a>
@@ -30,8 +25,6 @@
             <a href="{{ route('admin.rental-agreement.edit') }}" class="nav-item nav-link"><i class="fas fa-file-contract me-2"></i>Rental agreement</a>
             <hr class="my-2">
             <small class="text-muted px-3 text-uppercase">Setup</small>
-            <a href="{{ route('amenities.index') }}" class="nav-item nav-link"><i class="fas fa-list me-2"></i>Amenities</a>
-            <a href="{{ route('admin.facility-categories.index') }}" class="nav-item nav-link"><i class="fas fa-folder me-2"></i>Amenity categories</a>
             <a href="{{ route('getTerms') }}" class="nav-item nav-link"><i class="fas fa-file-alt me-2"></i>Terms</a>
             <a href="{{ route('setting') }}" class="nav-item nav-link"><i class="fas fa-cog me-2"></i>Settings</a>
             <a href="{{ route('my.profile') }}" class="nav-item nav-link"><i class="fas fa-user-circle me-2"></i>My profile</a>

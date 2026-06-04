@@ -136,12 +136,12 @@
                         <div class="text-end">
                             @if($car->price_to_buy)
                                 <div style="font-size:20px;font-weight:700;">
-                                    {{ number_format($car->price_to_buy) }} RWF
+                                    {{ formatUsd($car->price_to_buy) }}
                                     <small class="text-muted">For Sale</small>
                                 </div>
                             @elseif($car->price_per_day)
                                 <div style="font-size:20px;font-weight:700;">
-                                    {{ number_format($car->price_per_day) }} RWF
+                                    {{ formatUsd($car->price_per_day) }}
                                     <small class="text-muted">/ day</small>
                                 </div>
                             @endif
@@ -225,10 +225,10 @@
 
                                         <p style="font-size:18px;font-weight:700;">
                                             @if($car->price_to_buy)
-                                                {{ number_format($car->price_to_buy) }} RWF
+                                                {{ formatUsd($car->price_to_buy) }}
                                                 <small class="text-muted">For Sale</small>
                                             @else
-                                                {{ number_format($car->price_per_day) }} RWF
+                                                {{ formatUsd($car->price_per_day) }}
                                                 <small class="text-muted">/ day</small>
                                             @endif
                                         </p>
@@ -286,12 +286,12 @@
                                                     <div class="mt-auto">
                                                         @if($r->price_per_day !== null)
                                                             <p class="fw-bold mb-2">
-                                                                {{ number_format($r->price_per_day) }} RWF
+                                                                {{ formatUsd($r->price_per_day) }}
                                                                 <span class="text-muted fw-normal">/ day</span>
                                                             </p>
                                                         @elseif($r->price_to_buy)
                                                             <p class="fw-bold mb-2">
-                                                                {{ number_format($r->price_to_buy) }} RWF
+                                                                {{ formatUsd($r->price_to_buy) }}
                                                                 <span class="text-muted fw-normal">For Sale</span>
                                                             </p>
                                                         @endif

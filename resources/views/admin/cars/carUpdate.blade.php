@@ -141,14 +141,14 @@
                                 <div id="rent_fields">
                                     <div class="row mb-3">
                                         <div class="col-lg-6 col-sm-12">
-                                            <label class="form-label">Price Per Day</label>
+                                            <label class="form-label">Price Per Day (USD)</label>
                                             <input type="number" step="0.01" name="price_per_day" id="price_per_day"
                                                 class="form-control"
                                                 value="{{ old('price_per_day', $car->price_per_day) }}">
                                         </div>
 
                                         <div class="col-lg-6 col-sm-12">
-                                            <label class="form-label">Price Per Month</label>
+                                            <label class="form-label">Price Per Month (USD)</label>
                                             <input type="number" step="0.01" name="price_per_month" id="price_per_month"
                                                 class="form-control"
                                                 value="{{ old('price_per_month', $car->price_per_month) }}">
@@ -160,7 +160,7 @@
                                 <div id="sell_fields" style="display:none;">
                                     <div class="row mb-3">
                                         <div class="col-lg-12">
-                                            <label class="form-label">Buy Price</label>
+                                            <label class="form-label">Buy Price (USD)</label>
                                             <input type="number" step="0.01" name="price_to_buy" id="price_to_buy"
                                                 class="form-control"
                                                 value="{{ old('price_to_buy', $car->price_to_buy) }}">

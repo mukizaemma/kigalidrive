@@ -67,16 +67,16 @@
                                     {{-- Price --}}
                                     <td>
                                         @if($rs->price_per_day)
-                                            <div><strong>{{ number_format($rs->price_per_day) }}</strong> / day</div>
+                                            <div><strong>{{ formatUsd($rs->price_per_day) }}</strong> / day</div>
                                         @endif
 
                                         @if($rs->price_per_month)
-                                            <div>{{ number_format($rs->price_per_month) }} / month</div>
+                                            <div>{{ formatUsd($rs->price_per_month) }} / month</div>
                                         @endif
 
                                         @if($rs->price_to_buy)
                                             <div class="text-success">
-                                                Buy: {{ number_format($rs->price_to_buy) }}
+                                                Buy: {{ formatUsd($rs->price_to_buy) }}
                                             </div>
                                         @endif
                                     </td>
@@ -203,11 +203,11 @@
                             <div id="rent_fields">
                                 <div class="row mb-3">
                                     <div class="col-lg-6 col-sm-12">
-                                        <label class="form-label">Price Per Day</label>
+                                        <label class="form-label">Price Per Day (USD)</label>
                                         <input type="number" step="0.01" name="price_per_day" id="price_per_day" class="form-control">
                                     </div>
                                     <div class="col-lg-6 col-sm-12">
-                                        <label class="form-label">Price Per Month</label>
+                                        <label class="form-label">Price Per Month (USD)</label>
                                         <input type="number" step="0.01" name="price_per_month" id="price_per_month" class="form-control">
                                     </div>
                                 </div>
@@ -216,7 +216,7 @@
                             <div id="sell_fields" style="display:none;">
                                 <div class="row mb-3">
                                     <div class="col-lg-12">
-                                        <label class="form-label">Buy Price</label>
+                                        <label class="form-label">Buy Price (USD)</label>
                                         <input type="number" step="0.01" name="price_to_buy" id="price_to_buy" class="form-control">
                                     </div>
                                 </div>

@@ -417,7 +417,7 @@ public function hotelsSearch(Request $request)
                              . "Booking Type: {$bookingTypeLabel}\n"
                              . "Customer: {$request->name} ({$request->email})\n"
                              . "Phone: {$request->phone}\n"
-                             . ($totalAmount ? "Total Amount: " . number_format($totalAmount) . " RWF\n" : "")
+                             . ($totalAmount ? "Total Amount: " . formatUsd($totalAmount) . "\n" : "")
                              . "\nYou can view and manage this booking in the admin panel:\n"
                              . route('admin.carBookings.index'),
                     'lastline' => 'Please log in to review and respond to this booking request.',

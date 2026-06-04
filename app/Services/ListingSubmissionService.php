@@ -34,7 +34,7 @@ class ListingSubmissionService
             'Email: ' . ($listing->email ?: '—'),
             'Listing: ' . ucfirst($listing->product_type) . ' — ' . ucfirst($listing->ad_type),
             'Location: ' . $listing->location,
-            'Amount: ' . ($listing->amount ? number_format((float) $listing->amount) . ' RWF' : '—'),
+            'Amount: ' . ($listing->amount ? formatUsd($listing->amount) : '—'),
             'Submitted via: ' . $channelLabel,
         ];
 

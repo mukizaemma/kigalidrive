@@ -6,13 +6,12 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Setting;
 use App\Models\Subscriber;
-use App\Models\Property;
-use Illuminate\Support\Facades\Schema;
-use App\Models\Unit;
-use App\Models\HotelBooking;
+use App\Models\Car;
+use App\Models\CarRental;
 use Illuminate\Http\Request;
 use App\Models\Articlecomment;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
@@ -28,18 +27,12 @@ class AdminController extends Controller
 
         $data = Setting::first();
 
-        // Dashboard stats: properties, units/rooms, reservations (excl. cancelled), sales, commission
-        $totalProperties = Property::count();
-        $totalRooms = Unit::count();
-        $reservationsQuery = HotelBooking::query()->where('booking_status', '!=', 'cancelled');
-        $totalReservations = (clone $reservationsQuery)->count();
-        $totalSales = (clone $reservationsQuery)->sum('total_amount');
-        $totalCommission = (clone $reservationsQuery)->sum('commission_amount');
+        $totalCars = Car::count();
+        $carBookingsQuery = CarRental::query()->where('rental_status', '!=', 'cancelled');
+        $totalCarBookings = (clone $carBookingsQuery)->count();
+        $totalCarBookingRevenue = (clone $carBookingsQuery)->sum('total_amount');
 
-        $uid = Auth::id();
-        $myPropertiesCount = $uid ? Property::where('owner_id', $uid)->count() : 0;
-
-        $latestReservations = HotelBooking::with(['property', 'unit'])
+        $latestCarBookings = CarRental::with('car')
             ->latest()
             ->take(10)
             ->get();
@@ -49,13 +42,10 @@ class AdminController extends Controller
             'users' => $users,
             'data' => $data,
             'setting' => $setting,
-            'totalProperties' => $totalProperties,
-            'totalRooms' => $totalRooms,
-            'totalReservations' => $totalReservations,
-            'totalSales' => $totalSales,
-            'totalCommission' => $totalCommission,
-            'latestReservations' => $latestReservations,
-            'myPropertiesCount' => $myPropertiesCount,
+            'totalCars' => $totalCars,
+            'totalCarBookings' => $totalCarBookings,
+            'totalCarBookingRevenue' => $totalCarBookingRevenue,
+            'latestCarBookings' => $latestCarBookings,
         ]);
     }
 

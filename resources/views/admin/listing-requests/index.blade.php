@@ -24,7 +24,7 @@
                     </td>
                     <td><span class="badge bg-info text-dark">{{ $req->submissionChannelLabel() }}</span></td>
                     <td>{{ $req->location }}</td>
-                    <td>{{ $req->amount ? number_format($req->amount).' RWF' : '—' }}</td>
+                    <td>{{ $req->amount ? formatUsd($req->amount) : '—' }}</td>
                     <td><span class="badge bg-secondary">{{ $req->status }}</span></td>
                     <td>
                         <form method="POST" action="{{ route('admin.listing-requests.update', $req) }}" class="d-flex gap-1">

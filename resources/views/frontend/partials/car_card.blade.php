@@ -53,7 +53,7 @@
         <div class="kdr-car-card__footer">
             @if($price)
             <p class="kdr-car-card__price mb-0">
-                {{ number_format($price) }} <span>RWF / {{ $periodLabel }}</span>
+                {{ formatUsd($price) }} <span>/ {{ $periodLabel }}</span>
             </p>
             @endif
             <a href="{{ route('carDetails', $car->slug ?? $car->id) }}" class="th-btn btn-kdr-primary btn-sm">View &amp; Book</a>

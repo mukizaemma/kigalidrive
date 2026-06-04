@@ -22,3 +22,17 @@ if (!function_exists('getCurrencySymbol')) {
         return $symbols[$currency] ?? '$';
     }
 }
+
+if (!function_exists('formatUsd')) {
+    /**
+     * Format a numeric amount as US dollars (site default currency).
+     */
+    function formatUsd($amount, int $decimals = 0): string
+    {
+        if ($amount === null || $amount === '') {
+            return '—';
+        }
+
+        return '$' . number_format((float) $amount, $decimals);
+    }
+}

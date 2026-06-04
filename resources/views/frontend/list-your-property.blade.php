@@ -60,7 +60,7 @@
                     <small class="text-muted js-listing-email-hint">Required when sending via Email or Online form.</small>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Asking price (RWF)</label>
+                    <label class="form-label">Asking price (USD)</label>
                     <input type="number" name="amount" class="form-control" min="0" step="1" value="{{ old('amount') }}">
                 </div>
                 <div class="col-12">

@@ -20,64 +20,38 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-6 col-xl-3">
-                        <a href="{{ route('admin.properties.index') }}" class="text-decoration-none">
-                            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100 hover-shadow">
-                                <i class="fa fa-building fa-3x text-primary"></i>
-                                <div class="ms-3 text-end">
-                                    <p class="mb-2 text-secondary">Total Properties</p>
-                                    <h6 class="mb-0 text-dark">{{ $totalProperties ?? 0 }}</h6>
-                                    <small class="text-muted">View all</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <a href="{{ route('admin.properties.index', ['mine' => 1]) }}" class="text-decoration-none">
-                            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100 hover-shadow">
-                                <i class="fa fa-user-check fa-3x text-primary"></i>
-                                <div class="ms-3 text-end">
-                                    <p class="mb-2 text-secondary">My properties</p>
-                                    <h6 class="mb-0 text-dark">{{ $myPropertiesCount ?? 0 }}</h6>
-                                    <small class="text-muted">Listings you added</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <a href="{{ route('admin.units.index') }}" class="text-decoration-none">
-                            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100 hover-shadow">
-                                <i class="fa fa-door-open fa-3x text-primary"></i>
-                                <div class="ms-3 text-end">
-                                    <p class="mb-2 text-secondary">Total Rooms</p>
-                                    <h6 class="mb-0 text-dark">{{ $totalRooms ?? 0 }}</h6>
-                                    <small class="text-muted">View all</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <a href="{{ route('admin.bookings.index') }}" class="text-decoration-none">
-                            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100 hover-shadow">
-                                <i class="fa fa-calendar-check fa-3x text-primary"></i>
-                                <div class="ms-3 text-end">
-                                    <p class="mb-2 text-secondary">Total Reservations</p>
-                                    <h6 class="mb-0 text-dark">{{ $totalReservations ?? 0 }}</h6>
-                                    <small class="text-muted">View all</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
                         <a href="{{ route('getCars') }}" class="text-decoration-none">
                             <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100 hover-shadow">
                                 <i class="fa fa-car fa-3x text-primary"></i>
                                 <div class="ms-3 text-end">
-                                    <p class="mb-2 text-secondary">Cars</p>
-                                    <h6 class="mb-0 text-dark">Fleet</h6>
+                                    <p class="mb-2 text-secondary">Cars in fleet</p>
+                                    <h6 class="mb-0 text-dark">{{ $totalCars ?? 0 }}</h6>
                                     <small class="text-muted">Manage listings</small>
                                 </div>
                             </div>
                         </a>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <a href="{{ route('admin.carBookings.index') }}" class="text-decoration-none">
+                            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100 hover-shadow">
+                                <i class="fa fa-calendar-check fa-3x text-primary"></i>
+                                <div class="ms-3 text-end">
+                                    <p class="mb-2 text-secondary">Car bookings</p>
+                                    <h6 class="mb-0 text-dark">{{ $totalCarBookings ?? 0 }}</h6>
+                                    <small class="text-muted">View all</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                            <i class="fa fa-dollar-sign fa-3x text-primary"></i>
+                            <div class="ms-3 text-end">
+                                <p class="mb-2 text-secondary">Booking revenue</p>
+                                <h6 class="mb-0 text-dark">{{ formatUsd($totalCarBookingRevenue ?? 0) }}</h6>
+                                <small class="text-muted">Active bookings (USD)</small>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-sm-6 col-xl-3">
                         <a href="{{ route('admin.listing-requests.index') }}" class="text-decoration-none">
@@ -112,52 +86,46 @@
      
 
 
-            <!-- Recent Sales Start -->
+            <!-- Recent car bookings -->
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Latest 10 Reservations</h6>
-                        <a href="{{ route('admin.bookings.index') }}" class="btn btn-primary btn-sm">View all bookings</a>
+                        <h6 class="mb-0">Latest 10 Car Bookings</h6>
+                        <a href="{{ route('admin.carBookings.index') }}" class="btn btn-primary btn-sm">View all car bookings</a>
                     </div>
                     <div class="table-responsive">
                         <table class="table text-start align-middle table-bordered table-hover mb-0">
                             <thead>
                                 <tr class="text-dark">
                                     <th scope="col">Reference</th>
-                                    <th scope="col">Guest</th>
-                                    <th scope="col">Property</th>
-                                    <th scope="col">Check-in</th>
-                                    <th scope="col">Check-out</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Car</th>
+                                    <th scope="col">Type</th>
                                     <th scope="col">Amount</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($latestReservations as $booking)
+                                @forelse($latestCarBookings as $booking)
                                 <tr>
-                                    <td><code>{{ $booking->reference_number ?? '—' }}</code></td>
-                                    <td>{{ $booking->guest_name ?? $booking->guest_email ?? '—' }}</td>
-                                    <td>{{ $booking->property ? $booking->property->name : '—' }}</td>
-                                    <td>{{ $booking->check_in ? \Carbon\Carbon::parse($booking->check_in)->format('M j, Y') : '—' }}</td>
-                                    <td>{{ $booking->check_out ? \Carbon\Carbon::parse($booking->check_out)->format('M j, Y') : '—' }}</td>
-                                    <td>${{ number_format($booking->total_amount ?? 0, 2) }}</td>
+                                    <td><code>{{ $booking->booking_number ?? '—' }}</code></td>
+                                    <td>{{ $booking->name ?? $booking->email ?? '—' }}</td>
+                                    <td>{{ $booking->car?->name ?? '—' }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $booking->booking_type ?? '—')) }}</td>
+                                    <td>{{ $booking->total_amount ? formatUsd($booking->total_amount) : '—' }}</td>
                                     <td>
-                                        @if($booking->booking_status == 'confirmed')
+                                        @if($booking->rental_status == 'confirmed')
                                             <span class="badge bg-success">Confirmed</span>
-                                        @elseif($booking->booking_status == 'cancelled')
+                                        @elseif($booking->rental_status == 'cancelled')
                                             <span class="badge bg-danger">Cancelled</span>
                                         @else
                                             <span class="badge bg-warning">Pending</span>
                                         @endif
                                     </td>
-                                    <td>
-                                        <a href="{{ route('admin.bookings.show', $booking->id) }}" class="btn btn-sm btn-outline-primary">View</a>
-                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">No reservations yet.</td>
+                                    <td colspan="6" class="text-center text-muted py-4">No car bookings yet.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -165,7 +133,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Recent Sales End -->
 
 
 

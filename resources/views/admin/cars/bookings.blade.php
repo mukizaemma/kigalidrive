@@ -119,7 +119,7 @@
                                     </td>
                                     <td>
                                         @if($booking->total_amount)
-                                            <strong>{{ number_format($booking->total_amount) }} RWF</strong>
+                                            <strong>{{ formatUsd($booking->total_amount) }}</strong>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
@@ -247,7 +247,7 @@
                                                     @if($booking->total_amount)
                                                         <div class="col-md-6 mb-3">
                                                             <strong>Total Amount:</strong><br>
-                                                            <span style="font-size:18px;font-weight:700;">{{ number_format($booking->total_amount) }} RWF</span>
+                                                            <span style="font-size:18px;font-weight:700;">{{ formatUsd($booking->total_amount) }}</span>
                                                         </div>
                                                     @endif
                                                     <div class="col-md-6 mb-3">
