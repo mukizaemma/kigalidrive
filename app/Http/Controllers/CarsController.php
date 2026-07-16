@@ -13,6 +13,7 @@ use App\Models\Carimage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Services\ReservationNotificationService;
 
 class CarsController extends Controller
 {
@@ -348,24 +349,95 @@ class CarsController extends Controller
     }
 
     /**
-     * Update car booking status
+     * Update car booking status and notify the client by email.
      */
     public function updateBookingStatus(Request $request, $id)
     {
         try {
-            $booking = CarRental::findOrFail($id);
-            
+            $booking = CarRental::with('car')->findOrFail($id);
+
             $request->validate([
                 'status' => 'required|in:pending,confirmed,cancelled',
+                'notify_client' => 'nullable|boolean',
+                'admin_message' => 'nullable|string|max:2000',
             ]);
-            
+
             $booking->rental_status = $request->status;
             $booking->save();
-            
-            return back()->with('success', 'Booking status updated successfully');
+
+            $shouldNotify = $request->boolean('notify_client', true);
+            if ($shouldNotify && $booking->email) {
+                try {
+                    app(ReservationNotificationService::class)->notifyClientUpdate(
+                        $booking,
+                        $request->input('admin_message')
+                    );
+                } catch (\Throwable $e) {
+                    Log::error('Car booking client notify error: ' . $e->getMessage());
+                    return back()->with('success', 'Booking status updated, but the client email could not be sent. You can resend it from Actions.');
+                }
+            }
+
+            return back()->with('success', 'Booking status updated' . ($shouldNotify ? ' and the client was notified by email.' : ' successfully.'));
         } catch (\Exception $e) {
             Log::error('Update booking status error: ' . $e->getMessage());
             return back()->with('error', 'Something went wrong while updating the booking');
+        }
+    }
+
+    /**
+     * Resend the “booking received” confirmation email to the client.
+     */
+    public function resendBookingEmail($id)
+    {
+        try {
+            $booking = CarRental::with('car')->findOrFail($id);
+
+            if (! $booking->email) {
+                return back()->with('error', 'This booking has no client email address.');
+            }
+
+            app(ReservationNotificationService::class)->resendClientReceived($booking);
+
+            return back()->with('success', 'Confirmation email resent to ' . $booking->email . '.');
+        } catch (\Throwable $e) {
+            Log::error('Resend car booking email error: ' . $e->getMessage());
+            return back()->with('error', 'Could not resend the confirmation email. Check mail settings and try again.');
+        }
+    }
+
+    /**
+     * Send a custom status/update email to the client about this booking.
+     */
+    public function sendBookingUpdate(Request $request, $id)
+    {
+        try {
+            $booking = CarRental::with('car')->findOrFail($id);
+
+            $validated = $request->validate([
+                'admin_message' => 'required|string|max:2000',
+                'status' => 'nullable|in:pending,confirmed,cancelled',
+            ]);
+
+            if (! empty($validated['status']) && $validated['status'] !== $booking->rental_status) {
+                $booking->rental_status = $validated['status'];
+                $booking->save();
+            }
+
+            if (! $booking->email) {
+                return back()->with('error', 'This booking has no client email address.');
+            }
+
+            app(ReservationNotificationService::class)->notifyClientUpdate(
+                $booking->fresh(['car']),
+                $validated['admin_message'],
+                'Update on booking #' . $booking->booking_number . ' — Kigali Drive Rentals'
+            );
+
+            return back()->with('success', 'Update email sent to ' . $booking->email . '.');
+        } catch (\Throwable $e) {
+            Log::error('Send car booking update error: ' . $e->getMessage());
+            return back()->with('error', 'Could not send the update email. Check mail settings and try again.');
         }
     }
 }

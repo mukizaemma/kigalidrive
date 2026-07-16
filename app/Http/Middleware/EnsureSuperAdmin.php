@@ -10,7 +10,7 @@ class EnsureSuperAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! auth()->check() || auth()->user()->email !== 'admin@iremetech.com') {
+        if (! auth()->check() || ! auth()->user()->isSuperAdmin()) {
             return redirect()->route('dashboard')
                 ->with('error', 'Only the super admin can access this section.');
         }

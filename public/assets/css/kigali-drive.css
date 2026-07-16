@@ -843,6 +843,9 @@ body.kigali-drive .btn-kdr-outline-dark:hover {
 }
 
 body.kigali-drive .kdr-car-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 440px;
     background: #fff;
     border-radius: var(--kdr-radius);
     overflow: hidden;
@@ -859,7 +862,8 @@ body.kigali-drive .kdr-car-card:hover {
 body.kigali-drive .kdr-car-card__media {
     display: block;
     position: relative;
-    height: 200px;
+    flex: 0 0 auto;
+    height: 220px;
     overflow: hidden;
     background: var(--kdr-cream);
 }
@@ -883,7 +887,11 @@ body.kigali-drive .kdr-car-card__badge {
 }
 
 body.kigali-drive .kdr-car-card__body {
-    padding: 1.15rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    padding: 1.25rem 1.25rem 1.5rem;
+    min-height: 0;
 }
 
 body.kigali-drive .kdr-car-card__title {
@@ -905,9 +913,11 @@ body.kigali-drive .kdr-car-card__title a:hover {
 body.kigali-drive .kdr-car-card__meta {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.35rem 0.75rem;
+    gap: 0.4rem 0.75rem;
     font-size: 0.8rem;
     color: var(--kdr-slate);
+    margin-bottom: 1rem !important;
+    flex: 1 1 auto;
 }
 
 body.kigali-drive .kdr-car-card__meta i {
@@ -918,19 +928,22 @@ body.kigali-drive .kdr-car-card__meta i {
 
 body.kigali-drive .kdr-car-card__footer {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    padding-top: 0.75rem;
+    gap: 0.85rem;
+    flex-wrap: nowrap;
+    margin-top: auto;
+    padding-top: 1rem;
     border-top: 1px solid rgba(10, 29, 55, 0.06);
 }
 
 body.kigali-drive .kdr-car-card__price {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 800;
     color: var(--kdr-navy);
-    line-height: 1.35;
+    line-height: 1.4;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 body.kigali-drive .kdr-car-card__price p {
@@ -941,6 +954,21 @@ body.kigali-drive .kdr-car-card__price span {
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--kdr-slate);
+}
+
+body.kigali-drive .kdr-car-card__footer .th-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    body.kigali-drive .kdr-car-card {
+        min-height: 0;
+    }
+
+    body.kigali-drive .kdr-car-card__footer {
+        flex-wrap: wrap;
+    }
 }
 
 body.kigali-drive .kdr-car-detail__note {

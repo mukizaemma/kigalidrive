@@ -91,6 +91,11 @@
                                     </div>
                                 </div>
                                 @if(isset($isSuperAdmin) && $isSuperAdmin)
+                                    @if($user->isPrimarySuperAdmin())
+                                        <div class="mt-4 p-3 border rounded bg-white text-start">
+                                            <p class="mb-0 text-muted small">This is the primary super admin account (<code>admin@iremetech.com</code>). Role and access cannot be changed here.</p>
+                                        </div>
+                                    @else
                                 <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="mt-4 p-3 border rounded bg-white text-start">
                                     @csrf
                                     <h6 class="mb-3 fw-semibold">Role &amp; access</h6>
@@ -100,8 +105,8 @@
                                             <select name="role" id="edit_role" class="form-select" required>
                                                 <option value="0" {{ (string) old('role', $user->role) === '0' || (int) old('role', $user->role) === 0 ? 'selected' : '' }}>User</option>
                                                 <option value="2" {{ (string) old('role', $user->role) === '2' || (int) old('role', $user->role) === 2 ? 'selected' : '' }}>Admin</option>
-                                                <option value="1" {{ (string) old('role', $user->role) === '1' || (int) old('role', $user->role) === 1 ? 'selected' : '' }}>Super Admin</option>
                                             </select>
+                                            <small class="text-muted d-block mt-1">Only <code>admin@iremetech.com</code> is the primary super admin.</small>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="edit_status" class="form-label">Account access</label>
@@ -109,25 +114,33 @@
                                                 <option value="Active" {{ old('status', $user->status ?? 'Active') === 'Active' ? 'selected' : '' }}>Active — can sign in</option>
                                                 <option value="Inactive" {{ old('status', $user->status ?? 'Active') === 'Inactive' ? 'selected' : '' }}>Suspended — cannot sign in</option>
                                             </select>
-                                            <small class="text-muted d-block mt-1">Use suspend for harmful or policy violations. Verified users can still add listings when active.</small>
                                         </div>
                                     </div>
                                     <div class="mt-3 d-flex flex-wrap gap-2">
                                         <button type="submit" class="btn btn-primary btn-sm">
                                             <i class="fas fa-save me-1"></i>Save changes
                                         </button>
-                                        @if((string) $user->role !== '1' && (int) $user->role !== 1)
+                                        @if(!$user->isAdmin())
                                             <a href="{{ route('makeAdmin', ['id' => $user->id]) }}" class="btn btn-outline-info btn-sm"
-                                               onclick="return confirm('Grant this user Super Admin (role 1)? They will have full admin access. Continue?');">
-                                                <i class="fas fa-user-shield me-1"></i>Quick: Make Super Admin
+                                               onclick="return confirm('Grant this user admin panel access?');">
+                                                <i class="fas fa-user-shield me-1"></i>Make Admin
+                                            </a>
+                                        @else
+                                            <a href="{{ route('removeAdmin', ['id' => $user->id]) }}" class="btn btn-outline-warning btn-sm"
+                                               onclick="return confirm('Remove admin access from this user?');">
+                                                <i class="fas fa-user-slash me-1"></i>Remove Admin
                                             </a>
                                         @endif
+                                        @if((int) $user->id !== (int) auth()->id())
                                         <a href="{{ route('deleteUser', ['id' => $user->id]) }}" class="btn btn-danger btn-sm" 
                                            onclick="return confirm('Are you sure you want to delete this user? This cannot be undone.')">
                                             <i class="fas fa-trash me-1"></i>Delete User
                                         </a>
+                                        @endif
                                     </div>
                                 </form>
+                                    @endif
+                                @endif
                                 <div class="mt-3 p-3 border rounded bg-light">
                                     <h6 class="fw-semibold mb-2">Password</h6>
                                     <form action="{{ route('admin.users.set-password', $user->id) }}" method="POST" class="mb-2"

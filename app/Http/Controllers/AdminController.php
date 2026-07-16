@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use App\Mail\CommentApprovalNotification;
 use App\Models\BlogComment;
 use App\Models\Message;
@@ -54,8 +56,7 @@ class AdminController extends Controller
      * Regular admins cannot access the Users section at all.
      */
     public function users(Request $request){
-        $isSuperAdmin = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
-        if (!$isSuperAdmin) {
+        if (! Auth::user()?->isSuperAdmin()) {
             return redirect()->route('dashboard')->with('error', 'Only the super admin can access the Users section.');
         }
 
@@ -97,7 +98,7 @@ class AdminController extends Controller
         
         // Check if current user is super admin (email = admin@iremetech.com)
         // Note: role == 1 means admin, role != 1 or null means regular user
-        $isSuperAdmin = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
+        $isSuperAdmin = true;
         
         // Filter by admin status
         $filter = $request->input('filter', 'all'); // all, admins, users
@@ -108,22 +109,20 @@ class AdminController extends Controller
         }
         
         if ($filter === 'admins' && $isSuperAdmin) {
-            // Super admin viewing admins only (role == 1)
-            $query->where('role', 1);
+            // Panel admins (role 1 or 2)
+            $query->whereIn('role', [1, 2]);
         } elseif ($filter === 'users') {
-            // Viewing regular users only (role != 1 or null)
-            $query->where(function($q) {
-                $q->where('role', '!=', 1)->orWhereNull('role');
+            // Regular users only
+            $query->where(function ($q) {
+                $q->whereNull('role')->orWhereNotIn('role', [1, 2]);
             });
         } elseif ($filter === 'all') {
-            // View all - but exclude admins (role == 1) for non-super-admins
-            if (!$isSuperAdmin) {
-                // Regular admins should not see other admins (role == 1) in "all" view
-                $query->where(function($q) {
-                    $q->where('role', '!=', 1)->orWhereNull('role');
+            // Super admin can see everyone (no extra filter)
+            if (! $isSuperAdmin) {
+                $query->where(function ($q) {
+                    $q->whereNull('role')->orWhereNotIn('role', [1, 2]);
                 });
             }
-            // Super admin can see everyone including admins (no filter needed)
         }
         
         // Search functionality - search in both name and email
@@ -138,7 +137,7 @@ class AdminController extends Controller
         $segment = $request->input('segment');
         $nonAdminScope = function ($q) {
             $q->where(function ($w) {
-                $w->where('role', '!=', 1)->orWhereNull('role');
+                $w->whereNull('role')->orWhereNotIn('role', [1, 2]);
             });
         };
 
@@ -185,7 +184,7 @@ class AdminController extends Controller
         $users = $query->latest()->get();
         $setting = Setting::first();
 
-        $canBulkDeleteSelected = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
+        $canBulkDeleteSelected = Auth::user()?->isSuperAdmin();
         
         return view('admin.users',[
             'users'=>$users,
@@ -200,12 +199,42 @@ class AdminController extends Controller
     }
 
     /**
-     * Bulk-delete users (primary super admin only). Never deletes admins or the current user.
+     * Create a new user account (primary super admin only).
+     */
+    public function storeUser(Request $request)
+    {
+        if (! Auth::user()?->isSuperAdmin()) {
+            return redirect()->route('dashboard')->with('error', 'Only the super admin can add users.');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => ['required', 'string', 'confirmed', PasswordRule::defaults()],
+            'role' => 'required|in:0,2',
+            'status' => 'required|in:Active,Inactive',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => (int) $validated['role'],
+            'status' => $validated['status'],
+            'email_verified_at' => now(),
+        ]);
+
+        $roleLabel = (int) $user->role === 2 ? 'admin' : 'user';
+
+        return redirect()->route('users')->with('success', 'User created successfully as ' . $roleLabel . '.');
+    }
+
+    /**
+     * Bulk-delete users (primary super admin only). Never deletes the primary super admin or the current user.
      */
     public function bulkDeleteUsers(Request $request)
     {
-        $canBulkDelete = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
-        if (!$canBulkDelete) {
+        if (! Auth::user()?->isSuperAdmin()) {
             return redirect()->route('dashboard')->with('error', 'Only admin@iremetech.com may bulk-delete users.');
         }
 
@@ -214,7 +243,10 @@ class AdminController extends Controller
             'ids.*' => 'integer|exists:users,id',
         ]);
 
-        $ids = collect($validated['ids'])->unique()->filter(fn ($id) => (int) $id !== (int) Auth::id())->values();
+        $ids = collect($validated['ids'])
+            ->unique()
+            ->filter(fn ($id) => (int) $id !== (int) Auth::id())
+            ->values();
 
         if ($ids->isEmpty()) {
             return redirect()->back()->with('info', 'No users selected.');
@@ -222,17 +254,14 @@ class AdminController extends Controller
 
         $deleted = User::query()
             ->whereIn('id', $ids)
-            ->where(function ($q) {
-                $q->where('role', '!=', 1)->orWhereNull('role');
-            })
+            ->whereRaw('LOWER(email) != ?', [User::superAdminEmail()])
             ->delete();
 
         return redirect()->back()->with('success', $deleted.' user account(s) removed.');
     }
 
     public function showUser($id){
-        $isSuperAdmin = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
-        if (!$isSuperAdmin) {
+        if (! Auth::user()?->isSuperAdmin()) {
             return redirect()->route('dashboard')->with('error', 'Only the super admin can access the Users section.');
         }
 
@@ -255,17 +284,20 @@ class AdminController extends Controller
      */
     public function updateUser(Request $request, $id)
     {
-        $isSuperAdmin = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
-        if (!$isSuperAdmin) {
+        if (! Auth::user()?->isSuperAdmin()) {
             return redirect()->route('dashboard')->with('error', 'Only the super admin can access the Users section.');
         }
 
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
-            'role' => 'required|in:0,1,2',
+            'role' => 'required|in:0,2',
             'status' => 'required|in:Active,Inactive',
         ]);
+
+        if ($user->isPrimarySuperAdmin()) {
+            return redirect()->back()->with('error', 'The primary super admin account cannot be modified.');
+        }
 
         if ((int) $user->id === (int) Auth::id() && $validated['status'] === 'Inactive') {
             return redirect()->back()->with('error', 'You cannot suspend your own account.');
@@ -306,8 +338,7 @@ class AdminController extends Controller
      */
     public function sendUserPasswordReset($id)
     {
-        $isSuperAdmin = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
-        if (! $isSuperAdmin) {
+        if (! Auth::user()?->isSuperAdmin()) {
             return redirect()->route('dashboard')->with('error', 'Only the super admin can access the Users section.');
         }
 
@@ -327,8 +358,7 @@ class AdminController extends Controller
     }
 
     public function verifyUserEmail($id){
-        $isSuperAdmin = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
-        if (!$isSuperAdmin) {
+        if (! Auth::user()?->isSuperAdmin()) {
             return redirect()->route('dashboard')->with('error', 'Only the super admin can access the Users section.');
         }
 
@@ -344,32 +374,65 @@ class AdminController extends Controller
     }
 
     public function makeAdmin($id){
-        $isSuperAdmin = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
-        if (!$isSuperAdmin) {
+        if (! Auth::user()?->isSuperAdmin()) {
             return redirect()->route('dashboard')->with('error', 'Only the super admin can access the Users section.');
         }
-        
+
         $user = User::findOrFail($id);
-        $user->role = 1; // Set role to 1 (admin)
+
+        if ($user->isPrimarySuperAdmin()) {
+            return redirect()->back()->with('info', 'This account is already the primary super admin.');
+        }
+
+        $user->role = 2; // Admin panel access
         $user->save();
 
-        return redirect()->back()->with('success','User is now an admin');
+        return redirect()->back()->with('success', 'User now has admin access.');
+    }
+
+    public function removeAdmin($id)
+    {
+        if (! Auth::user()?->isSuperAdmin()) {
+            return redirect()->route('dashboard')->with('error', 'Only the super admin can access the Users section.');
+        }
+
+        $user = User::findOrFail($id);
+
+        if ($user->isPrimarySuperAdmin()) {
+            return redirect()->back()->with('error', 'You cannot remove admin access from the primary super admin.');
+        }
+
+        if ((int) $user->id === (int) Auth::id()) {
+            return redirect()->back()->with('error', 'You cannot remove your own admin access.');
+        }
+
+        $user->role = 0;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Admin access removed. The account is now a regular user.');
     }
 
     
     public function deleteUser($id)
     {
-        $isSuperAdmin = Auth::check() && Auth::user()->email === 'admin@iremetech.com';
-        if (!$isSuperAdmin) {
+        if (! Auth::user()?->isSuperAdmin()) {
             return redirect()->route('dashboard')->with('error', 'Only the super admin can access the Users section.');
         }
 
-        $post = User::findOrFail($id);
-        $post->delete();
+        $user = User::findOrFail($id);
 
-        return redirect()->back()->with('success', 'User has been deleted');
+        if ($user->isPrimarySuperAdmin()) {
+            return redirect()->back()->with('error', 'The primary super admin account cannot be deleted.');
+        }
+
+        if ((int) $user->id === (int) Auth::id()) {
+            return redirect()->back()->with('error', 'You cannot delete your own account.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('users')->with('success', 'User has been deleted');
     }
-
 
     public function blogsComment(Request $request)
     {

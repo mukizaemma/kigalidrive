@@ -139,6 +139,7 @@ class ReservationController extends Controller
             'preferred_date' => $validated['preferred_date'] ?? null,
             'preferred_time' => $validated['preferred_time'] ?? null,
             'additional_request' => $rental->additional_request,
+            'rental_status' => $rental->rental_status,
         ], 'Car: ' . $car->name);
 
         return $this->finish($request, $setting, $validated['channel'], $payload, $car->slug, 'car');
@@ -284,18 +285,27 @@ class ReservationController extends Controller
 
         if ($channel === 'email') {
             $adminEmail = $this->channels->adminEmail($setting, 'booking');
-            if ($adminEmail) {
-                $subject = 'Reservation #' . $payload['booking_number'] . ' — Kigali Drive Rentals';
-                $externalUrl = 'mailto:' . $adminEmail
-                    . '?subject=' . rawurlencode($subject)
-                    . '&body=' . rawurlencode($message);
-
-                return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, $externalUrl, $flash);
+            if (! $adminEmail) {
+                throw ValidationException::withMessages([
+                    'channel' => 'Email is not available right now. Please choose WhatsApp or contact us by phone.',
+                ]);
             }
 
-            throw ValidationException::withMessages([
-                'channel' => 'Email is not available right now. Please choose WhatsApp or contact us by phone.',
-            ]);
+            // Send confirmation to the client immediately via SMTP
+            if ($type === 'car' && ! empty($payload['email'])) {
+                try {
+                    $payload['rental_status'] = $payload['rental_status'] ?? 'pending';
+                    $this->notifier->notifyClientReceived($payload);
+                    $successMessage = 'Reservation submitted! We emailed a confirmation to ' . $payload['email']
+                        . '. Your booking number is #' . $payload['booking_number'] . '.';
+                } catch (\Throwable $e) {
+                    report($e);
+                    $successMessage = 'Reservation submitted! Your booking number is #' . $payload['booking_number']
+                        . '. We could not send the confirmation email automatically — our team will follow up.';
+                }
+            }
+
+            return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, null, $flash);
         }
 
         return $this->channels->submissionResponse($request, $redirectUrl, $successMessage, null, $flash);

@@ -14,20 +14,24 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/inventory-day-cap', [App\Http\Controllers\InventoryDayCapController::class, 'show'])->name('inventory-day-cap.show');
     Route::post('/inventory-day-cap', [App\Http\Controllers\InventoryDayCapController::class, 'update'])->name('inventory-day-cap.update');
+
+    // Available to any authenticated user (including the primary super admin)
+    Route::get('/logouts', [App\Http\Controllers\AdminController::class, 'logouts'])->name('logouts');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'index'])->name('dashboard');
-    Route::get('/logouts', [App\Http\Controllers\AdminController::class, 'logouts'])->name('logouts');
 
     Route::middleware('superadmin')->group(function () {
         Route::get('/Users', [App\Http\Controllers\AdminController::class, 'users'])->name('users');
+        Route::post('/Users', [App\Http\Controllers\AdminController::class, 'storeUser'])->name('admin.users.store');
         Route::get('/Users/{id}/show', [App\Http\Controllers\AdminController::class, 'showUser'])->name('admin.users.show');
         Route::post('/Users/{id}/update', [App\Http\Controllers\AdminController::class, 'updateUser'])->name('admin.users.update');
         Route::post('/Users/{id}/password', [App\Http\Controllers\AdminController::class, 'setUserPassword'])->name('admin.users.set-password');
         Route::post('/Users/{id}/password-reset', [App\Http\Controllers\AdminController::class, 'sendUserPasswordReset'])->name('admin.users.password-reset');
         Route::get('/Users/{id}/verify', [App\Http\Controllers\AdminController::class, 'verifyUserEmail'])->name('admin.users.verify');
         Route::get('/Users/{id}/makeAdmin', [App\Http\Controllers\AdminController::class, 'makeAdmin'])->name('makeAdmin');
+        Route::get('/Users/{id}/removeAdmin', [App\Http\Controllers\AdminController::class, 'removeAdmin'])->name('removeAdmin');
         Route::post('/Users/bulk-delete', [App\Http\Controllers\AdminController::class, 'bulkDeleteUsers'])->name('admin.users.bulk-delete');
         Route::get('/deleteUser/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('deleteUser');
     });
@@ -147,6 +151,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/deleteCarImage/{id}', [App\Http\Controllers\CarsController::class, 'deleteCarImage'])->name('deleteCarImage');
     Route::get('/car-bookings', [App\Http\Controllers\CarsController::class, 'carBookings'])->name('admin.carBookings.index');
     Route::put('/car-bookings/{id}/status', [App\Http\Controllers\CarsController::class, 'updateBookingStatus'])->name('admin.carBookings.updateStatus');
+    Route::post('/car-bookings/{id}/resend-email', [App\Http\Controllers\CarsController::class, 'resendBookingEmail'])->name('admin.carBookings.resendEmail');
+    Route::post('/car-bookings/{id}/send-update', [App\Http\Controllers\CarsController::class, 'sendBookingUpdate'])->name('admin.carBookings.sendUpdate');
 
     Route::get('/admin/listing-requests', [App\Http\Controllers\Admin\ListingRequestsController::class, 'index'])->name('admin.listing-requests.index');
     Route::put('/admin/listing-requests/{listingRequest}', [App\Http\Controllers\Admin\ListingRequestsController::class, 'update'])->name('admin.listing-requests.update');
@@ -223,7 +229,9 @@ Route::get('/reviews/{id}', [App\Http\Controllers\ReviewController::class, 'show
 Route::post('/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 
 Route::get('/terms-and-conditions', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
-Route::get('/logouts', [App\Http\Controllers\HomeController::class, 'logouts'])->name('logouts');
+
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');
 
 /*
 |--------------------------------------------------------------------------

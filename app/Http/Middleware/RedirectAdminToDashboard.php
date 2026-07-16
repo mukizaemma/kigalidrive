@@ -21,16 +21,18 @@ class RedirectAdminToDashboard
         if (Auth::check()) {
             $user = Auth::user();
             
-            // If user is admin (role == 1), redirect to dashboard when accessing frontend
-            if ($user->role == 1) {
+            // Keep primary / legacy role-1 admins inside the panel on frontend hits
+            if ($user->isSuperAdmin() || (int) ($user->role ?? 0) === 1) {
                 // Check if current path is an admin path
                 $isAdminPath = $request->is('dashboard*')
                             || $request->is('my-properties*')
                             || $request->is('inventory-day-cap')
                             || $request->is('inventory-day-cap/*')
                             || $request->is('Users*')
+                            || $request->is('deleteUser*')
                             || $request->is('email/verify*')
                             || $request->is('logouts')
+                            || $request->is('my-profile*')
                             || $request->is('admin/*')
                             || $request->is('Comments*')
                             || $request->is('Subscribers*')
@@ -65,7 +67,12 @@ class RedirectAdminToDashboard
                             || $request->is('saveImage*')
                             || $request->is('editImage*')
                             || $request->is('updateImage*')
-                            || $request->is('destroyImage*');
+                            || $request->is('destroyImage*')
+                            || $request->is('getCars*')
+                            || $request->is('storeCar*')
+                            || $request->is('editCar*')
+                            || $request->is('updateCar*')
+                            || $request->is('deleteCar*');
                 
                 // If accessing frontend pages, redirect to dashboard
                 if (!$isAdminPath) {

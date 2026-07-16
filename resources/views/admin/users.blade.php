@@ -32,23 +32,15 @@
                                 @endif
                             @endif
                         </h6>
-                        <div class="d-flex gap-2 align-items-center">
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
                             @if(isset($isSuperAdmin) && $isSuperAdmin)
-                                {{-- Only super admin can see admins --}}
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                                    <i class="fas fa-user-plus me-1"></i>Add user
+                                </button>
                                 <a href="{{ route('users', ['filter' => 'admins']) }}" 
                                    class="btn {{ (isset($filter) && $filter == 'admins') ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">
                                     <i class="fas fa-user-shield me-1"></i>View Admins
                                 </a>
-                                <a href="{{ route('users', ['filter' => 'users']) }}" 
-                                   class="btn {{ (isset($filter) && $filter == 'users') ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">
-                                    <i class="fas fa-users me-1"></i>View Users
-                                </a>
-                                <a href="{{ route('users') }}" 
-                                   class="btn {{ (!isset($filter) || $filter == 'all') ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">
-                                    <i class="fas fa-list me-1"></i>View All
-                                </a>
-                            @else
-                                {{-- Regular admins can only see users filter --}}
                                 <a href="{{ route('users', ['filter' => 'users']) }}" 
                                    class="btn {{ (isset($filter) && $filter == 'users') ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">
                                     <i class="fas fa-users me-1"></i>View Users
@@ -188,7 +180,9 @@
                                     $listingTotal = (int) ($user->properties_count ?? 0) + (int) ($user->owned_hotels_count ?? 0);
                                     $guestBookings = (int) ($user->guest_bookings_count ?? 0);
                                     $hostBookings = (int) ($user->host_bookings_count ?? 0);
-                                    $canBulkDeleteRow = !empty($canBulkDeleteSelected) && (int)($user->role ?? 0) !== 1;
+                                    $canBulkDeleteRow = !empty($canBulkDeleteSelected)
+                                        && !$user->isPrimarySuperAdmin()
+                                        && (int) $user->id !== (int) auth()->id();
                                 @endphp
                                 <tr>
                                     @if(!empty($canBulkDeleteSelected))
@@ -240,17 +234,25 @@
                                                     </a>
                                                 @endif
                                             @endif
-                                            @if($user->role != 1 && isset($isSuperAdmin) && $isSuperAdmin)
-                                                <a href="{{ route('makeAdmin', ['id' => $user->id]) }}" class="btn btn-info btn-sm" title="Make Super Admin"
-                                                   onclick="return confirm('Grant this user Super Admin access? They will have full admin rights. Continue?');">
+                                            @if(isset($isSuperAdmin) && $isSuperAdmin)
+                                                @if(!$user->isPrimarySuperAdmin() && !$user->isAdmin())
+                                                <a href="{{ route('makeAdmin', ['id' => $user->id]) }}" class="btn btn-info btn-sm" title="Grant admin access"
+                                                   onclick="return confirm('Grant this user admin panel access? Continue?');">
                                                     <i class="fa fa-user-shield"></i>
                                                 </a>
-                                            @endif
-                                            @if(isset($isSuperAdmin) && $isSuperAdmin)
+                                                @endif
+                                                @if(!$user->isPrimarySuperAdmin() && $user->isAdmin() && (int) $user->id !== (int) auth()->id())
+                                                <a href="{{ route('removeAdmin', ['id' => $user->id]) }}" class="btn btn-warning btn-sm" title="Remove admin access"
+                                                   onclick="return confirm('Remove admin access from this user?');">
+                                                    <i class="fa fa-user-slash"></i>
+                                                </a>
+                                                @endif
+                                                @if(!$user->isPrimarySuperAdmin() && (int) $user->id !== (int) auth()->id())
                                                 <a href="{{ route('deleteUser', ['id' => $user->id]) }}" class="btn btn-danger btn-sm" 
                                                    title="Delete" onclick="return confirm('Are you sure you want to delete this user?')">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
+                                                @endif
                                             @endif
                                         </div>
                                     </td>
@@ -435,4 +437,57 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+@if(isset($isSuperAdmin) && $isSuperAdmin)
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content text-start">
+            <form action="{{ route('admin.users.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Add user</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Full name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" value="{{ old('email') }}" required maxlength="255">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control" required minlength="8" autocomplete="new-password">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm password <span class="text-danger">*</span></label>
+                        <input type="password" name="password_confirmation" class="form-control" required minlength="8" autocomplete="new-password">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role <span class="text-danger">*</span></label>
+                        <select name="role" class="form-select" required>
+                            <option value="0" @selected(old('role', '0') === '0')>User</option>
+                            <option value="2" @selected(old('role') === '2')>Admin</option>
+                        </select>
+                        <small class="text-muted">Only you (<code>admin@iremetech.com</code>) remain the primary super admin.</small>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">Status <span class="text-danger">*</span></label>
+                        <select name="status" class="form-select" required>
+                            <option value="Active" @selected(old('status', 'Active') === 'Active')>Active</option>
+                            <option value="Inactive" @selected(old('status') === 'Inactive')>Suspended</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Create user</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 @endsection

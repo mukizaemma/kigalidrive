@@ -137,7 +137,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isSuperAdmin(): bool
     {
-        return strtolower((string) $this->email) === 'admin@iremetech.com';
+        return strtolower((string) $this->email) === self::superAdminEmail();
+    }
+
+    public static function superAdminEmail(): string
+    {
+        return 'admin@iremetech.com';
+    }
+
+    /**
+     * Whether this account is the primary super admin (cannot be deleted or demoted).
+     */
+    public function isPrimarySuperAdmin(): bool
+    {
+        return $this->isSuperAdmin();
     }
 
     /**

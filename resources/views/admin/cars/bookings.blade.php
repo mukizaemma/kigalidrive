@@ -20,6 +20,19 @@
                     </a>
                 </div>
 
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
                 <!-- Filter Tabs -->
                 <ul class="nav nav-tabs mb-4" role="tablist">
                     <li class="nav-item">
@@ -153,23 +166,42 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <div class="btn-group">
+                                        <div class="btn-group flex-wrap">
                                             <button type="button" class="btn btn-sm btn-info" 
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#viewBookingModal{{ $booking->id }}"
                                                     title="View Details">
                                                 <i class="fa fa-eye"></i>
                                             </button>
+
+                                            @if($booking->email)
+                                            <form action="{{ route('admin.carBookings.resendEmail', $booking->id) }}"
+                                                  method="POST"
+                                                  style="display:inline;"
+                                                  onsubmit="return confirm('Resend confirmation email to {{ $booking->email }}?');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-primary" title="Resend confirmation email">
+                                                    <i class="fa fa-envelope"></i>
+                                                </button>
+                                            </form>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#updateEmailModal{{ $booking->id }}"
+                                                    title="Send update email">
+                                                <i class="fa fa-paper-plane"></i>
+                                            </button>
+                                            @endif
                                             
                                             @if($booking->rental_status == 'pending')
                                                 <form action="{{ route('admin.carBookings.updateStatus', $booking->id) }}" 
                                                       method="POST" 
                                                       style="display:inline;"
-                                                      onsubmit="return confirm('Are you sure you want to confirm this booking?');">
+                                                      onsubmit="return confirm('Confirm this booking and email the client?');">
                                                     @csrf
                                                     @method('PUT')
                                                     <input type="hidden" name="status" value="confirmed">
-                                                    <button type="submit" class="btn btn-sm btn-success" title="Confirm">
+                                                    <input type="hidden" name="notify_client" value="1">
+                                                    <button type="submit" class="btn btn-sm btn-success" title="Confirm &amp; notify">
                                                         <i class="fa fa-check"></i>
                                                     </button>
                                                 </form>
@@ -177,11 +209,12 @@
                                                 <form action="{{ route('admin.carBookings.updateStatus', $booking->id) }}" 
                                                       method="POST" 
                                                       style="display:inline;"
-                                                      onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                                      onsubmit="return confirm('Cancel this booking and email the client?');">
                                                     @csrf
                                                     @method('PUT')
                                                     <input type="hidden" name="status" value="cancelled">
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Cancel">
+                                                    <input type="hidden" name="notify_client" value="1">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Cancel &amp; notify">
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </form>
@@ -189,6 +222,46 @@
                                         </div>
                                     </td>
                                 </tr>
+
+                                <!-- Send update email modal -->
+                                @if($booking->email)
+                                <div class="modal fade" id="updateEmailModal{{ $booking->id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content text-start">
+                                            <form action="{{ route('admin.carBookings.sendUpdate', $booking->id) }}" method="POST">
+                                                @csrf
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Email update — #{{ $booking->booking_number ?? $booking->id }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="small text-muted">Sending to <strong>{{ $booking->email }}</strong></p>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Optionally update status</label>
+                                                        <select name="status" class="form-select">
+                                                            <option value="">Keep current ({{ $booking->rental_status }})</option>
+                                                            <option value="pending">Pending</option>
+                                                            <option value="confirmed">Confirmed</option>
+                                                            <option value="cancelled">Cancelled</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-0">
+                                                        <label class="form-label">Message to client <span class="text-danger">*</span></label>
+                                                        <textarea name="admin_message" class="form-control" rows="4" required
+                                                                  placeholder="e.g. Driver will meet you at the airport at 10:00. Please bring your passport."></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fa fa-paper-plane me-1"></i>Send email
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
 
                                 <!-- View Booking Modal -->
                                 <div class="modal fade" id="viewBookingModal{{ $booking->id }}" tabindex="-1" aria-hidden="true">
@@ -306,6 +379,17 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                @if($booking->email)
+                                                <form action="{{ route('admin.carBookings.resendEmail', $booking->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-outline-primary">
+                                                        <i class="fa fa-envelope me-2"></i>Resend confirmation
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#updateEmailModal{{ $booking->id }}">
+                                                    <i class="fa fa-paper-plane me-2"></i>Send update
+                                                </button>
+                                                @endif
                                                 @if($booking->rental_status == 'pending')
                                                     <form action="{{ route('admin.carBookings.updateStatus', $booking->id) }}" 
                                                           method="POST" 
@@ -313,8 +397,9 @@
                                                         @csrf
                                                         @method('PUT')
                                                         <input type="hidden" name="status" value="confirmed">
+                                                        <input type="hidden" name="notify_client" value="1">
                                                         <button type="submit" class="btn btn-success">
-                                                            <i class="fa fa-check me-2"></i>Confirm Booking
+                                                            <i class="fa fa-check me-2"></i>Confirm &amp; notify
                                                         </button>
                                                     </form>
                                                 @endif
