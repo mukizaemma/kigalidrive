@@ -13,7 +13,7 @@
         : ($defaultHeroTitle ?? optional($setting)->tagline ?? 'Premium car rentals in Kigali');
     $subline = $useIntro && $intro->hook
         ? $intro->hook
-        : ($defaultHeroSubtitle ?? 'Self-drive and chauffeur rentals — daily, weekly & monthly across Rwanda.');
+        : ($defaultHeroSubtitle ?? 'Chauffeur car rentals — daily & monthly rates in USD across Rwanda.');
     $highlight = $useIntro ? $intro->hook_highlight : null;
 
     $ctaPrimaryLabel = $useIntro ? $intro->cta_primary_label : 'Browse our fleet';
@@ -72,7 +72,7 @@
                 <ul class="kdr-hero-split__trust" aria-label="Why book with us">
                     <li><i class="fas fa-dollar-sign" aria-hidden="true"></i> Clear USD pricing</li>
                     <li><i class="fas fa-plane-arrival" aria-hidden="true"></i> Airport &amp; city pickup</li>
-                    <li><i class="fas fa-user-tie" aria-hidden="true"></i> Self-drive or chauffeur</li>
+                    <li><i class="fas fa-user-tie" aria-hidden="true"></i> Professional chauffeur</li>
                 </ul>
             </div>
             <div class="col-lg-5 kdr-hero-split__media-col">

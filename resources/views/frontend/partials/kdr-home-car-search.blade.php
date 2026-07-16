@@ -3,7 +3,7 @@
         <form action="{{ route('showCars') }}" method="GET" class="kdr-home-search__form kdr-card">
             <div class="kdr-home-search__head">
                 <h2 class="kdr-home-search__title"><i class="fas fa-search me-2" aria-hidden="true"></i>Find your rental</h2>
-                <p class="kdr-home-search__sub mb-0">Search by brand, model, or keyword — self-drive or with driver</p>
+                <p class="kdr-home-search__sub mb-0">Search by brand, model, or keyword — all cars come with a professional driver</p>
             </div>
             <div class="row g-3 align-items-end">
                 <div class="col-md-5">

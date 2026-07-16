@@ -26,13 +26,8 @@ class Car extends Model
         'price_per_month',
         'price_to_buy',
         'image',
-        'images',
         'description',
         'status',
-    ];
-
-    protected $casts = [
-        'images' => 'array',
     ];
 
     public function partner()

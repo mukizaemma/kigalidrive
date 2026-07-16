@@ -2,8 +2,8 @@
     $whyItems = [
         ['icon' => 'fa-car', 'title' => 'Wide rental fleet', 'text' => 'Sedans, SUVs, and executive options for every trip in Rwanda.'],
         ['icon' => 'fa-shield', 'title' => 'Safe & maintained', 'text' => 'Vehicles serviced and prepared for Kigali roads and upcountry travel.'],
-        ['icon' => 'fa-tags', 'title' => 'Transparent USD rates', 'text' => 'Daily, weekly, and monthly pricing — no hidden surprises.'],
-        ['icon' => 'fa-user-tie', 'title' => 'Driver or self-drive', 'text' => 'Professional chauffeur or flexible self-drive hire.'],
+        ['icon' => 'fa-tags', 'title' => 'Transparent USD rates', 'text' => 'Clear pricing per day and per month — no hidden surprises.'],
+        ['icon' => 'fa-user-tie', 'title' => 'Professional drivers', 'text' => 'Every rental includes a professional chauffeur. Other details discussed based on your needs.'],
         ['icon' => 'fa-headset', 'title' => 'Fast support', 'text' => 'Responsive team in Kigali — English, French, Kinyarwanda & Swahili.'],
         ['icon' => 'fa-calendar-check', 'title' => 'Easy booking', 'text' => 'Reserve online in minutes or message us on WhatsApp.'],
         ['icon' => 'fa-plane-arrival', 'title' => 'Airport & city hire', 'text' => 'KGL transfers and comfortable rides across the capital.'],

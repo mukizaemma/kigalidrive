@@ -930,12 +930,21 @@ body.kigali-drive .kdr-car-card__price {
     font-size: 1.1rem;
     font-weight: 800;
     color: var(--kdr-navy);
+    line-height: 1.35;
+}
+
+body.kigali-drive .kdr-car-card__price p {
+    margin: 0;
 }
 
 body.kigali-drive .kdr-car-card__price span {
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--kdr-slate);
+}
+
+body.kigali-drive .kdr-car-detail__note {
+    margin-top: 0.25rem;
 }
 
 /* Pagination */

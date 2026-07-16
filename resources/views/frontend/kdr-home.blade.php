@@ -6,7 +6,7 @@
         ? 'https://wa.me/' . preg_replace('/\D+/', '', optional($setting)->whatsapp ?? optional($setting)->phone)
         : null;
     $defaultHeroTitle = optional($setting)->tagline ?? 'Premium Car Rentals in Kigali';
-    $defaultHeroSubtitle = 'Self-drive or with driver — daily, weekly & monthly hire across Rwanda.';
+    $defaultHeroSubtitle = 'With professional driver — daily & monthly hire across Rwanda.';
 @endphp
 
 @include('frontend.partials.kdr-hero-composite', [

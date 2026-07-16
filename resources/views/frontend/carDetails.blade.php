@@ -24,18 +24,8 @@
     ]);
     $metaLine = implode(' · ', $metaParts);
 
-    $leadPrice = null;
-    $leadPeriod = null;
-    if ($car->price_per_day > 0) {
-        $leadPrice = formatUsd($car->price_per_day);
-        $leadPeriod = 'day';
-    } elseif ($car->price_per_week > 0) {
-        $leadPrice = formatUsd($car->price_per_week);
-        $leadPeriod = 'week';
-    } elseif ($car->price_per_month > 0) {
-        $leadPrice = formatUsd($car->price_per_month);
-        $leadPeriod = 'month';
-    }
+    $dayPrice = ($car->price_per_day ?? 0) > 0 ? formatUsd($car->price_per_day) : null;
+    $monthPrice = ($car->price_per_month ?? 0) > 0 ? formatUsd($car->price_per_month) : null;
 @endphp
 
 <section class="kdr-car-detail py-4 py-lg-5">
@@ -85,10 +75,20 @@
                     <p class="kdr-car-detail__meta">{{ $metaLine }}</p>
                     @endif
 
-                    @if($leadPrice)
+                    @if($dayPrice || $monthPrice)
                     <div class="kdr-car-detail__price">
-                        <span class="kdr-car-detail__price-value">{{ $leadPrice }}</span>
-                        <span class="kdr-car-detail__price-unit">/ {{ $leadPeriod }}</span>
+                        @if($dayPrice)
+                        <div>
+                            <span class="kdr-car-detail__price-value">{{ $dayPrice }}</span>
+                            <span class="kdr-car-detail__price-unit">/ day</span>
+                        </div>
+                        @endif
+                        @if($monthPrice)
+                        <div class="{{ $dayPrice ? 'mt-1' : '' }}">
+                            <span class="kdr-car-detail__price-value">{{ $monthPrice }}</span>
+                            <span class="kdr-car-detail__price-unit">/ month</span>
+                        </div>
+                        @endif
                     </div>
                     @endif
 
@@ -103,21 +103,15 @@
                     </ul>
                     @endif
 
+                    <p class="kdr-car-detail__note text-muted small mb-3">
+                        Other details will be discussed based on the client's needs.
+                    </p>
+
                     <div class="kdr-car-detail__status">
                         <span class="kdr-car-detail__status-badge kdr-car-detail__status-badge--{{ $car->status }}">
                             {{ ucfirst($car->status) }}
                         </span>
-                        @if($car->driver_available || $car->self_drive)
-                        <span class="kdr-car-detail__hire-type">
-                            @if($car->driver_available && $car->self_drive)
-                                Self-drive or chauffeur
-                            @elseif($car->driver_available)
-                                With driver
-                            @else
-                                Self-drive
-                            @endif
-                        </span>
-                        @endif
+                        <span class="kdr-car-detail__hire-type">With driver</span>
                     </div>
 
                     <button type="button" class="th-btn btn-kdr-primary w-100 kdr-car-detail__book" data-bs-toggle="modal" data-bs-target="#carBookingModal">

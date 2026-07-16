@@ -34,8 +34,8 @@ class HomeHireSeeder extends Seeder
         }
 
         $items = [
-            ['icon' => 'fa-tags', 'title' => 'Clear USD pricing', 'description' => 'Listed daily, weekly & monthly rates — know the cost upfront', 'sort_order' => 1],
-            ['icon' => 'fa-user-tie', 'title' => 'Driver or self-drive', 'description' => 'Chauffeur for meetings or drive yourself with flexible terms', 'sort_order' => 2],
+            ['icon' => 'fa-tags', 'title' => 'Clear USD pricing', 'description' => 'Listed daily & monthly rates — know the cost upfront', 'sort_order' => 1],
+            ['icon' => 'fa-user-tie', 'title' => 'Professional drivers', 'description' => 'Every rental includes a chauffeur. Other details based on your needs', 'sort_order' => 2],
             ['icon' => 'fa-comments', 'title' => 'Fast WhatsApp booking', 'description' => 'Share your dates and route — we confirm quickly', 'sort_order' => 3],
             ['icon' => 'fa-plane-arrival', 'title' => 'Airport & city transfers', 'description' => 'KGL pickups and comfortable rides across Kigali', 'sort_order' => 4],
             ['icon' => 'fa-shield', 'title' => 'Maintained fleet', 'description' => 'Vehicles prepared for local roads and upcountry trips', 'sort_order' => 5],

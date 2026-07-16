@@ -17,8 +17,8 @@ class KdrServicesSeeder extends Seeder
             [
                 'title' => 'Car rental',
                 'icon' => 'fa-car-side',
-                'excerpt' => 'Daily, weekly, and monthly rentals — self-drive or with a professional driver.',
-                'description' => "Browse our fleet of sedans, SUVs, and luxury vehicles.\n\n• Self-drive and chauffeur options\n• Transparent RWF pricing\n• Kigali and upcountry trips\n• Flexible rental periods",
+                'excerpt' => 'Daily and monthly rentals with a professional driver — clear USD pricing.',
+                'description' => "Browse our fleet of sedans, SUVs, and luxury vehicles.\n\n• Professional chauffeur included\n• Transparent USD pricing (per day & per month)\n• Kigali and upcountry trips\n• Other details discussed based on your needs",
                 'sort_order' => 1,
             ],
             [

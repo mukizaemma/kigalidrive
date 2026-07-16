@@ -101,7 +101,7 @@ class CarsController extends Controller
                 $uniqueSlug = $slug . '-' . $counter++;
             }
 
-            // Create car
+            // Create car (chauffeur-only — no self-drive)
             $car = Car::create([
                 'name' => $request->input('name'),
                 'slug' => $uniqueSlug,
@@ -109,6 +109,8 @@ class CarsController extends Controller
                 'fuel_type' => $request->input('fuel_type'),
                 'seats' => $request->input('seats'),
                 'transmission' => $request->input('transmission'),
+                'driver_available' => true,
+                'self_drive' => false,
                 'price_per_day' => $request->input('price_per_day'),
                 'price_per_week' => $request->input('price_per_week'),
                 'price_per_month' => $request->input('price_per_month'),
@@ -211,6 +213,8 @@ class CarsController extends Controller
             $car->price_per_week = $request->input('price_per_week');
             $car->price_per_month = $request->input('price_per_month');
             $car->price_to_buy = null;
+            $car->driver_available = true;
+            $car->self_drive = false;
     
             // Update slug if name changed
             if ($car->isDirty('name')) {
@@ -252,26 +256,27 @@ class CarsController extends Controller
     {
         try {
             $car = Car::findOrFail($id);
-            
-            // Delete cover image
+
+            // Delete cover image from disk (ignore missing files)
             if ($car->image) {
                 Storage::delete('public/images/cars/' . $car->image);
             }
-            
-            // Delete all car images
-            foreach ($car->images as $carImage) {
+
+            // Delete gallery images via relation (not the legacy JSON attribute)
+            $carImages = $car->images()->get();
+            foreach ($carImages as $carImage) {
                 if ($carImage->image) {
                     Storage::delete('public/images/cars/' . $carImage->image);
                 }
                 $carImage->delete();
             }
-            
+
             $car->delete();
-            
-            return back()->with('success', 'Car deleted successfully');
+
+            return redirect()->route('getCars')->with('success', 'Car deleted successfully');
         } catch (\Exception $e) {
             Log::error('Car delete error: ' . $e->getMessage());
-            return back()->with('error', 'Something went wrong while deleting the car');
+            return redirect()->route('getCars')->with('error', 'Something went wrong while deleting the car');
         }
     }
 

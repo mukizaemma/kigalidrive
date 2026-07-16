@@ -34,7 +34,7 @@ class ReservationNotificationService
         if (array_key_exists('with_driver', $data) && $data['with_driver'] !== null && $data['with_driver'] !== '') {
             $withDriver = filter_var($data['with_driver'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($withDriver !== null) {
-                $lines[] = 'Driver: ' . ($withDriver ? 'With driver' : 'Self-drive');
+                $lines[] = 'Driver: With driver';
             }
         }
         if (! empty($data['pickup_date'])) {

@@ -6,7 +6,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>@yield('title', optional($setting)->company ?? 'Kigali Drive Rentals')</title>
     <meta name="author" content="Kigali Drive Rentals">
-    <meta name="description" content="{{ optional($setting)->tagline ?? 'Premium car rentals in Kigali, Rwanda. Self-drive or with driver — daily, weekly & monthly.' }}">
+    <meta name="description" content="{{ optional($setting)->tagline ?? 'Premium car rentals in Kigali, Rwanda. Professional chauffeur — daily & monthly rates in USD.' }}">
     <meta name="keywords" content="{{ optional($setting)->company ?? 'Kigali Drive Rentals' }}">
     <meta name="robots" content="INDEX,FOLLOW">
 

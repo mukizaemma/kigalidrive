@@ -4,7 +4,7 @@
 @php
     $heroSlides = ($heroSlides ?? collect())->filter(fn ($s) => filled($s->image));
     $defaultHeroTitle = $defaultHeroTitle ?? (optional($setting)->tagline ?? 'Premium Car Rentals & Sales in Kigali');
-    $defaultHeroSubtitle = $defaultHeroSubtitle ?? 'Your trusted partner for self-drive and chauffeur rentals — plus quality vehicles for sale.';
+    $defaultHeroSubtitle = $defaultHeroSubtitle ?? 'Your trusted partner for chauffeur car rentals in Kigali — daily and monthly rates in USD.';
     $compactCopy = $compactCopy ?? false;
 @endphp
 

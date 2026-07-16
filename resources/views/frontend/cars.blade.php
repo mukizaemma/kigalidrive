@@ -14,7 +14,7 @@
                 <div class="col-lg-8">
                     <span class="kdr-cars-hero__eyebrow"><i class="fas fa-car me-2"></i>Car rental</span>
                     <h1 class="kdr-cars-hero__title">Our rental fleet in Kigali</h1>
-                    <p class="kdr-cars-hero__lead mb-0">Self-drive or with driver · Daily, weekly &amp; monthly · Clear USD pricing · Airport &amp; city hire.</p>
+                    <p class="kdr-cars-hero__lead mb-0">With professional driver · Daily &amp; monthly rates in USD · Airport &amp; city hire. Other details discussed based on your needs.</p>
                 </div>
                 <div class="col-lg-4 text-lg-end">
                     <button type="button" class="th-btn btn-kdr-primary" data-bs-toggle="modal" data-bs-target="#carRentalRequestModal">
@@ -54,14 +54,6 @@
                         </select>
                     </div>
                     <div class="col-lg-2 col-md-6">
-                        <label class="form-label" for="filter_driver">Driver</label>
-                        <select id="filter_driver" name="driver" class="form-select">
-                            <option value="">Any</option>
-                            <option value="with_driver" @selected(request('driver') === 'with_driver')>With driver</option>
-                            <option value="self_drive" @selected(request('driver') === 'self_drive')>Self-drive</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-2 col-md-6">
                         <label class="form-label" for="filter_fuel_type">Fuel</label>
                         <select id="filter_fuel_type" name="fuel_type" class="form-select">
                             <option value="">Any</option>
@@ -82,7 +74,6 @@
                         <label class="form-label" for="filter_rental_period">Rate period</label>
                         <select id="filter_rental_period" name="rental_period" class="form-select">
                             <option value="day" @selected($rentalPeriod === 'day')>Per day</option>
-                            <option value="week" @selected($rentalPeriod === 'week')>Per week</option>
                             <option value="month" @selected($rentalPeriod === 'month')>Per month</option>
                         </select>
                     </div>

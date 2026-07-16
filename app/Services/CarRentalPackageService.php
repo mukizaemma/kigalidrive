@@ -8,18 +8,13 @@ use Illuminate\Validation\ValidationException;
 class CarRentalPackageService
 {
     /**
+     * Rental packages are chauffeur-only (no self-drive).
+     * Day and month rates are primary; weekly is included when priced.
+     *
      * @return array<int, array{key: string, label: string, period: string, with_driver: bool, price: float, price_formatted: string, rental_duration: string}>
      */
     public function packagesFor(Car $car): array
     {
-        $selfDrive = (bool) $car->self_drive;
-        $driverAvailable = (bool) $car->driver_available;
-
-        if (! $selfDrive && ! $driverAvailable) {
-            $selfDrive = true;
-            $driverAvailable = true;
-        }
-
         $periods = [
             'day' => ['price' => $car->price_per_day, 'label' => 'Daily', 'duration' => 'daily'],
             'week' => ['price' => $car->price_per_week, 'label' => 'Weekly', 'duration' => 'weekly'],
@@ -34,12 +29,7 @@ class CarRentalPackageService
                 continue;
             }
 
-            if ($selfDrive) {
-                $packages[] = $this->buildPackage($period, false, $meta, $price);
-            }
-            if ($driverAvailable) {
-                $packages[] = $this->buildPackage($period, true, $meta, $price);
-            }
+            $packages[] = $this->buildPackage($period, $meta, $price);
         }
 
         return $packages;
@@ -49,16 +39,13 @@ class CarRentalPackageService
      * @param  array{label: string, duration: string}  $meta
      * @return array{key: string, label: string, period: string, with_driver: bool, price: float, price_formatted: string, rental_duration: string}
      */
-    protected function buildPackage(string $period, bool $withDriver, array $meta, float $price): array
+    protected function buildPackage(string $period, array $meta, float $price): array
     {
-        $driverLabel = $withDriver ? 'With driver' : 'Self-drive';
-        $suffix = $withDriver ? 'driver' : 'self';
-
         return [
-            'key' => $period . '_' . $suffix,
-            'label' => $meta['label'] . ' — ' . $driverLabel,
+            'key' => $period . '_driver',
+            'label' => $meta['label'] . ' — With driver',
             'period' => $period,
-            'with_driver' => $withDriver,
+            'with_driver' => true,
             'price' => $price,
             'price_formatted' => formatUsd($price),
             'rental_duration' => $meta['duration'],

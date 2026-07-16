@@ -1,22 +1,9 @@
 @php
-    $period = $rentalPeriod ?? request('rental_period', 'day');
-    $price = match ($period) {
-        'week' => $car->price_per_week,
-        'month' => $car->price_per_month,
-        default => $car->price_per_day,
-    };
-    $periodLabel = match ($period) {
-        'week' => 'week',
-        'month' => 'month',
-        default => 'day',
-    };
-    if (!$price || $price <= 0) {
-        $price = $car->price_per_day ?: $car->price_per_month;
-        $periodLabel = $car->price_per_day ? 'day' : 'month';
-    }
     $imgUrl = ($car->image && file_exists(storage_path('app/public/images/cars/' . $car->image)))
         ? asset('storage/images/cars/' . $car->image)
         : asset('assets/img/tour/tour_3_1.jpg');
+    $hasDay = ($car->price_per_day ?? 0) > 0;
+    $hasMonth = ($car->price_per_month ?? 0) > 0;
 @endphp
 <div class="kdr-car-card h-100">
     <a href="{{ route('carDetails', $car->slug ?? $car->id) }}" class="kdr-car-card__media">
@@ -40,21 +27,20 @@
             <li><i class="fas fa-cogs"></i> {{ $car->transmission }}</li>
             @endif
             <li>
-                <i class="fas fa-user"></i>
-                @if($car->driver_available && !$car->self_drive)
-                    With driver
-                @elseif($car->self_drive && !$car->driver_available)
-                    Self-drive
-                @else
-                    Driver or self-drive
-                @endif
+                <i class="fas fa-user-tie"></i>
+                With driver
             </li>
         </ul>
         <div class="kdr-car-card__footer">
-            @if($price)
-            <p class="kdr-car-card__price mb-0">
-                {{ formatUsd($price) }} <span>/ {{ $periodLabel }}</span>
-            </p>
+            @if($hasDay || $hasMonth)
+            <div class="kdr-car-card__price mb-0">
+                @if($hasDay)
+                <p class="mb-0">{{ formatUsd($car->price_per_day) }} <span>/ day</span></p>
+                @endif
+                @if($hasMonth)
+                <p class="mb-0 {{ $hasDay ? 'mt-1' : '' }}">{{ formatUsd($car->price_per_month) }} <span>/ month</span></p>
+                @endif
+            </div>
             @endif
             <a href="{{ route('carDetails', $car->slug ?? $car->id) }}" class="th-btn btn-kdr-primary btn-sm">View &amp; Book</a>
         </div>

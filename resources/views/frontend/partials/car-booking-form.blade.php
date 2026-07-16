@@ -13,7 +13,7 @@
             <div class="modal-header border-0 pb-0">
                 <div>
                     <h5 class="modal-title" id="carBookingModalLabel">Book {{ $car->name }}</h5>
-                    <p class="text-muted small mb-0">Choose your package, schedule, then send via WhatsApp or Email.</p>
+                    <p class="text-muted small mb-0">Choose your package, schedule, then send via WhatsApp or Email. Other details will be discussed based on your needs.</p>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

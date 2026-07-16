@@ -267,11 +267,10 @@ public function hotelsSearch(Request $request)
         }
 
         if ($request->filled('driver')) {
-            match ($request->input('driver')) {
-                'with_driver' => $query->where('driver_available', true),
-                'self_drive' => $query->where('self_drive', true),
-                default => null,
-            };
+            // Fleet is chauffeur-only; keep filter for backwards-compatible URLs
+            if ($request->input('driver') === 'with_driver') {
+                $query->where('driver_available', true);
+            }
         }
 
         if ($request->filled('fuel_type')) {
