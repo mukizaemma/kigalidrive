@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Models\Car;
+use App\Models\CarDetail;
 use App\Models\CarRental;
 use Illuminate\Support\Str;
 use App\Models\Tripimage;
@@ -19,10 +20,12 @@ class CarsController extends Controller
     {
         $cars = Car::latest()->get();
         $pendingBookings = CarRental::where('rental_status', 'pending')->count();
-        
+        $carDetails = CarDetail::active()->ordered()->get();
+
         return view('admin.cars.cars', [
             'cars' => $cars,
             'pendingBookings' => $pendingBookings,
+            'carDetails' => $carDetails,
         ]);
     }
 
@@ -82,6 +85,8 @@ class CarsController extends Controller
             'car_images' => 'nullable|array',
             'car_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
             'description' => 'nullable|string',
+            'detail_ids' => 'nullable|array',
+            'detail_ids.*' => 'integer|exists:car_details,id',
         ]);
 
         try {
@@ -123,6 +128,8 @@ class CarsController extends Controller
                 'status' => 'available',
             ]);
 
+            $car->details()->sync($request->input('detail_ids', []));
+
             // Handle additional car images
             if ($request->hasFile('car_images')) {
                 foreach ($request->file('car_images') as $imageFile) {
@@ -147,12 +154,14 @@ class CarsController extends Controller
     
     public function edit($id)
     {
-        $car = Car::findOrFail($id);
+        $car = Car::with('details')->findOrFail($id);
         $carImages = Carimage::where('car_id', $car->id)->get();
-        
+        $carDetails = CarDetail::active()->ordered()->get();
+
         return view('admin.cars.carUpdate', [
             'car' => $car,
             'carImages' => $carImages,
+            'carDetails' => $carDetails,
             'advertType' => 'rent',
         ]);
     }
@@ -184,6 +193,8 @@ class CarsController extends Controller
                 'car_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
                 'description' => 'nullable|string',
                 'status' => 'required|in:available,rented,maintenance',
+                'detail_ids' => 'nullable|array',
+                'detail_ids.*' => 'integer|exists:car_details,id',
             ]);
     
             // Handle cover image update
@@ -228,6 +239,8 @@ class CarsController extends Controller
             }
     
             $car->save();
+
+            $car->details()->sync($request->input('detail_ids', []));
     
             // Handle additional car images
             if ($request->hasFile('car_images')) {

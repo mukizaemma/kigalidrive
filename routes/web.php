@@ -42,6 +42,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/faqs/{faq}', [App\Http\Controllers\Admin\AdminFaqController::class, 'update'])->name('admin.faqs.update');
     Route::delete('/admin/faqs/{faq}', [App\Http\Controllers\Admin\AdminFaqController::class, 'destroy'])->name('admin.faqs.destroy');
 
+    Route::get('/admin/car-details', [App\Http\Controllers\Admin\AdminCarDetailController::class, 'index'])->name('admin.car-details.index');
+    Route::post('/admin/car-details', [App\Http\Controllers\Admin\AdminCarDetailController::class, 'store'])->name('admin.car-details.store');
+    Route::put('/admin/car-details/{carDetail}', [App\Http\Controllers\Admin\AdminCarDetailController::class, 'update'])->name('admin.car-details.update');
+    Route::delete('/admin/car-details/{carDetail}', [App\Http\Controllers\Admin\AdminCarDetailController::class, 'destroy'])->name('admin.car-details.destroy');
+
     Route::get('/admin/home-hire', [App\Http\Controllers\Admin\AdminHomeHireController::class, 'index'])->name('admin.home-hire.index');
     Route::put('/admin/home-hire/intro', [App\Http\Controllers\Admin\AdminHomeHireController::class, 'updateIntro'])->name('admin.home-hire.intro.update');
     Route::post('/admin/home-hire/scenarios', [App\Http\Controllers\Admin\AdminHomeHireController::class, 'storeScenario'])->name('admin.home-hire.scenarios.store');

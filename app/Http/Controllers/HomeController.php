@@ -51,6 +51,7 @@ class HomeController extends Controller
         try {
             $featuredCars = Car::where('status', 'available')
                 ->forRent()
+                ->with('details')
                 ->latest()
                 ->take(6)
                 ->get();
@@ -246,7 +247,7 @@ public function hotelsSearch(Request $request)
         $query = Car::query()
             ->where('status', 'available')
             ->forRent()
-            ->with('images');
+            ->with(['images', 'details']);
 
         if ($request->filled('q')) {
             $search = $request->input('q');
@@ -339,14 +340,15 @@ public function hotelsSearch(Request $request)
     }
 
     public function carDetails($slug){
-        $car = Car::with('images')->where('slug', $slug)->firstOrFail();
+        $car = Car::with(['images', 'details'])->where('slug', $slug)->firstOrFail();
 
         if (! $car->isRentable()) {
             abort(404);
         }
 
         $images = $car->images;
-        $allCars = Car::where('id', '!=', $car->id)
+        $allCars = Car::with('details')
+            ->where('id', '!=', $car->id)
             ->where('status', 'available')
             ->forRent()
             ->limit(3)
@@ -1397,6 +1399,7 @@ public function terms(){
         $featuredCars = Car::query()
             ->where('status', 'available')
             ->forRent()
+            ->with('details')
             ->latest()
             ->take(4)
             ->get();

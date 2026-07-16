@@ -134,6 +134,12 @@
                                     </div>
                                 </div>
 
+                                @include('admin.cars.partials.detail-checkboxes', [
+                                    'carDetails' => $carDetails ?? collect(),
+                                    'selectedDetailIds' => old('detail_ids', $car->details->pluck('id')->all()),
+                                    'idPrefix' => 'edit',
+                                ])
+
                                 <div id="rent_fields">
                                     <div class="row mb-3">
                                         <div class="col-lg-4 col-sm-12">

@@ -16,16 +16,13 @@
     $galleryUrls = $galleryImages->values()->all();
     $rentalPackages = $rentalPackages ?? app(\App\Services\CarRentalPackageService::class)->packagesFor($car);
 
-    $metaParts = array_filter([
-        $car->model,
-        $car->fuel_type,
-        $car->transmission,
-        $car->seats ? $car->seats . ' seats' : null,
-    ]);
-    $metaLine = implode(' · ', $metaParts);
+    $metaLine = $car->relationLoaded('details')
+        ? $car->details->pluck('name')->filter()->implode(' · ')
+        : $car->details()->pluck('name')->filter()->implode(' · ');
 
     $dayPrice = ($car->price_per_day ?? 0) > 0 ? formatUsd($car->price_per_day) : null;
     $monthPrice = ($car->price_per_month ?? 0) > 0 ? formatUsd($car->price_per_month) : null;
+    $assignedDetails = $car->relationLoaded('details') ? $car->details : $car->details()->get();
 @endphp
 
 <section class="kdr-car-detail py-4 py-lg-5">
@@ -111,7 +108,9 @@
                         <span class="kdr-car-detail__status-badge kdr-car-detail__status-badge--{{ $car->status }}">
                             {{ ucfirst($car->status) }}
                         </span>
-                        <span class="kdr-car-detail__hire-type">With driver</span>
+                        @foreach($assignedDetails->take(2) as $detail)
+                        <span class="kdr-car-detail__hire-type">{{ $detail->name }}</span>
+                        @endforeach
                     </div>
 
                     <button type="button" class="th-btn btn-kdr-primary w-100 kdr-car-detail__book" data-bs-toggle="modal" data-bs-target="#carBookingModal">
@@ -134,53 +133,23 @@
                 @endif
 
                 <div class="kdr-car-detail__block">
-                    <h2 class="kdr-car-detail__heading">Specifications</h2>
+                    <h2 class="kdr-car-detail__heading">Details</h2>
+                    @if($assignedDetails->isNotEmpty())
                     <div class="row g-3 kdr-car-detail__specs">
-                        @if($car->model)
+                        @foreach($assignedDetails as $detail)
                         <div class="col-sm-6 col-md-4">
                             <div class="kdr-car-detail__spec">
-                                <i class="fas fa-car" aria-hidden="true"></i>
+                                <i class="{{ $detail->iconClass() }}" aria-hidden="true"></i>
                                 <div>
-                                    <span class="kdr-car-detail__spec-label">Model</span>
-                                    <span class="kdr-car-detail__spec-value">{{ $car->model }}</span>
+                                    <span class="kdr-car-detail__spec-value">{{ $detail->name }}</span>
                                 </div>
                             </div>
                         </div>
-                        @endif
-                        @if($car->fuel_type)
-                        <div class="col-sm-6 col-md-4">
-                            <div class="kdr-car-detail__spec">
-                                <i class="fas fa-gas-pump" aria-hidden="true"></i>
-                                <div>
-                                    <span class="kdr-car-detail__spec-label">Fuel</span>
-                                    <span class="kdr-car-detail__spec-value">{{ $car->fuel_type }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-                        @if($car->transmission)
-                        <div class="col-sm-6 col-md-4">
-                            <div class="kdr-car-detail__spec">
-                                <i class="fas fa-cogs" aria-hidden="true"></i>
-                                <div>
-                                    <span class="kdr-car-detail__spec-label">Transmission</span>
-                                    <span class="kdr-car-detail__spec-value">{{ $car->transmission }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-                        @if($car->seats)
-                        <div class="col-sm-6 col-md-4">
-                            <div class="kdr-car-detail__spec">
-                                <i class="fas fa-users" aria-hidden="true"></i>
-                                <div>
-                                    <span class="kdr-car-detail__spec-label">Seats</span>
-                                    <span class="kdr-car-detail__spec-value">{{ $car->seats }}</span>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
+                        @endforeach
                     </div>
+                    @else
+                    <p class="text-muted mb-0">Other details will be discussed based on the client's needs.</p>
+                    @endif
                 </div>
             </div>
         </div>

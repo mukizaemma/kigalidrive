@@ -193,6 +193,11 @@
                                 </div>
                             </div>
 
+                            @include('admin.cars.partials.detail-checkboxes', [
+                                'carDetails' => $carDetails ?? collect(),
+                                'selectedDetailIds' => old('detail_ids', []),
+                                'idPrefix' => 'create',
+                            ])
 
                             <div id="rent_fields">
                                 <div class="row mb-3">

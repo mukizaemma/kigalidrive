@@ -4,6 +4,9 @@
         : asset('assets/img/tour/tour_3_1.jpg');
     $hasDay = ($car->price_per_day ?? 0) > 0;
     $hasMonth = ($car->price_per_month ?? 0) > 0;
+    $assignedDetails = $car->relationLoaded('details')
+        ? $car->details
+        : $car->details()->get();
 @endphp
 <div class="kdr-car-card h-100">
     <a href="{{ route('carDetails', $car->slug ?? $car->id) }}" class="kdr-car-card__media">
@@ -16,21 +19,13 @@
         <h3 class="kdr-car-card__title">
             <a href="{{ route('carDetails', $car->slug ?? $car->id) }}">{{ $car->name }}</a>
         </h3>
+        @if($assignedDetails->isNotEmpty())
         <ul class="kdr-car-card__meta list-unstyled mb-3">
-            @if($car->model)
-            <li><i class="fas fa-car-side"></i> {{ $car->model }}</li>
-            @endif
-            @if($car->fuel_type)
-            <li><i class="fas fa-gas-pump"></i> {{ Str::limit($car->fuel_type, 28) }}</li>
-            @endif
-            @if($car->transmission)
-            <li><i class="fas fa-cogs"></i> {{ $car->transmission }}</li>
-            @endif
-            <li>
-                <i class="fas fa-user-tie"></i>
-                With driver
-            </li>
+            @foreach($assignedDetails as $detail)
+            <li><i class="{{ $detail->iconClass() }}"></i> {{ $detail->name }}</li>
+            @endforeach
         </ul>
+        @endif
         <div class="kdr-car-card__footer">
             @if($hasDay || $hasMonth)
             <div class="kdr-car-card__price mb-0">

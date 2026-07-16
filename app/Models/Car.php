@@ -45,6 +45,14 @@ class Car extends Model
         return $this->hasMany(Carimage::class);
     }
 
+    public function details()
+    {
+        return $this->belongsToMany(CarDetail::class, 'car_car_detail')
+            ->withTimestamps()
+            ->orderBy('car_details.sort_order')
+            ->orderBy('car_details.name');
+    }
+
     public function reviews()
     {
         return $this->hasMany(CarReview::class)->where('is_approved', true);

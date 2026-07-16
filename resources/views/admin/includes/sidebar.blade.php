@@ -12,6 +12,7 @@
             <a href="{{ route('dashboard') }}" class="nav-item nav-link"><i class="fas fa-grip-horizontal me-2"></i>Dashboard</a>
             <hr class="my-2">
             <a href="{{ route('getCars') }}" class="nav-item nav-link"><i class="fas fa-car me-2"></i>Cars</a>
+            <a href="{{ route('admin.car-details.index') }}" class="nav-item nav-link"><i class="fas fa-tags me-2"></i>Car details</a>
             <a href="{{ route('admin.services.index') }}" class="nav-item nav-link"><i class="fas fa-concierge-bell me-2"></i>Services</a>
             <a href="{{ route('admin.listing-requests.index') }}" class="nav-item nav-link"><i class="fas fa-inbox me-2"></i>Listing requests</a>
             <a href="{{ route('admin.enquiries.index') }}" class="nav-item nav-link"><i class="fas fa-envelope-open-text me-2"></i>Enquiries</a>
